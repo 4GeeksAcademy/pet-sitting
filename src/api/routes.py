@@ -34,11 +34,11 @@ def handle_hello():
     return jsonify(response_body), 200
 
 @api.route('/schedule-walk-or-check-in-or-meet-and-greet', methods=['POST'])
-@jwt_required()
+# @jwt_required()
 def handle_schedule_walk_or_check_in_or_meet_and_greet():
-    current_user_id = get_jwt_identity()
-    user = User.query.get(current_user_id)
-    user_address = user["address"]
+    # current_user_id = get_jwt_identity()
+    # user = User.query.get(current_user_id)
+    # user_address = user["address"]
 
     req = request.get_json()
 
@@ -96,12 +96,12 @@ def handle_schedule_walk_or_check_in_or_meet_and_greet():
     return jsonify(response_body), 200
 
 @api.route('/schedule-pet-sitting', methods=['POST'])
-@jwt_required()
+# @jwt_required()
 def handle_schedule_pet_sitting():
 
-    current_user_id = get_jwt_identity()
-    user = User.query.get(current_user_id)
-    user_address = user["address"]
+    # current_user_id = get_jwt_identity()
+    # user = User.query.get(current_user_id)
+    # user_address = user["address"]
 
     req = request.get_json()
 
@@ -155,3 +155,46 @@ def handle_schedule_pet_sitting():
     }
 
     return jsonify(response_body), 200
+
+SCOPES = ['https://www.googleapis.com/auth/calendar']
+SERVICE_ACCOUNT_FILE = 'credentials.json'
+
+creds = service_account.Credentials.from_service_account_file(
+SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+
+calendar_id = "564074f66734a91ee109c5d45a58ad814986316b76f2059642ac08bb37b7acb5@group.calendar.google.com"
+
+try:
+    service = build("calendar", "v3", credentials=creds)
+
+    # Call the Calendar API
+    now = datetime.datetime.utcnow().isoformat() + "Z"  # 'Z' indicates UTC time
+    print("Getting the upcoming 10 events")
+    events_result = (
+        service.events()
+        .list(
+            calendarId=calendar_id,
+            timeMin=now,
+            maxResults=10,
+            singleEvents=True,
+            orderBy="startTime",
+        )
+        .execute()
+    )
+    events = events_result.get("items", [])
+
+    if not events:
+        print("No upcoming events found.")
+        pass
+
+    # Prints the start and name of the next 10 events
+    for event in events:
+        start = event["start"].get("dateTime", event["start"].get("date"))
+        print(start, event["summary"])
+
+except HttpError as error:
+    print(f"An error occurred: {error}")
+
+
+
+url = "https://calendar.google.com/calendar/ical/564074f66734a91ee109c5d45a58ad814986316b76f2059642ac08bb37b7acb5%40group.calendar.google.com/public/basic.ics"
