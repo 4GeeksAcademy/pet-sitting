@@ -5,3 +5,13 @@
     one more css for each page that will contain the selected used 
     on that page only (the ones not reused in other pages).
 */
+
+
+.logoImg {
+    width: 80px;
+    height: 80px;
+}
+.navbar {
+    color: navy;
+    font-family: 'Roboto', sans-serif;
+    font-family: 'Shadows Into Light', cursive;}
