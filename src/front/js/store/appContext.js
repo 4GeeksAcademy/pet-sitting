@@ -28,6 +28,15 @@ const injectContext = PassedComponent => {
 			 * you should do your ajax requests or fetch api requests here. Do not use setState() to save data in the
 			 * store, instead use actions, like this:
 			 **/
+			currDate = new Date()
+			currYear = currDate.getFullYear()
+			currMonth = currDate.getMonth()
+			currDate = currDate.getDate()
+			state.actions.setTimeslotsStartingDay({
+				"date": currDay,
+				"month": currMonth,
+				"year": currYear
+			})
 			state.actions.getMessage(); // <---- calling this function from the flux.js actions
 		}, []);
 

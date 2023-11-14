@@ -13,14 +13,21 @@ const getState = ({ getStore, getActions, setStore }) => {
 					background: "white",
 					initial: "white"
 				}
-			]
+			],
+			timeSlotsStartingDay: {
+				"date": 1,
+				"month": 1,
+				"year": 2023
+			}
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
 			exampleFunction: () => {
 				getActions().changeColor(0, "green");
 			},
-
+			setTimeslotsStartingDay: (obj) => {
+				setStore({timeSlotsStartingDay: obj})
+			},
 			getMessage: async () => {
 				try{
 					// fetching data from the backend
