@@ -18,7 +18,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 				"date": 1,
 				"month": 1,
 				"year": 2023
-			}
+			},
+			activeScheduleTab: "nav-timeslots"
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
@@ -53,6 +54,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 				//reset the global store
 				setStore({ demo: demo });
+			},
+			changeActiveScheduleTab: (payload) => {
+					setStore({activeScheduleTab: payload})
 			}
 		}
 	};

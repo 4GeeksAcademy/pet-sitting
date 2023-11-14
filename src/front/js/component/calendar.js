@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 
 import { Context } from "../store/appContext";
 import '../../styles/calendar.css'
@@ -37,7 +37,7 @@ export const Calendar = () => {
             const newDaysArr = daysArr.map ((i) => {
                 if (i >= firstDay.getDay()) {
                     return (
-                        `<div className='calendar-day-hover data-day=${i}'>
+                        `<div className='calendar-day-hover' data-day=${i}>
                             ${i - firstDay.getDay() + 1}
                                 <span></span>
                                 <span></span>
@@ -48,7 +48,7 @@ export const Calendar = () => {
                 }
                 else if (i - firstDay.getDay() + 1 === currentDate.getDate() && year === currentDate.getFullYear() && month === currentDate.getMonth()) {
                     return (
-                        `<div className='calendar-day-hover curr-date data-day=${i}'>
+                        `<div className='calendar-day-hover curr-date' data-day=${i}>
                             ${i - firstDay.getDay() + 1}
                                 <span></span>
                                 <span></span>
@@ -59,12 +59,12 @@ export const Calendar = () => {
                 }
                 else {
                     return  (
-                        `<div>
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                        </div>`
+                        `<section>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </section>`
                     )
                 }
             })
@@ -77,7 +77,9 @@ export const Calendar = () => {
                             "month": currMonth.value,
                             "year": currYear.value
                         })
-                    }}}>
+                        actions.changeActiveScheduleTab('nav-timeslots')
+                    }}} 
+                    >
                 </div>
             )
             return calendarDays
@@ -140,14 +142,14 @@ export const Calendar = () => {
                             setCurrYear({'value': currYear.value - 1})
                             generateCalendar(currMonth.value, currYear.value)
                         }}>
-                            <pre>{'<'}</pre>
+                            {'<'}
                         </span>
                         <span id="year">{currYear.value}</span>
                         <span className="year-change" id="next-year" onClick={() => {
                             setCurrYear({'value': currYear.value + 1})
                             generateCalendar(currMonth.value, currYear.value)
                         }}>
-                            <pre>{'>'}</pre>
+                            {'>'}
                         </span>
                     </div>
                 </div>

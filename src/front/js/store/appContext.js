@@ -28,12 +28,12 @@ const injectContext = PassedComponent => {
 			 * you should do your ajax requests or fetch api requests here. Do not use setState() to save data in the
 			 * store, instead use actions, like this:
 			 **/
-			currDate = new Date()
-			currYear = currDate.getFullYear()
-			currMonth = currDate.getMonth()
-			currDate = currDate.getDate()
+			const currDate = new Date()
+			const currYear = currDate.getFullYear()
+			const currMonth = currDate.getMonth()
+			const curr_Date = currDate.getDate()
 			state.actions.setTimeslotsStartingDay({
-				"date": currDay,
+				"date": curr_Date,
 				"month": currMonth,
 				"year": currYear
 			})
