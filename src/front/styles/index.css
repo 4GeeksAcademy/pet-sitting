@@ -1,3 +1,16 @@
 /* 
     General Styles used on every website (Don't Repeat Yourself)
 */
+
+.bg-dark {
+    background-color: #54665a !important;
+}
+
+.nav-link {
+    color: #84a3a6 !important;
+    border-color: #84a3a6 !important
+}
+
+.text-light {
+    color: #f2e9d8 !important
+}
