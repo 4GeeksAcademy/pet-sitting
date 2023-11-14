@@ -20,7 +20,7 @@ static_file_dir = os.path.join(os.path.dirname(
 app = Flask(__name__)
 app.url_map.strict_slashes = False
 
-app.config["JWT-SECRET_KEY"]=os.envron.get("JWT-SECRET_KEY")
+app.config["JWT-SECRET_KEY"]=os.environ.get("JWT-SECRET_KEY")
 jwt=JWTManager(app)
 # database condiguration
 db_url = os.getenv("DATABASE_URL")

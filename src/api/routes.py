@@ -4,7 +4,7 @@ from flask_jwt_extended import JWTManager, create_access_token, jwt_required, ge
 from werkzeug.security import generate_password_hash, check_password_hash
 from api.models import db, User
 from api.utils import APIException
-
+import os
 
 # Create the Blueprint
 api = Blueprint('api', __name__)
@@ -51,8 +51,8 @@ def login():
     if user and check_password_hash(user.password, password):
         access_token = create_access_token(identity=email)
         return jsonify(access_token=access_token), 200
-    else:
-        return jsonify(message="Login failed. Please check your credentials."), 401
+        
+    return jsonify(message="Login failed. Please check your credentials."), 401
 
 @api.route('/user', methods=['GET'])
 @jwt_required()
@@ -62,8 +62,8 @@ def get_user():
 
     if user:
         return jsonify(user.serialize()), 200
-    else:
-        return jsonify(message="User not found"), 404
+    
+    return jsonify(message="User not found"), 404
 
 @api.route('/logout', methods=['DELETE'])
 @jwt_required()
