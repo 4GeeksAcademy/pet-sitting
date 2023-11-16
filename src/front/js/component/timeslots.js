@@ -16,6 +16,7 @@ export const Timeslots = () => {
 	const [namesOfCurrentDaysOfWeek, setNamesOfCurrentDaysOfWeek] = useState([])
 	const [weekDatesRange, setWeekDatesRange] = useState([])
 	const [weekDayDivs, setWeekDayDivs] = useState('')
+	const [timeslotLabels, setTimeslotLabels] = useState('')
 	const [render, reRender] = useState(true)
 	const namesOfDays = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']
 
@@ -70,12 +71,10 @@ export const Timeslots = () => {
 	}
 
 	useEffect(() => {
-		console.log(store.timeSlotsStartingDay)
 		setStartDayData(store.timeSlotsStartingDay)
 	},[store.timeSlotsStartingDay])
 
 	useEffect(() => {
-		console.log(startDayData)
 		setWeekDatesRange([...Array(7).keys()].map(i => i + parseInt(startDayData.date)))
 	},[startDayData])
 
@@ -87,9 +86,37 @@ export const Timeslots = () => {
 		setWeekDayDivs(createWeekDayDivs())
 	},[namesOfCurrentDaysOfWeek])
 
+	const createTimeslotsLabels = () => {
+		let time = 9
+		timeArr = []
+		for(let i = 0; i < 16; i++) {
+			time += 0.5*i
+			if(time === 13) {
+				time = 1
+			}
+			if(time % 0.5 === 0) {
+				time = String(time - 0.5) + ':30'
+			} else {
+				time = String(time) + ':00'
+			}
+			timeArr.push(time)
+		}
+
+		const timeslotLabelsArr = timeArr.map((time) => {
+			return (
+				<div className="timeslot-label">
+					{time}
+				</div>
+			)
+
+		})
+
+		setTimeslotLabels(timeslotLabelsArr.join(''))
+	}
+
 	return (
 		<div className="container-fluid d-flex">
-			{/* {timeslots} */}
+			{timeslotLabels}
 			{weekDayDivs}
         </div>
 	);
