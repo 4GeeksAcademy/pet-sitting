@@ -11,8 +11,8 @@ from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
 from flask_jwt_extended import JWTManager
-
 # from models import Person
+
 
 ENV = "development" if os.getenv("FLASK_DEBUG") == "1" else "production"
 static_file_dir = os.path.join(os.path.dirname(
@@ -20,7 +20,7 @@ static_file_dir = os.path.join(os.path.dirname(
 app = Flask(__name__)
 app.url_map.strict_slashes = False
 
-app.config["JWT-SECRET_KEY"]=os.envron.get("JWT-SECRET_KEY")
+app.config["JWT-SECRET_KEY"]=os.environ.get("JWT-SECRET_KEY")
 jwt=JWTManager(app)
 # database condiguration
 db_url = os.getenv("DATABASE_URL")

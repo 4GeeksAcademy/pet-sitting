@@ -4,7 +4,12 @@ from flask_jwt_extended import JWTManager, create_access_token, jwt_required, ge
 from werkzeug.security import generate_password_hash, check_password_hash
 from api.models import db, User
 from api.utils import APIException
+from email.message import EmailMessage
+import ssl
+import smtplib
+import logging
 
+app = Flask(__name__)
 
 # Create the Blueprint
 api = Blueprint('api', __name__)
@@ -70,5 +75,35 @@ def get_user():
 def logout():
     return jsonify(message="Logged out successfully"), 200
 
+@api.route('/forgotten-password', methods=['POST'])
+def send_code ():
+    body = request.get_json();
+    email = body["email"]
+
+    if email is None:
+        return "No email was provided",400
+    user = User.query.filter_by(email=email).first()
+    if user is None:
+        return "User doesn't exist", 404
+    else :
+        email_sender = 'petsitting417@gmail.com'
+        email_password = "ilhjwhdyxlxpmdfw"
+        email_receiver = 'wivodo2070@eachart.com'
+        email_subject = "Reset your password"
+        email_body = " We have sent you this temporary password so that you can recover your account. Smile with us Hot Doggity Dog Walkers!"
+
+        em = EmailMessage()
+        em['from'] = email_sender
+        em['to'] = email_receiver
+        em['subject'] = email_subject
+        em.set_content(email_body)
+
+        context = ssl.create_default_context
+        with smtplib.SMTP_SSL('smtp.gmail.com',465) as smtp:
+            smtp.login(email_sender, email_password)
+            smtp.sendmail(email_sender, email_receiver, em.as_string())
+        return "Ok",200
+
 if __name__ == "__main__":
     api.run()
+    

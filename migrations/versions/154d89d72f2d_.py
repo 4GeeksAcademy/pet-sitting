@@ -25,7 +25,7 @@ def upgrade():
     sa.Column('is_active', sa.Boolean(), nullable=False),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email')
-    )
+)
     # ### end Alembic commands ###
 
 
