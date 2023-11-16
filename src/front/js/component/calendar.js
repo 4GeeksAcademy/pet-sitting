@@ -35,7 +35,6 @@ export const Calendar = () => {
 
         const generateDays = () => {
             const daysArr = Array.from({length: (daysOfMonth[month] + firstDay.getDay())}, (x, i) => i)
-            console.log(daysArr)
             const newDaysArr = daysArr.map ((i) => {
                 if (i >= firstDay.getDay()) {
                     return (
@@ -74,10 +73,11 @@ export const Calendar = () => {
                 <div className="calendar-days" dangerouslySetInnerHTML={{__html: newDaysArr.join('')}} onClick={(e) => {
                     const el = e.target.closest("div");
                     if (el && e.currentTarget.contains(el)) {
+                        console.log(currMonth.value)
                         actions.setTimeslotsStartingDay({
                             "date": el.getAttribute('data-day'),
-                            "month": currMonth.value,
-                            "year": currYear.value
+                            "month": store.timeSlotsStartingDay.month,
+                            "year": store.timeSlotsStartingDay.year
                         })
                         actions.changeActiveScheduleTab('nav-timeslots')
                     }}} 
@@ -104,6 +104,7 @@ export const Calendar = () => {
             if (el && e.currentTarget.contains(el)) {
                 setShowMonthList(false)
                 setCurrMonth({"value": el.getAttribute('data-month')})
+                console.log(el.getAttribute('data-month'))
                 generateCalendar(el.getAttribute('data-month'),currYear.value)
     }
         }}>
@@ -127,6 +128,14 @@ export const Calendar = () => {
     useEffect(() => {
         setCurrentMonthName(monthNames[currMonth.value])
     },[currMonth.value])
+
+    useEffect(() => {
+        actions.setTimeslotsStartingDay({
+            "date": store.timeSlotsStartingDay.date,
+            "month": currMonth.value,
+            "year": currYear.value
+        })
+    },[currMonth, currYear])
 
 	return (
 		<div className="container-fluid">

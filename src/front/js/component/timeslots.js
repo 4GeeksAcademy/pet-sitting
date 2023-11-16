@@ -49,7 +49,7 @@ export const Timeslots = () => {
 	}
 
 	const createWeekDayDivs = () => {
-		const monthStr = String(startDayData.month + 1)
+		const monthStr = String(parseInt(startDayData.month) + 1)
 		const divs = weekDatesRange.map((date, ind) =>  {
 		const fullDateStr = `${monthStr}/${date}`
 		const weekDayName = namesOfCurrentDaysOfWeek[ind]
@@ -70,11 +70,13 @@ export const Timeslots = () => {
 	}
 
 	useEffect(() => {
+		console.log(store.timeSlotsStartingDay)
 		setStartDayData(store.timeSlotsStartingDay)
 	},[store.timeSlotsStartingDay])
 
 	useEffect(() => {
-			setWeekDatesRange([...Array(7).keys()].map(i => i + parseInt(startDayData.date)))
+		console.log(startDayData)
+		setWeekDatesRange([...Array(7).keys()].map(i => i + parseInt(startDayData.date)))
 	},[startDayData])
 
 	useEffect(() => {
