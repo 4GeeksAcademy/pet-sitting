@@ -5,3 +5,71 @@
     one more css for each page that will contain the selected used 
     on that page only (the ones not reused in other pages).
 */
+
+
+.logoImg {
+    width: 80px;
+    height: 80px;
+}
+.navbar {
+    color:gray;
+    font-family: 'Roboto', sans-serif;
+    font-family: 'Shadows Into Light', cursive;
+}
+
+.loginBox {
+    background-color: beige;
+    padding: 50px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    width: 500px;
+    margin: 20px auto 20px; /* Add margin-bottom to create space */
+}
+
+.aboutMeContainer {
+    background-color: beige;
+    padding: 50px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    width: 500px;
+    margin: 80px auto 0;
+}
+
+.bioPic {
+    width: 400px;
+    height: 450px;
+    float: left;
+  margin-left: 100px;
+    padding-right: 0;
+}
+
+
+  .submitButton{
+   background-color: gray;
+
+  }
+  .button-container {
+    display: flex;
+    justify-content: space-between;
+  }
+
+body{
+    background-color:#84a3a6;
+}
+
+
+/* #f2e9d8 biege navbar and containers*/
+
+/* dark blue #313d49 */
+
+
+/* dark blue #313d49
+dark green #54665a
+lighter blue #84a3a6
+#f2e9d8
+#efd9b2 darker version of above */
+
+
+
+
+
