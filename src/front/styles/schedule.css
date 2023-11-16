@@ -1,0 +1,38 @@
+.bg-light {
+    background-color: #f2e9d8 !important;
+}
+
+.bg-light-2 {
+    background-color: #efd9b2 !important
+}
+
+.nav-link {
+    color: #313d49 !important;
+    border-color: #313d49 !important;
+    padding: 10px;
+}
+
+@media (max-width: 479px) {
+    .nav-link {
+        width: 54px;
+    }
+
+    .schedule-row {
+        --bs-gutter-x: 0.15rem !important;
+    }
+}
+
+.nav-link.active {
+    border-right: none;
+    border-radius: 0%;
+    border-right: none;
+    background-color: #f2e9d8 !important;
+}
+
+.collapse.show {
+    padding: 0px
+}
+
+.schedule-row {
+    --bs-gutter-x: 1.15rem;
+}
