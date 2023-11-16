@@ -49,7 +49,6 @@ export const Timeslots = () => {
 	}
 
 	const createWeekDayDivs = () => {
-		console.log('creating weekday divs')
 		const monthStr = String(startDayData.month + 1)
 		const divs = weekDatesRange.map((date, ind) =>  {
 		const fullDateStr = `${monthStr}/${date}`
@@ -75,11 +74,10 @@ export const Timeslots = () => {
 	},[store.timeSlotsStartingDay])
 
 	useEffect(() => {
-			setWeekDatesRange([...Array(7).keys()].map(i => i + startDayData.date))
+			setWeekDatesRange([...Array(7).keys()].map(i => i + parseInt(startDayData.date)))
 	},[startDayData])
 
 	useEffect(() => {
-		console.log(weekDatesRange)
 		fixDatesAndSetDayNames()
 	},[weekDatesRange])
 

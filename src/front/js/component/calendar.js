@@ -11,8 +11,9 @@ export const Calendar = () => {
     const [calendarDays, setCalendarDays] = useState('')
     const [monthList, setMonthList] = useState('')
     const [showMonthList, setShowMonthList] = useState(false)
-    const [currMonth, setCurrMonth] = useState({"value": 0})
-    const [currYear, setCurrYear] = useState({"value": 0})
+    const curr_Date = new Date()
+    const [currMonth, setCurrMonth] = useState({"value": curr_Date.getMonth()})
+    const [currYear, setCurrYear] = useState({"value": curr_Date.getFullYear()})
 
     const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 
@@ -34,10 +35,11 @@ export const Calendar = () => {
 
         const generateDays = () => {
             const daysArr = Array.from({length: (daysOfMonth[month] + firstDay.getDay())}, (x, i) => i)
+            console.log(daysArr)
             const newDaysArr = daysArr.map ((i) => {
                 if (i >= firstDay.getDay()) {
                     return (
-                        `<div className='calendar-day-hover' data-day=${i}>
+                        `<div className='calendar-day-hover' data-day=${i - firstDay.getDay() + 1}>
                             ${i - firstDay.getDay() + 1}
                                 <span></span>
                                 <span></span>
@@ -48,7 +50,7 @@ export const Calendar = () => {
                 }
                 else if (i - firstDay.getDay() + 1 === currentDate.getDate() && year === currentDate.getFullYear() && month === currentDate.getMonth()) {
                     return (
-                        `<div className='calendar-day-hover curr-date' data-day=${i}>
+                        `<div className='calendar-day-hover curr-date' data-day=${i - firstDay.getDay() + 1}>
                             ${i - firstDay.getDay() + 1}
                                 <span></span>
                                 <span></span>
@@ -101,7 +103,6 @@ export const Calendar = () => {
             const el = e.target.closest("div");
             if (el && e.currentTarget.contains(el)) {
                 setShowMonthList(false)
-                console.log(el.getAttribute('data-month'))
                 setCurrMonth({"value": el.getAttribute('data-month')})
                 generateCalendar(el.getAttribute('data-month'),currYear.value)
     }
@@ -111,10 +112,9 @@ export const Calendar = () => {
     }
 
     useEffect(() => {
-
-        const curr_Date = new Date()
-        setCurrMonth({value: curr_Date.getMonth()})
-        setCurrYear({value: curr_Date.getFullYear()})
+        const curr_Date = new Date
+        setCurrMonth({'value': curr_Date.getMonth()})
+        setCurrYear({'value': curr_Date.getFullYear()})
         generateCalendar(curr_Date.getMonth(), curr_Date.getFullYear())
         const monthlist = generateMonthList()
         setMonthList(monthlist)
