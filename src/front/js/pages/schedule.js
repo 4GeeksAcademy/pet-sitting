@@ -28,17 +28,17 @@ export const Schedule = () => {
                         </div>
                     </div>
                 </div>
-                <div className="col-2">
+                <div className="col-2 d-md-none">
                     <nav className="navbar bg-light-2 d-md-none">
                         <button className="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggleContent" aria-controls="navbarToggleContent" aria-expanded="false" aria-label="Toggle navigation">
                             <i class="fa-solid fa-bars"></i>
                         </button>
                         <div className="collapse" id="navbarToggleContent">
                             <div className="bg-light">
-                                <button className={`nav-link bg-dark ${store.activeScheduleTab === 'nav-timeslots' ? 'active' : ''}`} id="nav-timeslots-tab" type="button" role="tab" aria-controls="nav-timeslots" aria-selected="true" onClick={() => actions.changeActiveScheduleTab('nav-timeslots')}>
+                                <button className={`nav-link bg-light-2 ${store.activeScheduleTab === 'nav-timeslots' ? 'active' : ''}`} id="nav-timeslots-tab" type="button" role="tab" aria-controls="nav-timeslots" aria-selected="true" onClick={() => actions.changeActiveScheduleTab('nav-timeslots')}>
                                     <i className="fa-solid fa-table-cells"></i>
                                 </button>
-                                <button className={`nav-link bg-dark ${store.activeScheduleTab === 'nav-calendar' ? 'active' : ''}`} id="nav-calendar-tab" type="button" role="tab" aria-controls="nav-monthly-calendar" aria-selected="false" onClick={() => actions.changeActiveScheduleTab('nav-calendar')}>
+                                <button className={`nav-link bg-light-2 ${store.activeScheduleTab === 'nav-calendar' ? 'active' : ''}`} id="nav-calendar-tab" type="button" role="tab" aria-controls="nav-monthly-calendar" aria-selected="false" onClick={() => actions.changeActiveScheduleTab('nav-calendar')}>
                                     <i className="fa-regular fa-calendar-days"></i>
                                 </button>
                             </div>

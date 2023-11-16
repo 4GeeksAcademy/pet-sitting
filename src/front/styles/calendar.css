@@ -11,7 +11,9 @@ body {
     position: relative;
     overflow: hidden;
     display: grid;
-    margin-top: 7%
+    margin-top: 7%;
+    margin-left: 23%;
+    box-shadow: #a8a296  5px 5px 5px
 }
 
 @media (max-width: 479px) {
@@ -19,6 +21,7 @@ body {
         padding: 5px;
         border-radius: 10px;
         width: 290px;
+        margin-left: 0px;
     }
 
     .calendar-header {
