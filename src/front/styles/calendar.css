@@ -22,6 +22,7 @@ body {
         border-radius: 10px;
         width: 290px;
         margin-left: 0px;
+        box-shadow: #a8a296  3px 3px 3px
     }
 
     .calendar-header {

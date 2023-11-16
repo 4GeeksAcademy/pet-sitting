@@ -8,10 +8,10 @@ import { Timeslots } from '../component/timeslots.js'
 import '../../styles/schedule.css'
 
 export const Schedule = () => {
-	const { store, actions } = useContext(Context);
+    const { store, actions } = useContext(Context);
 
-	return (
-		<div className="container-fluid">
+    return (
+        <div className="container-fluid gx-0">
             <div className="row flex-nowrap schedule-row gx-0">
                 <div className="col-1 px-0 bg-light-2 d-none d-md-flex">
                     <div className="d-flex flex-column align-items-sm-center pt-2 text-light min-vh-100">
@@ -23,7 +23,7 @@ export const Schedule = () => {
                                 <i className="fa-solid fa-table-cells"></i> <span className="ms-1 d-none d-sm-inline">Weekly Timeslots</span>
                             </button>
                             <button className={`nav-link ${store.activeScheduleTab === 'nav-calendar' ? 'active' : ''}`} id="nav-calendar-tab" type="button" role="tab" aria-controls="nav-monthly-calendar" aria-selected="false" onClick={() => actions.changeActiveScheduleTab('nav-calendar')}>
-                                <i className="fa-regular fa-calendar-days"></i> <span className="ms-1 d-none d-sm-inline">Monthly Calendar</span> 
+                                <i className="fa-regular fa-calendar-days"></i> <span className="ms-1 d-none d-sm-inline">Monthly Calendar</span>
                             </button>
                         </div>
                     </div>
@@ -46,6 +46,11 @@ export const Schedule = () => {
                     </nav>
                 </div>
                 <div className="col">
+                    <div className="row d-flex">
+                        <div className="col-6 mx-auto">
+                            <h1>Schedule a Dog Walk</h1>
+                        </div>
+                    </div>
                     <div className="tab-content" id="nav-tabContent">
                         <div className={`tab-pane fade ${store.activeScheduleTab === 'nav-timeslots' ? 'show active' : ''}`} id="nav-timeslots" role="tabpanel" aria-labelledby="nav-timeslots-tab"><Timeslots /></div>
                         <div className={`tab-pane fade ${store.activeScheduleTab === 'nav-calendar' ? 'show active' : ''}`} id="nav-calendar" role="tabpanel" aria-labelledby="nav-calendar-tab"><Calendar /></div>
@@ -53,5 +58,5 @@ export const Schedule = () => {
                 </div>
             </div>
         </div>
-	);
+    );
 };
