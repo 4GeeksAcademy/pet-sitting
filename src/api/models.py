@@ -22,6 +22,8 @@ class User(db.Model):
     pets = db.relationship('Pet', backref='user')
     last_services_used = db.relationship('Last_Service_Used', backref='user')
 
+  
+
     def __repr__(self):
         return f'<User {self.email}>'
 
