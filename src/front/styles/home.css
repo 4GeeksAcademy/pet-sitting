@@ -5,7 +5,7 @@
     one more css for each page that will contain the selected used 
     on that page only (the ones not reused in other pages).
 */
-
+/* this is for the nav bar */
 
 .logoImg {
     width: 80px;
@@ -17,17 +17,18 @@
     font-family: 'Shadows Into Light', cursive;
 }
 
+/* this is for the home page */
 .loginBox {
-    background-color: beige;
+    background-color:#f2e9d8;
     padding: 50px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     width: 500px;
-    margin: 20px auto 20px; /* Add margin-bottom to create space */
+    margin: 20px auto 20px; 
 }
 
 .aboutMeContainer {
-    background-color: beige;
+    background-color:#f2e9d8;
     padding: 50px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
@@ -56,6 +57,53 @@
 body{
     background-color:#84a3a6;
 }
+/* this is for the sign up user and pets */
+
+
+
+
+
+
+.signupPage {
+    background-color: #f2e9d8;
+    padding: 50px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    width: 500px;
+    margin: 20px auto; 
+  }
+  
+  .signupBox {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; 
+    text-align: left;
+  }
+  
+
+  .signupBox input {
+    width: 100%; 
+    padding: 10px; 
+    box-sizing: border-box; 
+    margin-bottom: 10px;
+  }
+  
+
+  
+  .signupSubmitButton {
+    order: 1;
+  }
+  
+  .addPetButton {
+    order: 2;
+  }
+  
+  
+  /* sausage dog */
+
+  
+
+  
 
 
 /* #f2e9d8 biege navbar and containers*/

@@ -13,6 +13,7 @@ class User(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
+
     password = db.Column(db.String(80), unique=False, nullable=False)
     first_name = db.Column(db.String(80), unique=False, nullable=False)
     last_name = db.Column(db.String(80), unique=False, nullable=False)
@@ -22,7 +23,8 @@ class User(db.Model):
     pets = db.relationship('Pet', backref='user')
     last_services_used = db.relationship('Last_Service_Used', backref='user')
 
-  
+
+ 
 
     def __repr__(self):
         return f'<User {self.email}>'
@@ -38,6 +40,7 @@ class User(db.Model):
             "pets": list(map(lambda x: x.serialize(), self.pets))
             # do not serialize the password, its a security breach
         }
+
 
 class Pet(db.Model):
     __tablename__ = 'pet'
@@ -109,3 +112,9 @@ class Number_Of_Services_Used(db.Model):
             "checkins": self.checkins,
             "pet_sittings": self.pet_sittings
         }
+
+ 
+ 
+
+        
+

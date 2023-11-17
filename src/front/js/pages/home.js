@@ -55,11 +55,10 @@ export const Home = () => {
                             Submit
                         </button>
 
-                        <button onClick={handleSignUp} type="button" className="signupButton btn btn-secondary ms-2">
+                        <Link to="/signupUser" className="btn btn-secondary ms-2">
                             Sign Up
-                        </button>
+                        </Link>
 
-                        {/* Add the "Forgot Password" link */}
                         <Link to="/forgot-password" className="forgotPasswordLink ms-2">
                             Forgot Password?
                         </Link>
