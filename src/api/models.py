@@ -13,9 +13,7 @@ class User(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
-<<<<<<< HEAD
     password = db.Column(db.String(256), unique=False, nullable=False)
-=======
 
     password = db.Column(db.String(80), unique=False, nullable=False)
     first_name = db.Column(db.String(80), unique=False, nullable=False)
@@ -28,7 +26,6 @@ class User(db.Model):
 
 
  
->>>>>>> 2ac57e1d7666ac6969365e32ac9495473539d0df
 
     def __repr__(self):
         return f'<User {self.email}>'
