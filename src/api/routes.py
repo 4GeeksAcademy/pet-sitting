@@ -8,6 +8,8 @@ from email.message import EmailMessage
 import ssl
 import smtplib
 import logging
+import random
+
 
 app = Flask(__name__)
 
@@ -86,11 +88,15 @@ def send_code ():
     if user is None:
         return "User doesn't exist", 404
     else :
+        new_password = generatePassword()
+        new_hashed_password = generate_password_hash(new_password)
+        user.password = new_hashed_password 
+        db.session.commit()
         email_sender = 'petsitting417@gmail.com'
         email_password = "ilhjwhdyxlxpmdfw"
         email_receiver = 'wivodo2070@eachart.com'
         email_subject = "Reset your password"
-        email_body = " We have sent you this temporary password so that you can recover your account. Smile with us Hot Doggity Dog Walkers!"
+        email_body = "We have sent you this temporary password so that you can recover your account. Smile with us Hot Doggity Dog Walkers! New Password: "+new_password
 
         em = EmailMessage()
         em['from'] = email_sender
@@ -103,6 +109,27 @@ def send_code ():
             smtp.login(email_sender, email_password)
             smtp.sendmail(email_sender, email_receiver, em.as_string())
         return "Ok",200
+
+
+def generatePassword():
+    pass_len = 12
+    characters = "abcdefghilklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789!@#$%^&*+=?"
+    password = ""
+    for index in range (pass_len):
+        password = password+random.choice(characters)
+    return password
+
+@api.route('/update-password', methods=['PUT'])
+@jwt_required()
+def update_password():
+    body = request.get_json()
+    old_password = body['old_password']
+    new_password = body['new_password']
+    user_email = get_jwt_identity()
+    user = User.query.filter_by(email=user_email).first()
+    if user and check_password_hash(user.password, old_password):
+        user.password = generate_password_hash(new_password)
+        return jsonify("Password updated successfully")
 
 if __name__ == "__main__":
     api.run()
