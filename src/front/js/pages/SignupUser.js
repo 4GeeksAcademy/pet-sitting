@@ -10,9 +10,13 @@ export const SignupUser = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
+    first_name:"",
+    last_name :"",
     address: "",
-    phoneNumber: "",
+    phone_Number: "",
+    
   });
+  
   const [addPetForm, setAddPetForm] = useState(false); 
 
   const handleChange = (e) => {
