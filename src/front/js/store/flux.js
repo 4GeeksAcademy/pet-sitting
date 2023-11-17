@@ -33,9 +33,36 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log("Error loading message from backend", error)
 				}
 			},
+<<<<<<< HEAD
 			changeColor: (index, color) => {
 				//get the store
 				const store = getStore();
+=======
+			signup: async (formData)=>{
+				try{
+					let response = await fetch(getStore().backendURL+"/api/signup",{
+						method:"POST",
+						headers:{"Content-Type":"application/json"},
+						body: JSON.stringify({"email":formData.email,"password":formData.password," first_name":formData.first_name,"last_name":formData.last_name,"address":formData.address,"phone_number":formData.phone_number})
+					})
+
+					let data = await response.json()
+
+					if (data){
+						console.log(data.message)
+						return true
+					}
+				}catch(error){console.log(error)}
+			},
+
+			signupPet: async (formData)=>{
+				try{
+					let response = await fetch(getStore().backendURL+"/api/signupPet",{
+						method:"POST",
+						headers:{"Content-Type":"application/json"},
+						body: JSON.stringify({"name":formData.name,"bread":formData.bread,"age":formData.age,"description":formData.description,"detailed_care_info":formData.detailed_care_info})
+					})
+>>>>>>> 2ac57e1d7666ac6969365e32ac9495473539d0df
 
 				//we have to loop the entire demo array to look for the respective index
 				//and change its color
