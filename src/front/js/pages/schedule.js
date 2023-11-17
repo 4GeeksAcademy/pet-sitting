@@ -47,7 +47,7 @@ export const Schedule = () => {
                 </div>
                 <div className="col">
                     <div className="row d-flex">
-                        <div className="col-6 mx-auto">
+                        <div className="col-6 mx-auto text-center">
                             <h1>Schedule a Dog Walk</h1>
                         </div>
                     </div>
