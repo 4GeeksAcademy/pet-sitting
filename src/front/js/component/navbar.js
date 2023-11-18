@@ -20,21 +20,28 @@ export const Navbar = () => {
         > Login</button>
         <ul className="dropdown-menu">
           <li>
-            <a className="dropdown-item" href="#" onClick={handleLogout}>
+            <a className="dropdown-item" onClick={handleLogout}>
               Logout
             </a>
           </li>
           <li>
             <Link to="/login">
-              <a className="dropdown-item" href="#">
+              <a className="dropdown-item">
                 Login
               </a>
             </Link>
           </li>
           <li>
             <Link to="/signup">
-              <a className="dropdown-item" href="#">
+              <a className="dropdown-item">
                 Signup
+              </a>
+            </Link>
+          </li>
+          <li>
+            <Link to="/insurance">
+              <a className="dropdown-item">
+                insurance
               </a>
             </Link>
           </li>
