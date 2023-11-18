@@ -50,6 +50,41 @@ export const Timeslots = () => {
 	}
 
 	const handleTimeslotClick = (e) => {
+		const time = e.target.getAttribute('data-time')
+		console.log(time)
+		const dateStr = e.target.parentNode.getAttribute('data-date')
+		console.log(dateStr)
+		let timeHr = parseInt(time[0])
+		const timeMinStart = parseInt(time[2])
+		let timeStr = time
+		if (timeHr > 1 && timeHr < 9) {
+			timeHr = timeHr + 12
+		}
+		if (timeHr >= 10) {
+				if (timeMinStart === 3) {
+					timeStr = String(timeHr) + `:30-${String(timeHr + 1)}:00`
+				} else {
+					timeStr = String(timeHr) + `:00-${String(timeHr)}:30`
+				}
+			} else {
+				if (timeMinStart === 3) {
+					timeStr = '0' + String(timeHr) + `:30:00-${String(timeHr + 1)}:00`
+				} else {
+					timeStr = '0' + String(timeHr) + `:00:00-${'0' + String(timeHr)}:30`
+				}
+			}
+		const date = startDayData.date
+		let month = startDayData.month
+		month = parseInt(month) + 1
+		if (month < 10) {
+			month = '0' + String(month)
+		} else {
+			month = String(month)
+		}
+
+		let year = startDayData.year
+		const scheduleStr = `${year}-${month}-${date}T${timeStr}`
+		console.log(scheduleStr)
 		return null
 	}
 
@@ -59,7 +94,6 @@ export const Timeslots = () => {
 		const divs = weekDatesRange.map((date, ind) => {
 			const fullDateStr = `${monthStr}/${date}/${yearStr}`
 			const weekDayName = namesOfCurrentDaysOfWeek[ind]
-
 
 			return (
 				<div className="timeslots-day mt-3 bg-light-2 align-center p-2 d-block">
@@ -73,7 +107,7 @@ export const Timeslots = () => {
 						{
 							timeslotLabels.map((time) => {
 								return (
-									<div className="timeslot text-center" data-date={fullDateStr} data-time={time} onClick={(e) => handleTimeslotClick()}>
+									<div className={`timeslot text-center`} data-date={date} data-bs-toggle="modal" data-bs-target="#myModal" onClick={(e) => handleTimeslotClick(e)}>
 										{time}
 									</div>
 								)
@@ -111,25 +145,34 @@ export const Timeslots = () => {
 		const timesArr = []
 		for (let i = 0; i < 16; i++) {
 			let time = 9
-			console.log(time)
 			time += 0.5 * i
-			console.log(time)
 			if (time >= 13) {
 				time -= 12
 			}
 			if (time % 1 !== 0) {
-				const timeStr = String(time - 0.5) + ':30'
-				timesArr.push(timeStr)
+				if (time < 10) {
+					const timeStr = '0' + String(time - 0.5) + ':30'
+					timesArr.push(timeStr)
+				} else {
+					const timeStr = String(time - 0.5) + ':30'
+					timesArr.push(timeStr)
+				}
+
 			} else {
-				const timeStr = String(time) + ':00'
-				timesArr.push(timeStr)
+				if (time < 10) {
+					const timeStr = '0' + String(time) + ':00'
+					timesArr.push(timeStr)
+				} else {
+					const timeStr = String(time) + ':00'
+					timesArr.push(timeStr)
+				}
 			}
 
 		}
 
 		const timeslotLabelsArr = timesArr.map((time) => {
 			return (
-				<div className="timeslot-label p-1">
+				<div className="timeslot-label p-1" data-time={time}>
 					{time}
 				</div>
 			)
@@ -142,6 +185,25 @@ export const Timeslots = () => {
 	return (
 		<div className="container-fluid d-flex">
 			{weekDayDivs}
+			<div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLabel">Schedule a dog walk</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body">
+							<form onSubmit={(e) => { handleModalSubmit(e) }}>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+									<button type="submit" class="btn btn-primary">Submit</button>
+								</div>
+							</form>
+						</div>
+
+					</div>
+				</div>
+			</div>
 		</div>
 	);
 };

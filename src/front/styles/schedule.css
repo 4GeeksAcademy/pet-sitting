@@ -36,3 +36,13 @@
 .schedule-row {
     --bs-gutter-x: 1.15rem;
 }
+
+.modal div {
+    background-color: #f2e9d8;
+}
+
+.modal-footer > .btn{
+    background-color: #efd9b2 !important;
+    color: black;
+    border: 1px solid black;
+}
