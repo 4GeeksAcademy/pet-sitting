@@ -17,6 +17,8 @@ export const Timeslots = () => {
 	const [weekDatesRange, setWeekDatesRange] = useState([])
 	const [weekDayDivs, setWeekDayDivs] = useState('')
 	const [timeslotLabels, setTimeslotLabels] = useState('')
+	const [newScheduleStartStr, setNewScheduleStartStr] = useState('')
+	const [newScheduleEndStr, setNewScheduleEndStr] = useState('')
 	const [render, reRender] = useState(true)
 	const namesOfDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
@@ -51,29 +53,18 @@ export const Timeslots = () => {
 
 	const handleTimeslotClick = (e) => {
 		const time = e.target.getAttribute('data-time')
-		console.log(time)
 		const dateStr = e.target.parentNode.getAttribute('data-date')
-		console.log(dateStr)
-		let timeHr = parseInt(time[0])
-		const timeMinStart = parseInt(time[2])
-		let timeStr = time
-		if (timeHr > 1 && timeHr < 9) {
-			timeHr = timeHr + 12
+		let timeHr = time[1] === ':' ? parseInt(time[0]) : parseInt(time[0] + time[1])
+		const timeMins = time[1] === ':' ? time[2] + time[3] : time[3] + time[4]
+		timeHr = timeHr < 5 ? timeHr + 12 : timeHr
+		const timeHrStr = timeHr < 10 ? '0' + String(timeHr) : String(timeHr)
+		let timeStr = timeHrStr + ':' + timeMins + ':00-07:00'
+		let nextTimeStr = ''
+		if (timeStr[3] === '0') {
+			nextTimeStr += '-' + timeStr[0] + timeStr[1] + timeStr[2] + '3' + timeStr[4] + ':00-07:00'
+		} else {
+			nextTimeStr += '-' + String(parseInt(timeStr[0] + timeStr[1]) + 1) + timeStr[2] + '0' + timeStr[4] + ':00-07:00'
 		}
-		if (timeHr >= 10) {
-				if (timeMinStart === 3) {
-					timeStr = String(timeHr) + `:30-${String(timeHr + 1)}:00`
-				} else {
-					timeStr = String(timeHr) + `:00-${String(timeHr)}:30`
-				}
-			} else {
-				if (timeMinStart === 3) {
-					timeStr = '0' + String(timeHr) + `:30:00-${String(timeHr + 1)}:00`
-				} else {
-					timeStr = '0' + String(timeHr) + `:00:00-${'0' + String(timeHr)}:30`
-				}
-			}
-		const date = startDayData.date
 		let month = startDayData.month
 		month = parseInt(month) + 1
 		if (month < 10) {
@@ -83,8 +74,12 @@ export const Timeslots = () => {
 		}
 
 		let year = startDayData.year
-		const scheduleStr = `${year}-${month}-${date}T${timeStr}`
-		console.log(scheduleStr)
+		const scheduleStartStr = `${year}-${month}-${dateStr}T${timeStr}`
+		const scheduleEndStr = `${year}-${month}-${dateStr}T${nextTimeStr}`
+		console.log(scheduleStartStr)
+		console.log(scheduleEndStr)
+		setNewScheduleStartStr(scheduleStartStr)
+		setNewScheduleEndStr(scheduleEndStr)
 		return null
 	}
 
@@ -92,6 +87,14 @@ export const Timeslots = () => {
 		const monthStr = String(parseInt(startDayData.month) + 1)
 		const yearStr = String(parseInt(startDayData.year - 2000))
 		const divs = weekDatesRange.map((date, ind) => {
+			console.log(date)
+			let newDate = date
+			if (parseInt(date) < 10) {
+				newDate = '0' + String(date)
+			} else {
+				newDate = String(date)
+			}
+			console.log(newDate)
 			const fullDateStr = `${monthStr}/${date}/${yearStr}`
 			const weekDayName = namesOfCurrentDaysOfWeek[ind]
 
@@ -107,7 +110,7 @@ export const Timeslots = () => {
 						{
 							timeslotLabels.map((time) => {
 								return (
-									<div className={`timeslot text-center`} data-date={date} data-bs-toggle="modal" data-bs-target="#myModal" onClick={(e) => handleTimeslotClick(e)}>
+									<div className={`timeslot text-center`} data-date={newDate} data-bs-toggle="modal" data-bs-target="#myModal" onClick={(e) => handleTimeslotClick(e)}>
 										{time}
 									</div>
 								)
@@ -150,7 +153,7 @@ export const Timeslots = () => {
 				time -= 12
 			}
 			if (time % 1 !== 0) {
-				if (time < 10) {
+				if (time < 10 && time >= 5) {
 					const timeStr = '0' + String(time - 0.5) + ':30'
 					timesArr.push(timeStr)
 				} else {
@@ -159,7 +162,7 @@ export const Timeslots = () => {
 				}
 
 			} else {
-				if (time < 10) {
+				if (time < 10 && time > 5) {
 					const timeStr = '0' + String(time) + ':00'
 					timesArr.push(timeStr)
 				} else {
