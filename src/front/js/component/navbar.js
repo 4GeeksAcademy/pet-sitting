@@ -41,7 +41,7 @@ export const Navbar = () => {
           <li>
             <Link to="/insurance">
               <a className="dropdown-item">
-                insurance
+                Insurance
               </a>
             </Link>
           </li>
