@@ -34,7 +34,7 @@ export const Navbar = () => {
             <ul className="dropdown-menu">
               <li>
                 <a className="dropdown-item" href="#" onClick={handleLogout}>
-                  Logout
+                  Profile
                 </a>
               </li>
               <li>
@@ -44,17 +44,17 @@ export const Navbar = () => {
               </li>
               <li>
                 <a className="dropdown-item" href="#" onClick={handleLogout}>
+                  Insurance
+                </a>
+              </li>
+              <li>
+                <a className="dropdown-item" href="#" onClick={handleLogout}>
                   Payments
                 </a>
               </li>
               <li>
                 <a className="dropdown-item" href="#" onClick={handleLogout}>
-                  Pet Documents
-                </a>
-              </li>
-              <li>
-                <a className="dropdown-item" href="#" onClick={handleLogout}>
-                  Service History
+                  Log out
                 </a>
               </li>
             </ul>

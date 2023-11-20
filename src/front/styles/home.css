@@ -7,61 +7,92 @@
 */
 /* this is for the nav bar */
 
-.logoImg {
-    width: 80px;
-    height: 80px;
-}
-.navbar {
-    color:gray;
-    font-family: 'Roboto', sans-serif;
-    font-family: 'Shadows Into Light', cursive;
+.aboutMePic{
+
+position: relative;
+text-align: center;
+
 }
 
-/* this is for the home page */
-.loginBox {
-    background-color:#f2e9d8;
-    padding: 50px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    width: 500px;
-    margin: 20px auto 20px; 
+.homePageMiddleRow {
+ 
+  grid-row: 25rm;
+
+
+}
+.aboutMeButton {
+
+  position: absolute;
+  top:20%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  background-color: #f2e9d8;
+}
+.starNowPic{
+
+  position: relative;
+  text-align: center;
 }
 
-.aboutMeContainer {
-    background-color:#f2e9d8;
-    padding: 50px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    width: 500px;
-    margin: 80px auto 0;
+.StartNowText{
+  position: absolute;
+  top:20%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  background-color: #f2e9d8;
+
 }
-
-.bioPic {
-    width: 400px;
-    height: 450px;
-    float: left;
-  margin-left: 100px;
-    padding-right: 0;
-}
-
-
-  .submitButton{
-   background-color: gray;
-
-  }
-  .button-container {
-    display: flex;
-    justify-content: space-between;
-  }
 
 body{
     background-color:#84a3a6;
 }
-/* this is for the sign up user and pets */
+.homePage{
+  width: 100dvh;
+  height: 100dvh;
+  padding:0px;
+}
+
+.bannerHomePage{
+max-width: 100%;
+height: 150px;
+
+}
+.homePageText{
+  padding:10px;
+}
+.processBox{
+  background-color:  #f2e9d8;
+  justify-content:center;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+}
 
 
 
+.button-10 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+ 
+  padding: 6px 14px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+  border-radius: 6px;
+  border: none;
 
+  color:#313d49;
+  background: linear-gradient(180deg,  #96b4b7 0%, #84a3a6 100%);
+   background-origin: border-box;
+  box-shadow: 0px 0.5px 1.5px rgba(54, 122, 246, 0.25), inset 0px 0.8px 0px -0.25px rgba(255, 255, 255, 0.2);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.button-10:focus {
+  box-shadow: inset 0px 0.8px 0px -0.25px rgba(255, 255, 255, 0.2), 0px 0.5px 1.5px rgba(54, 122, 246, 0.25), 0px 0px 0px 3.5px rgba(58, 108, 217, 0.5);
+  outline: 0;
+}
 
 
 .signupPage {
@@ -90,16 +121,10 @@ body{
   
 
   
-  .signupSubmitButton {
-    order: 1;
-  }
-  
-  .addPetButton {
-    order: 2;
-  }
+ 
   
   
-  /* sausage dog */
+
 
   
 

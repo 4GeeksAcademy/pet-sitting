@@ -44,27 +44,27 @@ def signup():
     if (
         "email" not in body
         or "password" not in body
-        or "name" not in body
-        or "phone_number" not in body
-        or "address" not in body
-        or "comments" not in body
-        or "pet_name" not in body
-        or "pet_breed" not in body
-        or "pet_age" not in body
+        # or "name" not in body
+        # or "phone_number" not in body
+        # or "address" not in body
+        # or "comments" not in body
+        # or "pet_name" not in body
+        # or "pet_breed" not in body
+        # or "pet_age" not in body
     ):
         raise APIException("Please provide all required fields", status_code=400)
 
     email = body['email']
     password = body['password']
-    name = body['name']
-    phone_number = body['phone_number']
-    address = body['address']
+    # name = body['name']
+    # phone_number = body['phone_number']
+    # address = body['address']
     
 
-    pet_name = body['pet_name']
-    pet_breed = body['pet_breed']
-    pet_age = body['pet_age']
-    comments = body['comments']
+    # pet_name = body['pet_name']
+    # pet_breed = body['pet_breed']
+    # pet_age = body['pet_age']
+    # comments = body['comments']
 
     existing_user = User.query.filter_by(email=email).first()
     if existing_user:
@@ -74,20 +74,53 @@ def signup():
     new_user = User(
         email=email,
         password=hashed_password,
-        name=name,
-        phone_number=phone_number,
-        address=address,
-        comments=comments,
+        # name=name,
+        # phone_number=phone_number,
+        # address=address,
+        # comments=comments,
     )
     db.session.add(new_user)
 
     # this will save the pet information
-    new_pet = Pet(name=pet_name, breed=pet_breed, age=pet_age, user=new_user)
-    db.session.add(new_pet)
+    # new_pet = Pet(name=pet_name, breed=pet_breed, age=pet_age, user=new_user)
+    # db.session.add(new_pet)
 
     db.session.commit()
     return jsonify(message="Successfully created user and pet"), 200
 
+@api.route('/profile', methods=['GET'])
+@jwt_required()
+def get_profile():
+    try:
+        current_user_email = get_jwt_identity()
+        user = User.query.filter_by(email=current_user_email).first()
+
+        if not user:
+            raise APIException("User not found", status_code=404)
+
+        profile_data = {
+            "email": user.email,
+            "firstName": user.first_name,
+            "lastName": user.last_name,
+            "address": user.address,
+            "phoneNumber": user.phone_number,
+            "pets": [],  
+        }
+
+        if user.pets:
+            for pet in user.pets:
+                profile_data["pets"].append({
+                    "petName": pet.name,
+                    "breed": pet.breed,
+                    "age": pet.age,
+                    "description": pet.description,
+                    "detailedCareInfo": pet.detailed_care_info,
+                })
+
+        return jsonify(profile_data), 200
+
+    except Exception as e:
+        return jsonify(message=str(e)), 500
 
 
 @api.route('/login', methods=['POST'])
@@ -117,6 +150,17 @@ def get_user():
         return jsonify(user.serialize()), 200
     else:
         return jsonify(message="User not found"), 404
+    
+
+
+
+    
+
+
+
+    
+
+
 
 @api.route('/logout', methods=['DELETE'])
 @jwt_required()

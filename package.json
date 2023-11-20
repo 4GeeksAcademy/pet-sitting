@@ -6,6 +6,9 @@
 	"version": "1.0.1",
 	"description": "",
 	"main": "index.js",
+
+	"proxy":"https://curly-capybara-4xpg77r7vp92jxpq-3001.app.github.dev",
+
 	"scripts": {
 		"start": "webpack-dev-server --config webpack.dev.js --port 3000",
 		"build": "webpack --config webpack.prod.js"

@@ -10,19 +10,17 @@ import injectContext from "./store/appContext";
 
 import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
-<<<<<<< HEAD
 import { ForgottenPassword } from "./pages/forgottenPassword";
-=======
-import {SignupUser} from "./pages/SignupUser";
->>>>>>> 2ac57e1d7666ac6969365e32ac9495473539d0df
-
+import { SignupUser } from "./pages/SignupUser";
+import {Profile} from "./pages/Profile.js";
+import {AboutMe} from "./pages/AboutMe";
 //create your first component
 const Layout = () => {
     //the basename is used when your project is published in a subdirectory and not in the root of the domain
     // you can set the basename on the .env file located at the root of this project, E.g: BASENAME=/react-hello-webapp/
     const basename = process.env.BASENAME || "";
 
-    if(!process.env.BACKEND_URL || process.env.BACKEND_URL == "") return <BackendURL/ >;
+    if (!process.env.BACKEND_URL || process.env.BACKEND_URL == "") return <BackendURL />;
 
     return (
         <div>
@@ -31,7 +29,9 @@ const Layout = () => {
                     <Navbar />
                     <Routes>
                         <Route element={<Home />} path="/" />
+                        <Route element={<AboutMe />} path="/aboutMe" />
                         <Route element={<Demo />} path="/demo" />
+                        <Route element={<Profile />} path="/profile" />
                         <Route element={<SignupUser />} path="/signupUser" />
                         <Route element={<Single />} path="/single/:theid" />
                         <Route element={<ForgottenPassword />} path="/forgotten-password" />

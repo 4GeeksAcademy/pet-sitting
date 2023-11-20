@@ -13,22 +13,21 @@ class User(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
-<<<<<<< HEAD
-    password = db.Column(db.String(256), unique=False, nullable=False)
-=======
 
-    password = db.Column(db.String(80), unique=False, nullable=False)
-    first_name = db.Column(db.String(80), unique=False, nullable=False)
-    last_name = db.Column(db.String(80), unique=False, nullable=False)
-    address = db.Column(db.String(80), unique=False, nullable=False)
-    phone_number = db.Column(db.Integer, unique=False, nullable=False)
-    recovery_code = db.Column(db.Integer, unique=False, nullable=True)
+
+
+    password = db.Column(db.String(500), unique=False, nullable=False)
+    # first_name = db.Column(db.String(80), unique=False, nullable=False) make nullable true
+    # last_name = db.Column(db.String(80), unique=False, nullable=False)
+    # address = db.Column(db.String(80), unique=False, nullable=False)
+    # phone_number = db.Column(db.Integer, unique=False, nullable=False)
+    # recovery_code = db.Column(db.Integer, unique=False, nullable=True)
     pets = db.relationship('Pet', backref='user')
     last_services_used = db.relationship('Last_Service_Used', backref='user')
 
 
  
->>>>>>> 2ac57e1d7666ac6969365e32ac9495473539d0df
+
 
     def __repr__(self):
         return f'<User {self.email}>'
@@ -37,10 +36,10 @@ class User(db.Model):
         return {
             "id": self.id,
             "email": self.email,
-            "first_name": self.first_name,
-            "last_name": self.last_name,
-            "address": self.address,
-            "phone_number": self.phone_number,
+            # "first_name": self.first_name,
+            # "last_name": self.last_name,
+            # "address": self.address,
+            # "phone_number": self.phone_number,
             "pets": list(map(lambda x: x.serialize(), self.pets))
             # do not serialize the password, its a security breach
         }
