@@ -33,6 +33,130 @@ def handle_hello():
 
     return jsonify(response_body), 200
 
+@api.route('/get-dog-walk', methods=['POST'])
+#@jwt_required()
+def handle_get_dog_walk_sched():
+    req = request.get_json()
+    minTime = req.minTime
+    maxTime = req.maxTime
+    try: 
+        SCOPES = ['https://www.googleapis.com/auth/calendar']
+        SERVICE_ACCOUNT_FILE = 'credentials.json'
+
+        creds = service_account.Credentials.from_service_account_file(
+        SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+        service = build("calendar", "v3", credentials=creds)
+        events_result = (
+                service.events()
+                .list(
+                    calendarId=calendar_id,
+                    timeMin=minTime,
+                    timeMax=maxTime,
+                    maxResults=10,
+                    singleEvents=True,
+                    orderBy="startTime",
+                )
+                .execute()
+            )
+        events = events_result.get("items", [])
+        return jsonify({'events': events, 'status': 'ok'}), 200
+    except:
+        return jsonify({'msg': 'Could not access the calendar'}), 404
+        
+
+    
+    
+
+@api.route('/get-meeting', methods=['POST'])
+#@jwt_required()
+def handle_meeting_sched():
+    req = request.get_json()
+    minTime = req.minTime
+    maxTime = req.maxTime
+    try: 
+        SCOPES = ['https://www.googleapis.com/auth/calendar']
+        SERVICE_ACCOUNT_FILE = 'credentials.json'
+
+        creds = service_account.Credentials.from_service_account_file(
+        SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+        service = build("calendar", "v3", credentials=creds)
+        events_result = (
+                service.events()
+                .list(
+                    calendarId=calendar_id,
+                    timeMin=minTime,
+                    timeMax=maxTime,
+                    maxResults=10,
+                    singleEvents=True,
+                    orderBy="startTime",
+                )
+                .execute()
+            )
+        events = events_result.get("items", [])
+        return jsonify({'events': events, 'status': 'ok'}), 200
+    except:
+        return jsonify({'msg': 'Could not access the calendar'}), 404
+
+@api.route('/get-pet-check-in', methods=['POST'])
+#@jwt_required()
+def handle_get_pet_check_in_sched():
+    req = request.get_json()
+    minTime = req.minTime
+    maxTime = req.maxTime
+    try: 
+        SCOPES = ['https://www.googleapis.com/auth/calendar']
+        SERVICE_ACCOUNT_FILE = 'credentials.json'
+
+        creds = service_account.Credentials.from_service_account_file(
+        SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+        service = build("calendar", "v3", credentials=creds)
+        events_result = (
+                service.events()
+                .list(
+                    calendarId=calendar_id,
+                    timeMin=minTime,
+                    timeMax=maxTime,
+                    maxResults=10,
+                    singleEvents=True,
+                    orderBy="startTime",
+                )
+                .execute()
+            )
+        events = events_result.get("items", [])
+        return jsonify({'events': events, 'status': 'ok'}), 200
+    except:
+        return jsonify({'msg': 'Could not access the calendar'}), 404
+
+@api.route('/get-pet-sitting', methods=['POST'])
+#@jwt_required()
+def handle_get_dog_walk_sched():
+    req = request.get_json()
+    minTime = req.minTime
+    maxTime = req.maxTime
+    try: 
+        SCOPES = ['https://www.googleapis.com/auth/calendar']
+        SERVICE_ACCOUNT_FILE = 'credentials.json'
+
+        creds = service_account.Credentials.from_service_account_file(
+        SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+        service = build("calendar", "v3", credentials=creds)
+        events_result = (
+                service.events()
+                .list(
+                    calendarId=calendar_id,
+                    timeMin=minTime,
+                    timeMax=maxTime,
+                    maxResults=10,
+                    singleEvents=True,
+                    orderBy="startTime",
+                )
+                .execute()
+            )
+        events = events_result.get("items", [])
+        return jsonify({'events': events, 'status': 'ok'}), 200
+    except:
+        return jsonify({'msg': 'Could not access the calendar'}), 404
+
 @api.route('/schedule-walk-or-check-in-or-meet-and-greet', methods=['POST'])
 # @jwt_required()
 def handle_schedule_walk_or_check_in_or_meet_and_greet():
