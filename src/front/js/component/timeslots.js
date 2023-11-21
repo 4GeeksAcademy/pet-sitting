@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { Link } from "react-router-dom";
 
 import { Context } from "../store/appContext";
@@ -21,6 +21,8 @@ export const Timeslots = () => {
 	const [newScheduleEndStr, setNewScheduleEndStr] = useState('')
 	const [render, reRender] = useState(true)
 	const namesOfDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+	const lastDate = useRef('1')
+	const newMonth = useRef(false)
 
 	const isLeapYear = (year) => {
 		return (year % 4 === 0 && year % 100 !== 0 && year % 400 !== 0) || (year % 100 === 0 && year % 400 === 0)
@@ -65,8 +67,8 @@ export const Timeslots = () => {
 		} else {
 			nextTimeStr += '-' + String(parseInt(timeStr[0] + timeStr[1]) + 1) + timeStr[2] + '0' + timeStr[4] + ':00-07:00'
 		}
-		let month = startDayData.month
-		month = parseInt(month) + 1
+		let month = e.target.parentNode.getAttribute('data-month')
+		month = parseInt(month)
 		if (month < 10) {
 			month = '0' + String(month)
 		} else {
@@ -84,17 +86,30 @@ export const Timeslots = () => {
 	}
 
 	const createWeekDayDivs = () => {
-		const monthStr = String(parseInt(startDayData.month) + 1)
-		const yearStr = String(parseInt(startDayData.year - 2000))
 		const divs = weekDatesRange.map((date, ind) => {
-			console.log(date)
 			let newDate = date
+			let monthStr = String(parseInt(startDayData.month) + 1)
+			let yearStr = String(parseInt(startDayData.year - 2000))
+			if (newMonth.current === true) {
+				monthStr = String(parseInt(monthStr) + 1)
+				if (parseInt(monthStr) > 12) {
+					yearStr = String(parseInt(startDayData.year - 2000 + 1))
+					monthStr = '1'
+				}
+			} else if (parseInt(newDate) < parseInt(lastDate.current)) {
+				monthStr = String(parseInt(monthStr) + 1)
+				if (parseInt(monthStr) > 12) {
+					yearStr = String(parseInt(startDayData.year - 2000 + 1))
+					monthStr = '1'
+				}
+				newMonth.current = true
+			}
+			lastDate.current = date
 			if (parseInt(date) < 10) {
 				newDate = '0' + String(date)
 			} else {
 				newDate = String(date)
 			}
-			console.log(newDate)
 			const fullDateStr = `${monthStr}/${date}/${yearStr}`
 			const weekDayName = namesOfCurrentDaysOfWeek[ind]
 
@@ -110,7 +125,7 @@ export const Timeslots = () => {
 						{
 							timeslotLabels.map((time) => {
 								return (
-									<div className={`timeslot text-center`} data-date={newDate} data-bs-toggle="modal" data-bs-target="#myModal" onClick={(e) => handleTimeslotClick(e)}>
+									<div className={`timeslot text-center`} data-date={newDate} data-month={monthStr} data-bs-toggle="modal" data-bs-target="#myModal" onClick={(e) => handleTimeslotClick(e)}>
 										{time}
 									</div>
 								)
@@ -120,6 +135,8 @@ export const Timeslots = () => {
 				</div>
 			)
 		})
+		lastDate.current = 1
+		newMonth.current = false
 		return divs
 	}
 
@@ -129,10 +146,38 @@ export const Timeslots = () => {
 
 	useEffect(() => {
 		setWeekDatesRange([...Array(7).keys()].map(i => i + parseInt(startDayData.date)))
+		const getScheduleData = () => {
+		const time = "9:00:00-17:00"
+		const dateStr = e.target.parentNode.getAttribute('data-date')
+		let timeHr = time[1] === ':' ? parseInt(time[0]) : parseInt(time[0] + time[1])
+		const timeMins = time[1] === ':' ? time[2] + time[3] : time[3] + time[4]
+		timeHr = timeHr < 5 ? timeHr + 12 : timeHr
+		const timeHrStr = timeHr < 10 ? '0' + String(timeHr) : String(timeHr)
+		let timeStr = timeHrStr + ':' + timeMins + ':00-07:00'
+		let nextTimeStr = ''
+		if (timeStr[3] === '0') {
+			nextTimeStr += '-' + timeStr[0] + timeStr[1] + timeStr[2] + '3' + timeStr[4] + ':00-07:00'
+		} else {
+			nextTimeStr += '-' + String(parseInt(timeStr[0] + timeStr[1]) + 1) + timeStr[2] + '0' + timeStr[4] + ':00-07:00'
+		}
+		let month = e.target.parentNode.getAttribute('data-month')
+		month = parseInt(month)
+		if (month < 10) {
+			month = '0' + String(month)
+		} else {
+			month = String(month)
+		}
+
+		let year = startDayData.year
+		const getScheduleStartStr = `${year}-${month}-${dateStr}T${timeStr}`
+		const getScheduleEndStr = `${year}-${month}-${dateStr}T${nextTimeStr}`
+		}
+		// getScheduleData()
 	}, [startDayData])
 
 	useEffect(() => {
 		fixDatesAndSetDayNames()
+		newMonth.current = false
 	}, [weekDatesRange])
 
 	useEffect(() => {
