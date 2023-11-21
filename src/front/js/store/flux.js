@@ -19,7 +19,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 				"month": 1,
 				"year": 2023
 			},
-			activeScheduleTab: "nav-timeslots"
+			activeScheduleTab: "nav-timeslots",
+			typeOfSchedule: 'dog-walking'
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
@@ -73,6 +74,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			changeActiveScheduleTab: (payload) => {
 					setStore({activeScheduleTab: payload})
+			},
+			setTypeOfSchedule: (payload) => {
+				setStore({typeOfSchedule: payload})
 			}
 		}
 	};

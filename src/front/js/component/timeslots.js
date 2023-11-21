@@ -146,38 +146,60 @@ export const Timeslots = () => {
 
 	useEffect(() => {
 		setWeekDatesRange([...Array(7).keys()].map(i => i + parseInt(startDayData.date)))
-		const getScheduleData = () => {
-		const time = "9:00:00-17:00"
-		const dateStr = e.target.parentNode.getAttribute('data-date')
-		let timeHr = time[1] === ':' ? parseInt(time[0]) : parseInt(time[0] + time[1])
-		const timeMins = time[1] === ':' ? time[2] + time[3] : time[3] + time[4]
-		timeHr = timeHr < 5 ? timeHr + 12 : timeHr
-		const timeHrStr = timeHr < 10 ? '0' + String(timeHr) : String(timeHr)
-		let timeStr = timeHrStr + ':' + timeMins + ':00-07:00'
-		let nextTimeStr = ''
-		if (timeStr[3] === '0') {
-			nextTimeStr += '-' + timeStr[0] + timeStr[1] + timeStr[2] + '3' + timeStr[4] + ':00-07:00'
-		} else {
-			nextTimeStr += '-' + String(parseInt(timeStr[0] + timeStr[1]) + 1) + timeStr[2] + '0' + timeStr[4] + ':00-07:00'
-		}
-		let month = e.target.parentNode.getAttribute('data-month')
-		month = parseInt(month)
-		if (month < 10) {
-			month = '0' + String(month)
-		} else {
-			month = String(month)
-		}
-
-		let year = startDayData.year
-		const getScheduleStartStr = `${year}-${month}-${dateStr}T${timeStr}`
-		const getScheduleEndStr = `${year}-${month}-${dateStr}T${nextTimeStr}`
-		}
-		// getScheduleData()
 	}, [startDayData])
 
 	useEffect(() => {
 		fixDatesAndSetDayNames()
 		newMonth.current = false
+		const getScheduleData = async () => {
+			const formatAPIReqStr = (time, date, month, year) => {
+				const dateStr = date
+				let timeHr = time[1] === ':' ? parseInt(time[0]) : parseInt(time[0] + time[1])
+				const timeMins = time[1] === ':' ? time[2] + time[3] : time[3] + time[4]
+				timeHr = timeHr < 5 ? timeHr + 12 : timeHr
+				const timeHrStr = timeHr < 10 ? '0' + String(timeHr) : String(timeHr)
+				let timeStr = timeHrStr + ':' + timeMins + ':00-07:00'
+				let nextTimeStr = ''
+				if (timeStr[3] === '0') {
+					nextTimeStr += '-' + timeStr[0] + timeStr[1] + timeStr[2] + '3' + timeStr[4] + ':00-07:00'
+				} else {
+					nextTimeStr += '-' + String(parseInt(timeStr[0] + timeStr[1]) + 1) + timeStr[2] + '0' + timeStr[4] + ':00-07:00'
+				}
+				month = parseInt(month)
+				if (month < 10) {
+					month = '0' + String(month)
+				} else {
+					month = String(month)
+				}
+				return `${year}-${month}-${dateStr}T${timeStr}`
+			}
+			let nextDate = String(parseInt(startDayData.date) + 6)
+			let nextMonth = startDayData.month
+			let nextYear = startDayData.year
+			if (parseInt(nextDate) > numDaysOfMonth[parseInt(nextMonth)]) {
+				nextDate = String(parseInt(nextDate) - numDaysOfMonth[parseInt(nextMonth)])
+				nextMonth = String(parseInt(nextMonth) + 1)
+				if (parseInt(nextMonth) > 11) {
+					nextYear = String(parseInt(nextYear) + 1)
+					nextMonth = '0'
+				}
+			}
+			const schedStartReq = formatAPIReqStr("09:00:00-07:00", startDayData.date, String(parseInt(startDayData.month) + 1), startDayData.year)
+			const schedEndReq = formatAPIReqStr("17:00:00-07:00", nextDate, String(parseInt(nextMonth) + 1), nextYear)
+			const currEvents = await fetch(process.env.BACKEND_URL + `/schedule/get-${store.typeOfSchedule}`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: {
+					"minTime": schedStartReq,
+					"maxTime": schedEndReq,
+					"userToken": store.userToken
+				}
+			}
+			)
+		}
+		getScheduleData()
 	}, [weekDatesRange])
 
 	useEffect(() => {

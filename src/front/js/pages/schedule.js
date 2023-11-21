@@ -1,15 +1,40 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 import { Context } from "../store/appContext";
 import { Calendar } from '../component/calendar.js'
 import { Timeslots } from '../component/timeslots.js'
+import { Lost } from '../component/lost.js'
 
 import '../../styles/schedule.css'
 
 export const Schedule = () => {
     const { store, actions } = useContext(Context);
-
+    let { typeOfSchedule } = useParams()
+    actions.setTypeOfSchedule(typeOfSchedule)
+    let typeOfScheduleStr = ''
+    if (typeOfSchedule === 'dog-walk' || typeOfSchedule === 'meeting' || typeOfSchedule === 'pet-check-in' || typeOfSchedule === 'pet-sitting') {
+        let nextUpper = false
+        for (let i in typeOfSchedule) {
+            if (i == 0) {
+                typeOfScheduleStr = typeOfScheduleStr + typeOfSchedule[i].toUpperCase()
+            }
+            else if (typeOfSchedule[i] === '-') {
+                typeOfScheduleStr = typeOfScheduleStr + ' '
+                nextUpper = true
+            }
+            else if (nextUpper === true) {
+                typeOfScheduleStr = typeOfScheduleStr + typeOfSchedule[i].toUpperCase()
+                nextUpper = false
+            } else {
+                typeOfScheduleStr = typeOfScheduleStr + typeOfSchedule[i]
+            }
+        }
+    } else {
+        return (
+            <Lost />
+        )
+    }
     return (
         <div className="container-fluid gx-0">
             <div className="row flex-nowrap schedule-row gx-0">
@@ -48,7 +73,7 @@ export const Schedule = () => {
                 <div className="col">
                     <div className="row d-flex">
                         <div className="col-6 mx-auto text-center">
-                            <h1>Schedule a Dog Walk</h1>
+                            <h1>{`Schedule a ${typeOfScheduleStr}`}</h1>
                         </div>
                     </div>
                     <div className="tab-content" id="nav-tabContent">
