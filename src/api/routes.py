@@ -9,7 +9,7 @@ import ssl
 import smtplib
 import logging
 import random
-
+import os
 
 app = Flask(__name__)
 
@@ -27,16 +27,10 @@ def protected():
 
 
 
-from flask import Flask, request, jsonify, Blueprint
-from flask_sqlalchemy import SQLAlchemy
-from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
-from werkzeug.security import generate_password_hash, check_password_hash
-from api.models import db, User, Pet
-from api.utils import APIException
-import os
 
-# Create the Blueprint
-api = Blueprint('api', __name__)
+
+
+
 
 @api.route('/signup', methods=['POST'])
 def signup():
@@ -56,7 +50,8 @@ def signup():
 
     email = body['email']
     password = body['password']
-    # name = body['name']
+    first_name = body['first_name']
+    last_name = body['last_name']
     # phone_number = body['phone_number']
     # address = body['address']
     
@@ -72,6 +67,8 @@ def signup():
 
     hashed_password = generate_password_hash(password)
     new_user = User(
+        first_name =first_name,
+        last_name =last_name,
         email=email,
         password=hashed_password,
         # name=name,
@@ -220,7 +217,9 @@ def update_password():
     if user and check_password_hash(user.password, old_password):
         user.password = generate_password_hash(new_password)
         return jsonify("Password updated successfully")
+    
 
+ 
 if __name__ == "__main__":
     api.run()
     

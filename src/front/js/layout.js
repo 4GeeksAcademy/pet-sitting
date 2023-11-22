@@ -12,7 +12,6 @@ import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
 import { ForgottenPassword } from "./pages/forgottenPassword";
 import { SignupUser } from "./pages/SignupUser";
-import {Profile} from "./pages/Profile.js";
 import {AboutMe} from "./pages/AboutMe";
 //create your first component
 const Layout = () => {
@@ -31,7 +30,7 @@ const Layout = () => {
                         <Route element={<Home />} path="/" />
                         <Route element={<AboutMe />} path="/aboutMe" />
                         <Route element={<Demo />} path="/demo" />
-                        <Route element={<Profile />} path="/profile" />
+                        
                         <Route element={<SignupUser />} path="/signupUser" />
                         <Route element={<Single />} path="/single/:theid" />
                         <Route element={<ForgottenPassword />} path="/forgotten-password" />

@@ -41,11 +41,28 @@ export const SignupUser = () => {
   };
  
   return (
-    <div className="urlBackgroundSignup">
+    <div className=" signupPage urlBackgroundSignup">
       <div className="signupPage">
         <h2>Sign Up</h2>
         <div className="signupBox">
-        
+        <label htmlFor="email">First name</label>
+          <input
+            type="first_name"
+            id="first_name"
+            name="first_name"
+            value={formData.first_name}
+            onChange={handleChange}
+            required
+          />
+           <label htmlFor="last_name">last name</label>
+          <input
+            type="last_name"
+            id="last_name"
+            name="last_name"
+            value={formData.last_name}
+            onChange={handleChange}
+            required
+          />
           <label htmlFor="email">Email</label>
           <input
             type="email"
