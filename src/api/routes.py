@@ -1,6 +1,3 @@
-"""
-This module takes care of starting the API Server, Loading the DB and Adding the endpoints
-"""
 import datetime
 import os.path
 
@@ -37,8 +34,9 @@ def handle_hello():
 #@jwt_required()
 def handle_get_dog_walk_sched():
     req = request.get_json()
-    minTime = req.minTime
-    maxTime = req.maxTime
+    print(req)
+    minTime = req['minTime']
+    maxTime = req['maxTime']
     try: 
         SCOPES = ['https://www.googleapis.com/auth/calendar']
         SERVICE_ACCOUNT_FILE = 'credentials.json'
