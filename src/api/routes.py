@@ -45,6 +45,8 @@ def handle_get_dog_walk_sched():
 
         creds = service_account.Credentials.from_service_account_file(
         SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+        calendar_id = "f73ae5b685428f5ee9f2e95b1b39fe17de1f5851e48ab7ddd2dd0ad3765c0f5d@group.calendar.google.com"
+
         service = build("calendar", "v3", credentials=creds)
         events_result = (
                 service.events()
@@ -79,6 +81,8 @@ def handle_meeting_sched():
 
         creds = service_account.Credentials.from_service_account_file(
         SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+        calendar_id = "f73ae5b685428f5ee9f2e95b1b39fe17de1f5851e48ab7ddd2dd0ad3765c0f5d@group.calendar.google.com"
+
         service = build("calendar", "v3", credentials=creds)
         events_result = (
                 service.events()
@@ -109,6 +113,8 @@ def handle_get_pet_check_in_sched():
 
         creds = service_account.Credentials.from_service_account_file(
         SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+        calendar_id = "f73ae5b685428f5ee9f2e95b1b39fe17de1f5851e48ab7ddd2dd0ad3765c0f5d@group.calendar.google.com"
+
         service = build("calendar", "v3", credentials=creds)
         events_result = (
                 service.events()
@@ -129,7 +135,7 @@ def handle_get_pet_check_in_sched():
 
 @api.route('/get-pet-sitting', methods=['POST'])
 #@jwt_required()
-def handle_get_dog_walk_sched():
+def handle_get_pet_sitting_sched():
     req = request.get_json()
     minTime = req.minTime
     maxTime = req.maxTime
@@ -140,6 +146,8 @@ def handle_get_dog_walk_sched():
         creds = service_account.Credentials.from_service_account_file(
         SERVICE_ACCOUNT_FILE, scopes=SCOPES)
         service = build("calendar", "v3", credentials=creds)
+        calendar_id = "564074f66734a91ee109c5d45a58ad814986316b76f2059642ac08bb37b7acb5@group.calendar.google.com"
+        
         events_result = (
                 service.events()
                 .list(
