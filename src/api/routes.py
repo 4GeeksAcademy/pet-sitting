@@ -1,11 +1,9 @@
-"""
-This module takes care of starting the API Server, Loading the DB and Adding the endpoints
-"""
 from flask import Flask, request, jsonify, Blueprint
+from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash, check_password_hash
-from api.models import db, User
+from api.models import db, User, Pet
 from api.utils import APIException
 
 import datetime
@@ -28,16 +26,6 @@ def protected():
         return jsonify(message=f'Hello, {current_user}!')
     except Exception as e:
         return jsonify(message="Missing Authorization Header or Invalid Token"), 401
-
-
-
-from flask import Flask, request, jsonify, Blueprint
-from flask_sqlalchemy import SQLAlchemy
-from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
-from werkzeug.security import generate_password_hash, check_password_hash
-from api.models import db, User, Pet
-from api.utils import APIException
-import os
 
 # Create the Blueprint
 
@@ -141,6 +129,8 @@ def handle_get_dog_walk_sched():
     print(req)
     minTime = req['minTime']
     maxTime = req['maxTime']
+    print(minTime)
+    print(maxTime)
     try: 
         SCOPES = ['https://www.googleapis.com/auth/calendar']
         SERVICE_ACCOUNT_FILE = 'credentials.json'
@@ -166,10 +156,6 @@ def handle_get_dog_walk_sched():
         return jsonify({'events': events, 'status': 'ok'}), 200
     except:
         return jsonify({'msg': 'Could not access the calendar'}), 404
-        
-
-    
-    
 
 @api.route('/get-meeting', methods=['POST'])
 #@jwt_required()

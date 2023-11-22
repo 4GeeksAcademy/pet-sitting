@@ -151,15 +151,6 @@ export const Timeslots = () => {
 
 	useEffect(() => {
 		setStartDayData(store.timeSlotsStartingDay)
-	}, [store.timeSlotsStartingDay])
-
-	useEffect(() => {
-		setWeekDatesRange([...Array(7).keys()].map(i => i + parseInt(startDayData.date)))
-	}, [startDayData])
-
-	useEffect(() => {
-		fixDatesAndSetDayNames()
-		newMonth.current = false
 		const getScheduleData = async () => {
 			const formatAPIReqStr = (time, date, month, year) => {
 				const dateStr = date
@@ -196,29 +187,49 @@ export const Timeslots = () => {
 			const schedStartReq = formatAPIReqStr("09:00:00-07:00", startDayData.date, String(parseInt(startDayData.month) + 1), startDayData.year)
 			const schedEndReq = formatAPIReqStr("17:00:00-07:00", nextDate, String(parseInt(nextMonth) + 1), nextYear)
 			try {
-				const currEvents = await fetch(process.env.BACKEND_URL + `/schedule/get-${store.typeOfSchedule}`, {
+				console.log({
+					"minTime": schedStartReq,
+					"maxTime": schedEndReq,
+				})
+				const response = await fetch(process.env.BACKEND_URL + `api/get-${store.typeOfSchedule}`, {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",
 					},
 					body: {
 						"minTime": schedStartReq,
-						"maxTime": schedEndReq,
-						"userToken": store.userToken
+						"maxTime": schedEndReq
 					}
 				}
 				)
+				console.log(response)
+				return await response.json()
 			} catch (error) {
 				console.log("An error occurred.", error)
-				getScheduleData()
 			}
 		}
 		const asyncFunc = async () => {
-			const resp = await getScheduleData()
-			const events = resp.events
-			setEvents(events)
+			try {
+				const resp = await getScheduleData()
+				console.log(resp)
+				const events = resp.events
+				setEvents(events)
+			}
+			catch (error) {
+				console.log(error)
+			}
+
 		}
 		asyncFunc()
+	}, [store.timeSlotsStartingDay])
+
+	useEffect(() => {
+		setWeekDatesRange([...Array(7).keys()].map(i => i + parseInt(startDayData.date)))
+	}, [startDayData])
+
+	useEffect(() => {
+		fixDatesAndSetDayNames()
+		newMonth.current = false
 	}, [weekDatesRange])
 
 	useEffect(() => {
