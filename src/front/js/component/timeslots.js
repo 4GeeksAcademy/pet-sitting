@@ -20,6 +20,7 @@ export const Timeslots = () => {
 	const [newScheduleStartStr, setNewScheduleStartStr] = useState('')
 	const [newScheduleEndStr, setNewScheduleEndStr] = useState('')
 	const [render, reRender] = useState(true)
+	const [events, setEvents] = useState([])
 	const namesOfDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 	const lastDate = useRef('1')
 	const newMonth = useRef(false)
@@ -75,7 +76,7 @@ export const Timeslots = () => {
 			month = String(month)
 		}
 
-		let year = startDayData.year
+		let year = e.target.getAttribute('data-year')
 		const scheduleStartStr = `${year}-${month}-${dateStr}T${timeStr}`
 		const scheduleEndStr = `${year}-${month}-${dateStr}T${nextTimeStr}`
 		console.log(scheduleStartStr)
@@ -112,7 +113,6 @@ export const Timeslots = () => {
 			}
 			const fullDateStr = `${monthStr}/${date}/${yearStr}`
 			const weekDayName = namesOfCurrentDaysOfWeek[ind]
-
 			return (
 				<div className="timeslots-day mt-3 bg-light-2 align-center p-2 d-block">
 					<div className="timeslots-day-date text-center">
@@ -124,8 +124,17 @@ export const Timeslots = () => {
 					<div className="timeslots">
 						{
 							timeslotLabels.map((time) => {
+								events.map((event) => {
+									const dateTimeStart = event.start.dateTime
+									const startYear = dateTimeStart.substring(0, 5)
+									const startMonth = dateTimeStart.substring(6, 8)
+									const startDate = dateTimeStart.substring(9, 11)
+									const startTime = dateTimeStart.substring(12, 17)
+									console.log(startTime)
+									console.log(time)
+								})
 								return (
-									<div className={`timeslot text-center`} data-date={newDate} data-month={monthStr} data-bs-toggle="modal" data-bs-target="#myModal" onClick={(e) => handleTimeslotClick(e)}>
+									<div className={`timeslot text-center`} data-year={yearStr} data-date={newDate} data-month={monthStr} data-bs-toggle="modal" data-bs-target="#myModal" onClick={(e) => handleTimeslotClick(e)}>
 										{time}
 									</div>
 								)
@@ -186,20 +195,30 @@ export const Timeslots = () => {
 			}
 			const schedStartReq = formatAPIReqStr("09:00:00-07:00", startDayData.date, String(parseInt(startDayData.month) + 1), startDayData.year)
 			const schedEndReq = formatAPIReqStr("17:00:00-07:00", nextDate, String(parseInt(nextMonth) + 1), nextYear)
-			const currEvents = await fetch(process.env.BACKEND_URL + `/schedule/get-${store.typeOfSchedule}`, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: {
-					"minTime": schedStartReq,
-					"maxTime": schedEndReq,
-					"userToken": store.userToken
+			try {
+				const currEvents = await fetch(process.env.BACKEND_URL + `/schedule/get-${store.typeOfSchedule}`, {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: {
+						"minTime": schedStartReq,
+						"maxTime": schedEndReq,
+						"userToken": store.userToken
+					}
 				}
+				)
+			} catch (error) {
+				console.log("An error occurred.", error)
+				getScheduleData()
 			}
-			)
 		}
-		getScheduleData()
+		const asyncFunc = async () => {
+			const resp = await getScheduleData()
+			const events = resp.events
+			setEvents(events)
+		}
+		asyncFunc()
 	}, [weekDatesRange])
 
 	useEffect(() => {
