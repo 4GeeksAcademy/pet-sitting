@@ -235,13 +235,15 @@ export const Timeslots = () => {
 			}
 		}
 		const asyncFunc = async () => {
-			try {
-				const resp = await getScheduleData()
-				const events = resp.events
-				setExistingEvents(events)
-			}
-			catch (error) {
-				console.log(error)
+			if (store.timeSlotsStartingDay.date !== null && store.timeSlotsStartingDay.month !== null && store.timeSlotsStartingDay.year !== null) {
+				try {
+					const resp = await getScheduleData()
+					const events = resp.events
+					setExistingEvents(events)
+				}
+				catch (error) {
+					console.log(error)
+				}
 			}
 
 		}
