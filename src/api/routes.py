@@ -151,7 +151,7 @@ def handle_get_dog_walk_sched():
                 .execute()
             )
         events = events_result.get("items", [])
-        events = [{'start': event['start'],'end': event['end'],'summary': event['summary'] 'owned': True if user_email in event['summary'] else False} for event in events]
+        events = [{'start': event['start'], 'end': event['end'], 'summary': event['summary'], 'owned': True if user_email in event['summary'] else False} for event in events]
         return jsonify({'events': events, 'status': 'ok'}), 200
     except:
         return jsonify({'msg': 'Could not access the calendar'}), 404
