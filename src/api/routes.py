@@ -125,7 +125,6 @@ if __name__ == "__main__":
 #@jwt_required()
 def handle_get_dog_walk_sched():
     req = request.get_json()
-    print(req)
     minTime = req['minTime']
     maxTime = req['maxTime']
     try: 
@@ -150,6 +149,7 @@ def handle_get_dog_walk_sched():
                 .execute()
             )
         events = events_result.get("items", [])
+        events = [{'start': event['start'],'end': event['end'],'summary': event['summary']} for event in events]
         return jsonify({'events': events, 'status': 'ok'}), 200
     except:
         return jsonify({'msg': 'Could not access the calendar'}), 404
