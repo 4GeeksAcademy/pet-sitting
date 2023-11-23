@@ -13,7 +13,7 @@ body {
     display: grid;
     margin-top: 7%;
     margin-left: 23%;
-    box-shadow: #a8a296  5px 5px 5px
+    box-shadow: #bdb5a9  5px 5px 5px 3px
 }
 
 @media (max-width: 479px) {

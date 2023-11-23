@@ -43,7 +43,7 @@ export const Schedule = () => {
         <div className="container-fluid gx-0">
             <div className="row flex-nowrap schedule-row gx-0">
                 <div className="col-1 px-0 bg-light-2 d-none d-md-flex">
-                    <div className="d-flex flex-column align-items-sm-center pt-2 text-light min-vh-100">
+                    <div className="d-flex flex-column align-items-sm-center pt-2 text-light h-100">
                         <a href="/" className="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none px-3">
                             <span className="fs-5 d-none d-sm-inline">Home</span>
                         </a>
@@ -57,12 +57,12 @@ export const Schedule = () => {
                         </div>
                     </div>
                 </div>
-                <div className="col-2 d-md-none">
+                <div className="col-2 rounded d-md-none">
                     <nav className="navbar bg-light-2 d-md-none">
                         <button className="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggleContent" aria-controls="navbarToggleContent" aria-expanded="false" aria-label="Toggle navigation">
                             <i class="fa-solid fa-bars"></i>
                         </button>
-                        <div className="collapse" id="navbarToggleContent">
+                        <div className="collapse w-100" id="navbarToggleContent">
                             <div className="bg-light">
                                 <button className={`nav-link bg-light-2 ${store.activeScheduleTab === 'nav-timeslots' ? 'active' : ''}`} id="nav-timeslots-tab" type="button" role="tab" aria-controls="nav-timeslots" aria-selected="true" onClick={() => actions.changeActiveScheduleTab('nav-timeslots')}>
                                     <i className="fa-solid fa-table-cells"></i>

@@ -14,7 +14,7 @@
 
 @media (max-width: 479px) {
     .nav-link {
-        width: 54px;
+        width: 58px;
     }
 
     .schedule-row {
@@ -55,4 +55,20 @@
 .booked:hover {
     background-color: #efd9b2 !important;
     cursor: auto;
+}
+
+.col {
+    height: fit-content !important;
+}   
+
+.container-fluid {
+    height: fit-content !important;
+}
+
+.col-1 {
+    height: fit-content !important;
+}
+
+.col-2 {
+    height: fit-content !important;
 }
