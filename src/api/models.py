@@ -18,7 +18,6 @@ class User(db.Model):
     last_name = db.Column(db.String(80), unique=False, nullable=False)
     address = db.Column(db.String(80), unique=False, nullable=False)
     phone_number = db.Column(db.Integer, unique=False, nullable=False)
-    recovery_code = db.Column(db.Integer, unique=False, nullable=True)
     pets = db.relationship('Pet', backref='user')
     last_services_used = db.relationship('Last_Service_Used', backref='user')
 

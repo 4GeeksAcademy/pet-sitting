@@ -7,6 +7,7 @@ import { Home } from "./pages/home";
 import { Demo } from "./pages/demo";
 import { Single } from "./pages/single";
 import { Schedule } from './pages/schedule.js'
+import { Insurance } from "./pages/insurance";
 import injectContext from "./store/appContext";
 
 import { Navbar } from "./component/navbar";
@@ -32,6 +33,7 @@ const Layout = () => {
                         <Route element={<Schedule />} path="/schedule/:typeOfSchedule" />
                         <Route element={<SignupUser />} path="/signupUser" />
                         <Route element={<Single />} path="/single/:theid" />
+                        <Route element={<Insurance/>} path="/insurance" />
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
                     <Footer />
