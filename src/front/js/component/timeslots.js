@@ -20,6 +20,7 @@ export const Timeslots = () => {
 	const newMonth = useRef(false)
 	const booked = useRef(false)
 	const owned = useRef(false)
+	const recentlyFetched = useRef(false)
 	const navigate = useNavigate()
 
 	const isLeapYear = (year) => {
@@ -229,14 +230,19 @@ export const Timeslots = () => {
 			}
 		}
 		const asyncFunc = async () => {
-			try {
-				const resp = await getScheduleData()
-				const events = resp.events
-				setExistingEvents(events)
-			}
-			catch (error) {
-				console.log(error)
-			}
+			if (recentlyFetched.current === false)
+				try {
+					recentlyFetched.current = true
+					const resp = await getScheduleData()
+					const events = resp.events
+					setExistingEvents(events)
+				}
+				catch (error) {
+					console.log(error)
+				}
+			setTimeout(() => {
+				recentlyFetched.current = false
+			}, 1000)
 		}
 		asyncFunc()
 	}, [store.timeSlotsStartingDay])
