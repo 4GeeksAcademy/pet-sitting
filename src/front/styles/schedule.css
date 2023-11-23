@@ -46,3 +46,13 @@
     color: black;
     border: 1px solid black;
 }
+
+.booked {
+    opacity: 0.5;
+    background-color: #efd9b2 !important
+}
+
+.booked:hover {
+    background-color: #efd9b2 !important;
+    cursor: auto;
+}

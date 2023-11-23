@@ -129,8 +129,6 @@ def handle_get_dog_walk_sched():
     print(req)
     minTime = req['minTime']
     maxTime = req['maxTime']
-    print(minTime)
-    print(maxTime)
     try: 
         SCOPES = ['https://www.googleapis.com/auth/calendar']
         SERVICE_ACCOUNT_FILE = 'credentials.json'

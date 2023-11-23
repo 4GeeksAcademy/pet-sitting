@@ -20,10 +20,11 @@ export const Timeslots = () => {
 	const [newScheduleStartStr, setNewScheduleStartStr] = useState('')
 	const [newScheduleEndStr, setNewScheduleEndStr] = useState('')
 	const [render, reRender] = useState(true)
-	const [events, setEvents] = useState([])
+	const [existingEvents, setExistingEvents] = useState([])
 	const namesOfDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 	const lastDate = useRef('1')
 	const newMonth = useRef(false)
+	const booked = useRef(false)
 
 	const isLeapYear = (year) => {
 		return (year % 4 === 0 && year % 100 !== 0 && year % 400 !== 0) || (year % 100 === 0 && year % 400 === 0)
@@ -58,9 +59,9 @@ export const Timeslots = () => {
 		const time = e.target.getAttribute('data-time')
 		const dateStr = e.target.parentNode.getAttribute('data-date')
 		let timeHr = time[1] === ':' ? parseInt(time[0]) : parseInt(time[0] + time[1])
-		const timeMins = time[1] === ':' ? time[2] + time[3] : time[3] + time[4]
 		timeHr = timeHr < 5 ? timeHr + 12 : timeHr
 		const timeHrStr = timeHr < 10 ? '0' + String(timeHr) : String(timeHr)
+		const timeMins = time[1] === ':' ? time[2] + time[3] : time[3] + time[4]
 		let timeStr = timeHrStr + ':' + timeMins + ':00-07:00'
 		let nextTimeStr = ''
 		if (timeStr[3] === '0') {
@@ -76,11 +77,9 @@ export const Timeslots = () => {
 			month = String(month)
 		}
 
-		let year = e.target.getAttribute('data-year')
+		let year = String(parseInt(e.target.parentNode.getAttribute('data-year')) + 2000)
 		const scheduleStartStr = `${year}-${month}-${dateStr}T${timeStr}`
 		const scheduleEndStr = `${year}-${month}-${dateStr}T${nextTimeStr}`
-		console.log(scheduleStartStr)
-		console.log(scheduleEndStr)
 		setNewScheduleStartStr(scheduleStartStr)
 		setNewScheduleEndStr(scheduleEndStr)
 		return null
@@ -123,21 +122,37 @@ export const Timeslots = () => {
 					</div>
 					<div className="timeslots">
 						{
-							timeslotLabels.map((time) => {
-								events.map((event) => {
+							timeslotLabels.map((timeLabel) => {
+								booked.current = false
+								existingEvents.map((event) => {
+									console.log(event)
 									const dateTimeStart = event.start.dateTime
-									const startYear = dateTimeStart.substring(0, 5)
-									const startMonth = dateTimeStart.substring(6, 8)
-									const startDate = dateTimeStart.substring(9, 11)
-									const startTime = dateTimeStart.substring(12, 17)
-									console.log(startTime)
-									console.log(time)
+									const startYear = dateTimeStart.substring(0, 4)
+									const startMonth = dateTimeStart.substring(5, 7)
+									const startDate = dateTimeStart.substring(8, 10)
+									let startTime = dateTimeStart.substring(11, 16)
+									if (parseInt(startTime[0] + startTime[1]) > 12) {
+										const pmHr = String(parseInt(startTime[0] + startTime[1]) - 12)
+										startTime = startTime.slice(2)
+										startTime = pmHr + startTime
+									}
+									if ((startTime == timeLabel.props['data-time']) && (startDate == date) && (startMonth == monthStr) && (startYear == String(parseInt(yearStr) + 2000))) {
+										booked.current = true
+									}
 								})
-								return (
-									<div className={`timeslot text-center`} data-year={yearStr} data-date={newDate} data-month={monthStr} data-bs-toggle="modal" data-bs-target="#myModal" onClick={(e) => handleTimeslotClick(e)}>
-										{time}
-									</div>
-								)
+								if (booked.current === false) {
+									return (
+										<div className={`timeslot text-center`} data-year={yearStr} data-date={newDate} data-month={monthStr} data-bs-toggle="modal" data-bs-target="#myModal" onClick={(e) => handleTimeslotClick(e)}>
+											{timeLabel}
+										</div>
+									)
+								} else {
+									return (
+										<div className={`timeslot text-center booked`} data-year={yearStr} data-date={newDate} data-month={monthStr}>
+											{timeLabel}
+										</div>
+									)
+								}
 							})
 						}
 					</div>
@@ -151,6 +166,10 @@ export const Timeslots = () => {
 
 	useEffect(() => {
 		setStartDayData(store.timeSlotsStartingDay)
+	}, [store.timeSlotsStartingDay])
+
+	useEffect(() => {
+		setWeekDatesRange([...Array(7).keys()].map(i => i + parseInt(startDayData.date)))
 		const getScheduleData = async () => {
 			const formatAPIReqStr = (time, date, month, year) => {
 				const dateStr = date
@@ -187,22 +206,17 @@ export const Timeslots = () => {
 			const schedStartReq = formatAPIReqStr("09:00:00-07:00", startDayData.date, String(parseInt(startDayData.month) + 1), startDayData.year)
 			const schedEndReq = formatAPIReqStr("17:00:00-07:00", nextDate, String(parseInt(nextMonth) + 1), nextYear)
 			try {
-				console.log({
-					"minTime": schedStartReq,
-					"maxTime": schedEndReq,
-				})
 				const response = await fetch(process.env.BACKEND_URL + `api/get-${store.typeOfSchedule}`, {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",
 					},
-					body: {
+					body: JSON.stringify({
 						"minTime": schedStartReq,
 						"maxTime": schedEndReq
-					}
+					})
 				}
 				)
-				console.log(response)
 				return await response.json()
 			} catch (error) {
 				console.log("An error occurred.", error)
@@ -211,9 +225,8 @@ export const Timeslots = () => {
 		const asyncFunc = async () => {
 			try {
 				const resp = await getScheduleData()
-				console.log(resp)
 				const events = resp.events
-				setEvents(events)
+				setExistingEvents(events)
 			}
 			catch (error) {
 				console.log(error)
@@ -221,10 +234,6 @@ export const Timeslots = () => {
 
 		}
 		asyncFunc()
-	}, [store.timeSlotsStartingDay])
-
-	useEffect(() => {
-		setWeekDatesRange([...Array(7).keys()].map(i => i + parseInt(startDayData.date)))
 	}, [startDayData])
 
 	useEffect(() => {
@@ -233,8 +242,9 @@ export const Timeslots = () => {
 	}, [weekDatesRange])
 
 	useEffect(() => {
-		setWeekDayDivs(createWeekDayDivs())
-	}, [namesOfCurrentDaysOfWeek])
+		if (existingEvents !== undefined)
+			setWeekDayDivs(createWeekDayDivs())
+	}, [namesOfCurrentDaysOfWeek, existingEvents])
 
 	useEffect(() => {
 		createTimeslotsLabels()
@@ -250,22 +260,12 @@ export const Timeslots = () => {
 				time -= 12
 			}
 			if (time % 1 !== 0) {
-				if (time < 10 && time >= 5) {
-					const timeStr = '0' + String(time - 0.5) + ':30'
-					timesArr.push(timeStr)
-				} else {
-					const timeStr = String(time - 0.5) + ':30'
-					timesArr.push(timeStr)
-				}
+				const timeStr = String(time - 0.5) + ':30'
+				timesArr.push(timeStr)
 
 			} else {
-				if (time < 10 && time > 5) {
-					const timeStr = '0' + String(time) + ':00'
-					timesArr.push(timeStr)
-				} else {
-					const timeStr = String(time) + ':00'
-					timesArr.push(timeStr)
-				}
+				const timeStr = String(time) + ':00'
+				timesArr.push(timeStr)
 			}
 
 		}
