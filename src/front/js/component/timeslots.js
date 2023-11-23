@@ -77,11 +77,8 @@ export const Timeslots = () => {
 		let year = String(parseInt(e.target.parentNode.getAttribute('data-year')) + 2000)
 		const scheduleStartStr = `${year}-${month}-${dateStr}T${timeStr}`
 		const scheduleEndStr = `${year}-${month}-${dateStr}T${nextTimeStr}`
-		console.log(scheduleStartStr)
-		console.log(scheduleEndStr)
 		setNewScheduleStartStr(scheduleStartStr)
 		setNewScheduleEndStr(scheduleEndStr)
-		return null
 	}
 
 	const createWeekDayDivs = () => {
@@ -113,7 +110,7 @@ export const Timeslots = () => {
 			const fullDateStr = `${monthStr}/${date}/${yearStr}`
 			const weekDayName = namesOfCurrentDaysOfWeek[ind]
 			return (
-				<div className="timeslots-day mt-3 bg-light-2 align-center p-2 d-block">
+				<div className={`timeslots-day bg-light-2 align-center p-2 d-block ${ind === 0 ? 'rounded-start' : ind === 6 ? 'rounded-end' : ''}`}>
 					<div className="timeslots-day-date text-center">
 						{fullDateStr}
 					</div>
@@ -172,6 +169,42 @@ export const Timeslots = () => {
 		newMonth.current = false
 		return divs
 	}
+
+	const createTimeslotsLabels = () => {
+
+		const timesArr = []
+		for (let i = 0; i < 16; i++) {
+			let time = 9
+			time += 0.5 * i
+			if (time >= 13) {
+				time -= 12
+			}
+			if (time % 1 !== 0) {
+				const timeStr = String(time - 0.5) + ':30'
+				timesArr.push(timeStr)
+
+			} else {
+				const timeStr = String(time) + ':00'
+				timesArr.push(timeStr)
+			}
+
+		}
+
+		const timeslotLabelsArr = timesArr.map((time) => {
+			return (
+				<div className="timeslot-label p-1" data-time={time}>
+					{time}
+				</div>
+			)
+
+		})
+
+		setTimeslotLabels(timeslotLabelsArr)
+	}
+
+	useEffect(() => {
+		createTimeslotsLabels()
+	}, [])
 
 	useEffect(() => {
 		setWeekDatesRange([...Array(7).keys()].map(i => i + parseInt(store.timeSlotsStartingDay.date)))
@@ -248,48 +281,12 @@ export const Timeslots = () => {
 	}, [store.timeSlotsStartingDay])
 
 	useEffect(() => {
-		if (existingEvents !== undefined)
+		if (JSON.stringify(existingEvents) !== '[]')
 			setWeekDayDivs(createWeekDayDivs())
 	}, [namesOfCurrentDaysOfWeek, existingEvents])
 
-	useEffect(() => {
-		createTimeslotsLabels()
-	}, [])
-
-	const createTimeslotsLabels = () => {
-
-		const timesArr = []
-		for (let i = 0; i < 16; i++) {
-			let time = 9
-			time += 0.5 * i
-			if (time >= 13) {
-				time -= 12
-			}
-			if (time % 1 !== 0) {
-				const timeStr = String(time - 0.5) + ':30'
-				timesArr.push(timeStr)
-
-			} else {
-				const timeStr = String(time) + ':00'
-				timesArr.push(timeStr)
-			}
-
-		}
-
-		const timeslotLabelsArr = timesArr.map((time) => {
-			return (
-				<div className="timeslot-label p-1" data-time={time}>
-					{time}
-				</div>
-			)
-
-		})
-
-		setTimeslotLabels(timeslotLabelsArr)
-	}
-
 	return (
-		<div className="container-fluid d-flex">
+		<div className="container-fluid d-flex p-0">
 			{weekDayDivs}
 			<div class="modal fade" id="scheduleNew" tabindex="-1" aria-labelledby="scheduleNewModal" aria-hidden="true">
 				<div class="modal-dialog">
