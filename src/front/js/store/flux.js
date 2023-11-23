@@ -15,9 +15,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			],
 			timeSlotsStartingDay: {
-				"date": 1,
-				"month": 1,
-				"year": 2023
+				"date": (new Date).getDate(),
+				"month": (new Date).getMonth(),
+				"year": (new Date).getFullYear()
 			},
 			activeScheduleTab: "nav-timeslots",
 			typeOfSchedule: 'dog-walk'

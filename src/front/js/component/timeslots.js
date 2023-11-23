@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { Context } from "../store/appContext";
 
@@ -8,24 +8,19 @@ import '../../styles/timeslots.css'
 export const Timeslots = () => {
 	const { store, actions } = useContext(Context);
 
-	const [startDayData, setStartDayData] = useState({
-		"date": null,
-		"month": null,
-		"year": null
-	})
 	const [namesOfCurrentDaysOfWeek, setNamesOfCurrentDaysOfWeek] = useState([])
 	const [weekDatesRange, setWeekDatesRange] = useState([])
 	const [weekDayDivs, setWeekDayDivs] = useState('')
 	const [timeslotLabels, setTimeslotLabels] = useState('')
 	const [newScheduleStartStr, setNewScheduleStartStr] = useState('')
 	const [newScheduleEndStr, setNewScheduleEndStr] = useState('')
-	const [render, reRender] = useState(true)
 	const [existingEvents, setExistingEvents] = useState([])
 	const namesOfDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 	const lastDate = useRef('1')
 	const newMonth = useRef(false)
 	const booked = useRef(false)
 	const owned = useRef(false)
+	const navigate = useNavigate()
 
 	const isLeapYear = (year) => {
 		return (year % 4 === 0 && year % 100 !== 0 && year % 400 !== 0) || (year % 100 === 0 && year % 400 === 0)
@@ -34,25 +29,25 @@ export const Timeslots = () => {
 	const getFebDays = (year) => {
 		return isLeapYear(year) ? 29 : 28
 	}
-	const numDaysOfMonth = [31, getFebDays(startDayData.year), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+	const numDaysOfMonth = [31, getFebDays(store.timeSlotsStartingDay.year), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
-	const fixDatesAndSetDayNames = () => {
+	const fixDatesAndSetDayNames = (weekDates) => {
 
 		const daysOfWeek = []
 
-		weekDatesRange.map((date, ind) => {
-			if (date > numDaysOfMonth[startDayData.month]) {
-				setWeekDatesRange([...weekDatesRange.slice(0, ind), date - numDaysOfMonth[startDayData.month], ...weekDatesRange.slice(ind + 1, weekDatesRange.length)])
-				const dayInd = new Date(startDayData.year, startDayData.month + 1, date).getDay()
+		weekDates.map((date, ind) => {
+			if (date > numDaysOfMonth[store.timeSlotsStartingDay.month]) {
+				weekDates = [...weekDates.slice(0, ind), date - numDaysOfMonth[store.timeSlotsStartingDay.month], ...weekDates.slice(ind + 1, weekDates.length)]
+				const dayInd = new Date(store.timeSlotsStartingDay.year, store.timeSlotsStartingDay.month + 1, date).getDay()
 				const dayOfWeek = namesOfDays[dayInd]
 				daysOfWeek.push(dayOfWeek)
 			} else {
-				const dayInd = new Date(startDayData.year, startDayData.month, date).getDay()
+				const dayInd = new Date(store.timeSlotsStartingDay.year, store.timeSlotsStartingDay.month, date).getDay()
 				const dayOfWeek = namesOfDays[dayInd]
 				daysOfWeek.push(dayOfWeek)
 			}
 		})
-
+		setWeekDatesRange(weekDates)
 		setNamesOfCurrentDaysOfWeek(daysOfWeek)
 	}
 
@@ -89,20 +84,21 @@ export const Timeslots = () => {
 	}
 
 	const createWeekDayDivs = () => {
+		newMonth.current = false
 		const divs = weekDatesRange.map((date, ind) => {
 			let newDate = date
-			let monthStr = String(parseInt(startDayData.month) + 1)
-			let yearStr = String(parseInt(startDayData.year - 2000))
+			let monthStr = String(parseInt(store.timeSlotsStartingDay.month) + 1)
+			let yearStr = String(parseInt(store.timeSlotsStartingDay.year - 2000))
 			if (newMonth.current === true) {
 				monthStr = String(parseInt(monthStr) + 1)
 				if (parseInt(monthStr) > 12) {
-					yearStr = String(parseInt(startDayData.year - 2000 + 1))
+					yearStr = String(parseInt(store.timeSlotsStartingDay.year - 2000 + 1))
 					monthStr = '1'
 				}
 			} else if (parseInt(newDate) < parseInt(lastDate.current)) {
 				monthStr = String(parseInt(monthStr) + 1)
 				if (parseInt(monthStr) > 12) {
-					yearStr = String(parseInt(startDayData.year - 2000 + 1))
+					yearStr = String(parseInt(store.timeSlotsStartingDay.year - 2000 + 1))
 					monthStr = '1'
 				}
 				newMonth.current = true
@@ -177,11 +173,8 @@ export const Timeslots = () => {
 	}
 
 	useEffect(() => {
-		setStartDayData(store.timeSlotsStartingDay)
-	}, [store.timeSlotsStartingDay])
-
-	useEffect(() => {
-		setWeekDatesRange([...Array(7).keys()].map(i => i + parseInt(startDayData.date)))
+		setWeekDatesRange([...Array(7).keys()].map(i => i + parseInt(store.timeSlotsStartingDay.date)))
+		fixDatesAndSetDayNames([...Array(7).keys()].map(i => i + parseInt(store.timeSlotsStartingDay.date)))
 		const getScheduleData = async () => {
 			const formatAPIReqStr = (time, date, month, year) => {
 				const dateStr = date
@@ -204,9 +197,9 @@ export const Timeslots = () => {
 				}
 				return `${year}-${month}-${dateStr}T${timeStr}`
 			}
-			let nextDate = String(parseInt(startDayData.date) + 6)
-			let nextMonth = startDayData.month
-			let nextYear = startDayData.year
+			let nextDate = String(parseInt(store.timeSlotsStartingDay.date) + 6)
+			let nextMonth = store.timeSlotsStartingDay.month
+			let nextYear = store.timeSlotsStartingDay.year
 			if (parseInt(nextDate) > numDaysOfMonth[parseInt(nextMonth)]) {
 				nextDate = String(parseInt(nextDate) - numDaysOfMonth[parseInt(nextMonth)])
 				nextMonth = String(parseInt(nextMonth) + 1)
@@ -215,7 +208,7 @@ export const Timeslots = () => {
 					nextMonth = '0'
 				}
 			}
-			const schedStartReq = formatAPIReqStr("09:00:00-07:00", startDayData.date, String(parseInt(startDayData.month) + 1), startDayData.year)
+			const schedStartReq = formatAPIReqStr("09:00:00-07:00", store.timeSlotsStartingDay.date, String(parseInt(store.timeSlotsStartingDay.month) + 1), store.timeSlotsStartingDay.year)
 			const schedEndReq = formatAPIReqStr("17:00:00-07:00", nextDate, String(parseInt(nextMonth) + 1), nextYear)
 			try {
 				const response = await fetch(process.env.BACKEND_URL + `api/get-${store.typeOfSchedule}`, {
@@ -232,28 +225,21 @@ export const Timeslots = () => {
 				return await response.json()
 			} catch (error) {
 				console.log("An error occurred.", error)
+				navigate('/services')
 			}
 		}
 		const asyncFunc = async () => {
-			if (store.timeSlotsStartingDay.date !== null && store.timeSlotsStartingDay.month !== null && store.timeSlotsStartingDay.year !== null) {
-				try {
-					const resp = await getScheduleData()
-					const events = resp.events
-					setExistingEvents(events)
-				}
-				catch (error) {
-					console.log(error)
-				}
+			try {
+				const resp = await getScheduleData()
+				const events = resp.events
+				setExistingEvents(events)
 			}
-
+			catch (error) {
+				console.log(error)
+			}
 		}
 		asyncFunc()
-	}, [startDayData])
-
-	useEffect(() => {
-		fixDatesAndSetDayNames()
-		newMonth.current = false
-	}, [weekDatesRange])
+	}, [store.timeSlotsStartingDay])
 
 	useEffect(() => {
 		if (existingEvents !== undefined)
@@ -299,7 +285,7 @@ export const Timeslots = () => {
 	return (
 		<div className="container-fluid d-flex">
 			{weekDayDivs}
-			<div class="modal fade" id="scheduleNew" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal fade" id="scheduleNew" tabindex="-1" aria-labelledby="scheduleNewModal" aria-hidden="true">
 				<div class="modal-dialog">
 					<div class="modal-content">
 						<div class="modal-header">
@@ -317,7 +303,7 @@ export const Timeslots = () => {
 					</div>
 				</div>
 			</div>
-			<div class="modal fade" id="cancelSchedule" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal fade" id="cancelSchedule" tabindex="-1" aria-labelledby="cancelScheduleModal" aria-hidden="true">
 				<div class="modal-dialog">
 					<div class="modal-content">
 						<div class="modal-header">

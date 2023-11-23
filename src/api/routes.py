@@ -128,6 +128,7 @@ def handle_get_dog_walk_sched():
     # user_email = get_jwt_identity()
     user_email = 'johndurtka@gmail.com'
     req = request.get_json()
+    print(req)
     minTime = req['minTime']
     maxTime = req['maxTime']
     try: 

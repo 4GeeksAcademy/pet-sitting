@@ -32,11 +32,6 @@ const injectContext = PassedComponent => {
 			const currYear = newDate.getFullYear()
 			const currMonth = newDate.getMonth()
 			const curr_Date = newDate.getDate()
-			state.actions.setTimeslotsStartingDay({
-				"date": curr_Date,
-				"month": currMonth,
-				"year": currYear
-			})
 			state.actions.getMessage(); // <---- calling this function from the flux.js actions
 		}, []);
 
