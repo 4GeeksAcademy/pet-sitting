@@ -25,6 +25,7 @@ export const Timeslots = () => {
 	const lastDate = useRef('1')
 	const newMonth = useRef(false)
 	const booked = useRef(false)
+	const owned = useRef(false)
 
 	const isLeapYear = (year) => {
 		return (year % 4 === 0 && year % 100 !== 0 && year % 400 !== 0) || (year % 100 === 0 && year % 400 === 0)
@@ -65,9 +66,9 @@ export const Timeslots = () => {
 		let timeStr = timeHrStr + ':' + timeMins + ':00-07:00'
 		let nextTimeStr = ''
 		if (timeStr[3] === '0') {
-			nextTimeStr += '-' + timeStr[0] + timeStr[1] + timeStr[2] + '3' + timeStr[4] + ':00-07:00'
+			nextTimeStr += timeStr[0] + timeStr[1] + timeStr[2] + '3' + timeStr[4] + ':00-07:00'
 		} else {
-			nextTimeStr += '-' + String(parseInt(timeStr[0] + timeStr[1]) + 1) + timeStr[2] + '0' + timeStr[4] + ':00-07:00'
+			nextTimeStr += String(parseInt(timeStr[0] + timeStr[1]) + 1) + timeStr[2] + '0' + timeStr[4] + ':00-07:00'
 		}
 		let month = e.target.parentNode.getAttribute('data-month')
 		month = parseInt(month)
@@ -80,6 +81,8 @@ export const Timeslots = () => {
 		let year = String(parseInt(e.target.parentNode.getAttribute('data-year')) + 2000)
 		const scheduleStartStr = `${year}-${month}-${dateStr}T${timeStr}`
 		const scheduleEndStr = `${year}-${month}-${dateStr}T${nextTimeStr}`
+		console.log(scheduleStartStr)
+		console.log(scheduleEndStr)
 		setNewScheduleStartStr(scheduleStartStr)
 		setNewScheduleEndStr(scheduleEndStr)
 		return null
@@ -125,7 +128,7 @@ export const Timeslots = () => {
 							timeslotLabels.map((timeLabel) => {
 								booked.current = false
 								existingEvents.map((event) => {
-									console.log(event)
+									owned.current = false
 									const dateTimeStart = event.start.dateTime
 									const startYear = dateTimeStart.substring(0, 4)
 									const startMonth = dateTimeStart.substring(5, 7)
@@ -138,11 +141,20 @@ export const Timeslots = () => {
 									}
 									if ((startTime == timeLabel.props['data-time']) && (startDate == date) && (startMonth == monthStr) && (startYear == String(parseInt(yearStr) + 2000))) {
 										booked.current = true
+										if (event.owned === true) {
+											owned.current = true
+										}
 									}
 								})
 								if (booked.current === false) {
 									return (
-										<div className={`timeslot text-center`} data-year={yearStr} data-date={newDate} data-month={monthStr} data-bs-toggle="modal" data-bs-target="#myModal" onClick={(e) => handleTimeslotClick(e)}>
+										<div className={`timeslot text-center`} data-year={yearStr} data-date={newDate} data-month={monthStr} data-bs-toggle="modal" data-bs-target="#scheduleNew" onClick={(e) => handleTimeslotClick(e)}>
+											{timeLabel}
+										</div>
+									)
+								} else if (booked.current === true && owned.current === true) {
+									return (
+										<div className={`timeslot text-center booked-by-user`} data-year={yearStr} data-date={newDate} data-month={monthStr} data-bs-toggle="modal" data-bs-target="#cancelSchedule" onClick={(e) => handleTimeslotClick(e)}>
 											{timeLabel}
 										</div>
 									)
@@ -285,11 +297,11 @@ export const Timeslots = () => {
 	return (
 		<div className="container-fluid d-flex">
 			{weekDayDivs}
-			<div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal fade" id="scheduleNew" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 				<div class="modal-dialog">
 					<div class="modal-content">
 						<div class="modal-header">
-							<h5 class="modal-title" id="exampleModalLabel">Schedule a dog walk</h5>
+							<h5 class="modal-title" id="modalLabel1">Schedule a dog walk</h5>
 							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 						</div>
 						<div class="modal-body">
@@ -300,7 +312,25 @@ export const Timeslots = () => {
 								</div>
 							</form>
 						</div>
-
+					</div>
+				</div>
+			</div>
+			<div class="modal fade" id="cancelSchedule" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="modalLabel2">Schedule a dog walk</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body">
+							<form onSubmit={(e) => { handleModalCancel(e) }}>
+								<text>{`Cancel booking on ${newScheduleStartStr.substring(0, 10)} from ${parseInt(newScheduleStartStr.substring(11, 13)) < 12 ? newScheduleStartStr.substring(11, 16) : String(parseInt(newScheduleStartStr.substring(11, 13) - 12) + newScheduleStartStr.substring(13, 16))}-${parseInt(newScheduleEndStr.substring(11, 13)) < 12 ? newScheduleEndStr.substring(11, 16) : String(parseInt(newScheduleEndStr.substring(11, 13) - 12) + newScheduleEndStr.substring(13, 16))}?`}</text>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Wait, go back!</button>
+									<button type="submit" class="btn btn-danger">Cancel Booking</button>
+								</div>
+							</form>
+						</div>
 					</div>
 				</div>
 			</div>

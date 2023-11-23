@@ -123,9 +123,10 @@ if __name__ == "__main__":
     api.run()
 
 @api.route('/get-dog-walk', methods=['POST'])
-@jwt_required()
+# @jwt_required()
 def handle_get_dog_walk_sched():
-    user_email = get_jwt_identity()
+    # user_email = get_jwt_identity()
+    user_email = 'johndurtka@gmail.com'
     req = request.get_json()
     minTime = req['minTime']
     maxTime = req['maxTime']

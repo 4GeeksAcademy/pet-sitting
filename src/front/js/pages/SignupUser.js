@@ -32,7 +32,7 @@ export const SignupUser = () => {
 
 
     if (result) {
-      navigate("/login");
+      navigate("/");
       setFormData({
         email: "",
         password: "",

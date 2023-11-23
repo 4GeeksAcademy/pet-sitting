@@ -30,3 +30,7 @@
     background-color:#f2e9d8;
     cursor: pointer;
 }
+
+.booked-by-user {
+    background-color: white;
+}
