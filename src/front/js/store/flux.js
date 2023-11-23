@@ -1,41 +1,36 @@
-
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
-			backendURL: process.env.BACKEND_URL,
-			token: null
+			message: null,
+			demo: [
+				{
+					title: "FIRST",
+					background: "white",
+					initial: "white"
+				},
+				{
+					title: "SECOND",
+					background: "white",
+					initial: "white"
+				}
+			]
 		},
 		actions: {
-			login: async (email, password) => {
-				const store = getStore();
+			// Use getActions to call a function within a fuction
+			exampleFunction: () => {
+				getActions().changeColor(0, "green");
+			},
 
-				try {
-					let options = {
-						method: "POST",
-						headers: {
-							'Content-Type': 'application/json',
-						},
-						body: JSON.stringify({ email, password }),
-					};
-
-					const response = await fetch(store.backendURL + "/api/login", options);
-
-					if (response.status === 200) {
-						const data = await response.json();
-						console.log("access token", data.access_token);
-						sessionStorage.setItem("token", data.access_token);
-						setStore({
-							token: data.access_token,
-						});
-						return true;
-					} else {
-						alert("Login failed. Please check your credentials.");
-						return false;
-					}
-				} catch (error) {
-					console.error("Login error:", error);
-					alert("An error occurred during login.");
-					return false;
+			getMessage: async () => {
+				try{
+					// fetching data from the backend
+					const resp = await fetch(process.env.BACKEND_URL + "/api/hello")
+					const data = await resp.json()
+					setStore({ message: data.message })
+					// don't forget to return something, that is how the async resolves
+					return data;
+				}catch(error){
+					console.log("Error loading message from backend", error)
 				}
 			},
 			signup: async (formData)=>{
@@ -63,15 +58,17 @@ const getState = ({ getStore, getActions, setStore }) => {
 						body: JSON.stringify({"name":formData.name,"bread":formData.bread,"age":formData.age,"description":formData.description,"detailed_care_info":formData.detailed_care_info})
 					})
 
-					let data = await response.json()
+				//we have to loop the entire demo array to look for the respective index
+				//and change its color
+				const demo = store.demo.map((elm, i) => {
+					if (i === index) elm.background = color;
+					return elm;
+				});
 
-					if (data){
-						console.log(data.message)
-						return true
-					}
-				}catch(error){console.log(error)}
+				//reset the global store
+				setStore({ demo: demo });
 			}
-		},
+		}
 	};
 };
 
