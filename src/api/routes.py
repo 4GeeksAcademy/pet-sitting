@@ -123,10 +123,10 @@ if __name__ == "__main__":
     api.run()
 
 @api.route('/get-dog-walk', methods=['POST'])
-#@jwt_required()
+@jwt_required()
 def handle_get_dog_walk_sched():
+    user_email = get_jwt_identity()
     req = request.get_json()
-    print(req)
     minTime = req['minTime']
     maxTime = req['maxTime']
     try: 
@@ -151,6 +151,7 @@ def handle_get_dog_walk_sched():
                 .execute()
             )
         events = events_result.get("items", [])
+        events = [{'start': event['start'],'end': event['end'],'summary': event['summary'] 'owned': if user_email in event['summary']: True else: false} for event in events]
         return jsonify({'events': events, 'status': 'ok'}), 200
     except:
         return jsonify({'msg': 'Could not access the calendar'}), 404
