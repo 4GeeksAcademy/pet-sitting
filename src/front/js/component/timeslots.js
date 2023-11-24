@@ -8,10 +8,7 @@ import '../../styles/timeslots.css'
 export const Timeslots = () => {
 	const { store, actions } = useContext(Context);
 
-	const [namesOfCurrentDaysOfWeek, setNamesOfCurrentDaysOfWeek] = useState([])
-	const [weekDatesRange, setWeekDatesRange] = useState([])
 	const [weekDayDivs, setWeekDayDivs] = useState('')
-	const [timeslotLabels, setTimeslotLabels] = useState('')
 	const [newScheduleStartStr, setNewScheduleStartStr] = useState('')
 	const [newScheduleEndStr, setNewScheduleEndStr] = useState('')
 	const [existingEvents, setExistingEvents] = useState([])
@@ -33,7 +30,7 @@ export const Timeslots = () => {
 	const numDaysOfMonth = [31, getFebDays(store.timeSlotsStartingDay.year), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
 	const fixDatesAndSetDayNames = (weekDates) => {
-
+		console.log(weekDates)
 		const daysOfWeek = []
 
 		weekDates.map((date, ind) => {
@@ -48,8 +45,8 @@ export const Timeslots = () => {
 				daysOfWeek.push(dayOfWeek)
 			}
 		})
-		setWeekDatesRange(weekDates)
-		setNamesOfCurrentDaysOfWeek(daysOfWeek)
+		console.log(weekDates)
+		return [weekDates, daysOfWeek]
 	}
 
 	const handleTimeslotClick = (e) => {
@@ -81,9 +78,13 @@ export const Timeslots = () => {
 		setNewScheduleEndStr(scheduleEndStr)
 	}
 
-	const createWeekDayDivs = () => {
+	const createWeekDayDivs = (weekDatesAndDaysOfWeek, timeSlotLabels) => {
+		console.log(weekDatesAndDaysOfWeek)
+		console.log(timeSlotLabels)
+		const weekDates = weekDatesAndDaysOfWeek[0]
+		const daysOfWeek = weekDatesAndDaysOfWeek[1]
 		newMonth.current = false
-		const divs = weekDatesRange.map((date, ind) => {
+		const divs = weekDates.map((date, ind) => {
 			let newDate = date
 			let monthStr = String(parseInt(store.timeSlotsStartingDay.month) + 1)
 			let yearStr = String(parseInt(store.timeSlotsStartingDay.year - 2000))
@@ -108,9 +109,9 @@ export const Timeslots = () => {
 				newDate = String(date)
 			}
 			const fullDateStr = `${monthStr}/${date}/${yearStr}`
-			const weekDayName = namesOfCurrentDaysOfWeek[ind]
+			const weekDayName = daysOfWeek[ind]
 			return (
-				<div className={`timeslots-day bg-light-2 align-center p-2 d-block ${ind === 0 ? 'rounded-start' : ind === 6 ? 'rounded-end' : ''}`}>
+				<div className={`timeslots-day bg-light-2 align-center p-2 d-block ${ind === 0 ? 'rounded-start' : ind === 6 ? 'rounded-end' : ''}`} key={ind}>
 					<div className="timeslots-day-date text-center">
 						{fullDateStr}
 					</div>
@@ -119,7 +120,7 @@ export const Timeslots = () => {
 					</div>
 					<div className="timeslots">
 						{
-							timeslotLabels.map((timeLabel) => {
+							timeSlotLabels.map((timeLabel, ind) => {
 								booked.current = false
 								existingEvents.map((event) => {
 									owned.current = false
@@ -142,19 +143,19 @@ export const Timeslots = () => {
 								})
 								if (booked.current === false) {
 									return (
-										<div className={`timeslot text-center`} data-year={yearStr} data-date={newDate} data-month={monthStr} data-bs-toggle="modal" data-bs-target="#scheduleNew" onClick={(e) => handleTimeslotClick(e)}>
+										<div className={`timeslot text-center`} data-year={yearStr} data-date={newDate} data-month={monthStr} data-bs-toggle="modal" data-bs-target="#scheduleNew" onClick={(e) => handleTimeslotClick(e)} key={ind}>
 											{timeLabel}
 										</div>
 									)
 								} else if (booked.current === true && owned.current === true) {
 									return (
-										<div className={`timeslot text-center booked-by-user`} data-year={yearStr} data-date={newDate} data-month={monthStr} data-bs-toggle="modal" data-bs-target="#cancelSchedule" onClick={(e) => handleTimeslotClick(e)}>
+										<div className={`timeslot text-center booked-by-user`} data-year={yearStr} data-date={newDate} data-month={monthStr} data-bs-toggle="modal" data-bs-target="#cancelSchedule" onClick={(e) => handleTimeslotClick(e)} key={ind}>
 											{timeLabel}
 										</div>
 									)
 								} else {
 									return (
-										<div className={`timeslot text-center booked`} data-year={yearStr} data-date={newDate} data-month={monthStr}>
+										<div className={`timeslot text-center booked`} data-year={yearStr} data-date={newDate} data-month={monthStr} key={ind}>
 											{timeLabel}
 										</div>
 									)
@@ -170,7 +171,7 @@ export const Timeslots = () => {
 		return divs
 	}
 
-	const createTimeslotsLabels = () => {
+	const createTimeSlotsLabels = () => {
 
 		const timesArr = []
 		for (let i = 0; i < 16; i++) {
@@ -190,25 +191,23 @@ export const Timeslots = () => {
 
 		}
 
-		const timeslotLabelsArr = timesArr.map((time) => {
+		const timeSlotLabelsArr = timesArr.map((time, ind) => {
 			return (
-				<div className="timeslot-label p-1" data-time={time}>
+				<div className="timeslot-label p-1" data-time={time} key={ind}>
 					{time}
 				</div>
 			)
 
 		})
 
-		setTimeslotLabels(timeslotLabelsArr)
+		return timeSlotLabelsArr
 	}
 
 	useEffect(() => {
-		createTimeslotsLabels()
+
 	}, [])
 
 	useEffect(() => {
-		setWeekDatesRange([...Array(7).keys()].map(i => i + parseInt(store.timeSlotsStartingDay.date)))
-		fixDatesAndSetDayNames([...Array(7).keys()].map(i => i + parseInt(store.timeSlotsStartingDay.date)))
 		const getScheduleData = async () => {
 			const formatAPIReqStr = (time, date, month, year) => {
 				const dateStr = date
@@ -275,50 +274,55 @@ export const Timeslots = () => {
 				}
 			setTimeout(() => {
 				recentlyFetched.current = false
-			}, 1000)
+			}, 2000)
 		}
 		asyncFunc()
+		const fixedDatesAndWeekdays = fixDatesAndSetDayNames([...Array(7).keys()].map(i => i + parseInt(store.timeSlotsStartingDay.date)))
+		const timeSlotLabels = createTimeSlotsLabels()
+		console.log(store.timeSlotsStartingDay.year)
+		setWeekDayDivs(createWeekDayDivs(fixedDatesAndWeekdays, timeSlotLabels))
 	}, [store.timeSlotsStartingDay])
 
 	useEffect(() => {
-		if (JSON.stringify(existingEvents) !== '[]')
-			setWeekDayDivs(createWeekDayDivs())
-	}, [namesOfCurrentDaysOfWeek, existingEvents])
+		const fixedDatesAndWeekdays = fixDatesAndSetDayNames([...Array(7).keys()].map(i => i + parseInt(store.timeSlotsStartingDay.date)))
+		const timeSlotLabels = createTimeSlotsLabels()
+		setWeekDayDivs(createWeekDayDivs(fixedDatesAndWeekdays, timeSlotLabels))
+	}, [existingEvents])
 
 	return (
-		<div className="container-fluid d-flex p-0">
+		<div className="container-fluid d-flex p-0 ms-md-5">
 			{weekDayDivs}
-			<div class="modal fade" id="scheduleNew" tabindex="-1" aria-labelledby="scheduleNewModal" aria-hidden="true">
-				<div class="modal-dialog">
-					<div class="modal-content">
-						<div class="modal-header">
-							<h5 class="modal-title" id="modalLabel1">Schedule a dog walk</h5>
-							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			<div className="modal fade" id="scheduleNew" tabIndex="-1" aria-labelledby="scheduleNewModal" aria-hidden="true">
+				<div className="modal-dialog">
+					<div className="modal-content">
+						<div className="modal-header">
+							<h5 className="modal-title" id="modalLabel1">Schedule a dog walk</h5>
+							<button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 						</div>
-						<div class="modal-body">
-							<form onSubmit={(e) => { handleModalSubmit(e) }}>
-								<div class="modal-footer">
-									<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-									<button type="submit" class="btn btn-primary">Submit</button>
+						<div className="modal-body">
+							<form className="form-group" onSubmit={(e) => { handleModalSubmit(e) }}>
+								<div className="modal-footer">
+									<button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+									<button type="submit" className="btn btn-primary">Submit</button>
 								</div>
 							</form>
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="modal fade" id="cancelSchedule" tabindex="-1" aria-labelledby="cancelScheduleModal" aria-hidden="true">
-				<div class="modal-dialog">
-					<div class="modal-content">
-						<div class="modal-header">
-							<h5 class="modal-title" id="modalLabel2">Schedule a dog walk</h5>
-							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			<div className="modal fade" id="cancelSchedule" tabIndex="-1" aria-labelledby="cancelScheduleModal" aria-hidden="true">
+				<div className="modal-dialog">
+					<div className="modal-content">
+						<div className="modal-header">
+							<h5 className="modal-title" id="modalLabel2">Schedule a dog walk</h5>
+							<button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 						</div>
-						<div class="modal-body">
+						<div className="modal-body">
 							<form onSubmit={(e) => { handleModalCancel(e) }}>
-								<text>{`Cancel booking on ${newScheduleStartStr.substring(0, 10)} from ${parseInt(newScheduleStartStr.substring(11, 13)) < 12 ? newScheduleStartStr.substring(11, 16) : String(parseInt(newScheduleStartStr.substring(11, 13) - 12) + newScheduleStartStr.substring(13, 16))}-${parseInt(newScheduleEndStr.substring(11, 13)) < 12 ? newScheduleEndStr.substring(11, 16) : String(parseInt(newScheduleEndStr.substring(11, 13) - 12) + newScheduleEndStr.substring(13, 16))}?`}</text>
-								<div class="modal-footer">
-									<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Wait, go back!</button>
-									<button type="submit" class="btn btn-danger">Cancel Booking</button>
+								<p>{`Cancel booking on ${newScheduleStartStr.substring(0, 10)} from ${parseInt(newScheduleStartStr.substring(11, 13)) < 12 ? newScheduleStartStr.substring(11, 16) : String(parseInt(newScheduleStartStr.substring(11, 13) - 12) + newScheduleStartStr.substring(13, 16))}-${parseInt(newScheduleEndStr.substring(11, 13)) < 12 ? newScheduleEndStr.substring(11, 16) : String(parseInt(newScheduleEndStr.substring(11, 13) - 12) + newScheduleEndStr.substring(13, 16))}?`}</p>
+								<div className="modal-footer">
+									<button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Wait, go back!</button>
+									<button type="submit" className="btn btn-danger">Cancel Booking</button>
 								</div>
 							</form>
 						</div>

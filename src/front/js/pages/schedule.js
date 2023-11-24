@@ -7,6 +7,7 @@ import { Timeslots } from '../component/timeslots.js'
 import { Lost } from '../component/lost.js'
 
 import '../../styles/schedule.css'
+import '../../styles/index.css'
 
 export const Schedule = () => {
     const { store, actions } = useContext(Context);
@@ -58,9 +59,9 @@ export const Schedule = () => {
                     </div>
                 </div>
                 <div className="col-2 rounded d-md-none">
-                    <nav className="navbar bg-light-2 d-md-none">
+                    <nav className="navbar bg-light-2 d-md-none py-0">
                         <button className="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggleContent" aria-controls="navbarToggleContent" aria-expanded="false" aria-label="Toggle navigation">
-                            <i class="fa-solid fa-bars"></i>
+                            <i className="fa-solid fa-bars"></i>
                         </button>
                         <div className="collapse w-100" id="navbarToggleContent">
                             <div className="bg-light">
@@ -74,8 +75,8 @@ export const Schedule = () => {
                         </div>
                     </nav>
                 </div>
-                <div className="col">
-                    <div className="row d-flex">
+                <div className="col px-0">
+                    <div className="row d-flex gx-0 mx-auto">
                         <div className="col-6 mx-auto text-center">
                             <h1>{`Schedule a ${typeOfScheduleStr}`}</h1>
                         </div>

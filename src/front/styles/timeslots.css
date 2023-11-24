@@ -1,14 +1,11 @@
 .timeslots-day {
-    width: 14.2857%;
+    width: 13%;
     border: 1px solid black;
 }
 
 @media (max-width: 479px) {
     body {
         font-size: 9px;
-    }
-    .timeslots-day {
-        width: 13%;
     }
 }
 

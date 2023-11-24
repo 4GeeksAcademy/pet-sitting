@@ -12,6 +12,10 @@
     padding: 10px;
 }
 
+.body {
+    overflow: hidden;
+}
+
 @media (max-width: 479px) {
     .nav-link {
         width: 58px;
