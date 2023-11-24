@@ -6,13 +6,13 @@ export const AboutMe = () => {
     return (
         <div className="container">
             <div className="row">
-                <div className="col-12 text-center">
+                <div className="col-12 text-center aboutMeText">
                     <h1 className="aboutMeTitle">Meet Your Pet Care Specialist</h1>
                 </div>
             </div>
 
             <div className="row">
-                <div className="col-md-6">
+                <div className=" col-md-6 aboutMeImage">
                     <img
                         src="https://cdn.pixabay.com/photo/2015/08/17/11/33/woman-892309_1280.jpg"
                         className="img-fluid rounded aboutMeImage"

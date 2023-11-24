@@ -5,28 +5,60 @@
     one more css for each page that will contain the selected used 
     on that page only (the ones not reused in other pages).
 */
-/* this is for the nav bar */
 
-.aboutMePic{
 
-position: relative;
-text-align: center;
 
+/* this is the Aboutme view */
+
+.aboutMeImage{
+
+  padding: 20px;
+}
+.aboutMeText{
+  padding: 50px;
 }
 
+.aboutMeText{
+  padding: 50px;
+}
+/* this is the homepage view */
+
 .homePageMiddleRow {
- 
+ padding: 10px;
   grid-row: 25rm;
 
 
 }
-.aboutMeButton {
+.StartNowText{
+  color: #54665a;
+  background-color: #f5f5dc;
+}
+.loginButton{
+  color:  #f5f5dc ;
+  background-color: #54665a;
+}
+/* .aboutMeButton {
 
-  position: absolute;
+  
   top:20%;
   left: 50%;
   transform: translate(-50%,-50%);
   background-color: #f2e9d8;
+} */
+.aboutMeButton {
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #f2e9d8;
+  padding: 10px 20px; 
+  border: none;
+  border-radius: 5px;
+  color:  #54665a;
+  font-size: 16px; 
+}
+.homePage{
+  padding: 10px;
 }
 .starNowPic{
 
@@ -89,12 +121,18 @@ body{
   box-shadow: inset 0px 0.8px 0px -0.25px rgba(255, 255, 255, 0.2), 0px 0.5px 1.5px rgba(54, 122, 246, 0.25), 0px 0px 0px 3.5px rgba(58, 108, 217, 0.5);
   outline: 0;
 }
+.carousel {
+  padding: 10px;
+  width: 800px;
+  height: 400px;
 
-  .carouselView{
+}
+
+  /* .carouselView{
     width: 1000px;
     height: 450px;
 
-  }
+  } */
   .reviewText{
     position: absolute;
     top:20%;
@@ -104,7 +142,73 @@ body{
     color: #313d49;
 
   }
-  .signupPage{}
+
+  /* this is the signupUser page */
+
+  /* Add this class to style the banner image */
+
+
+  .bannerImage {
+    width: 100%;
+    height: 650px; /* Adjust the height according to your design */
+    object-fit: cover;
+  }
+  
+  .signupPage {
+    position: relative;
+  }
+  
+  .signupBox {
+    border-radius: 10px;
+    position: relative;
+    z-index: 1;
+    background-color: #f2e9d8;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 400px; /* Adjust the width of the signup box as needed */
+    margin: 0 auto; /* Center the signup box horizontally */
+  }
+  
+  .beigeBox {
+    background-color: #54665a;
+    text-align: center;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 500px; /* Adjust the width of the signup box as needed */
+    margin: 20px auto; /* Add some margin for spacing */
+  }
+  
+  .signupBox label,
+  .signupBox input {
+    width: 100%; /* Make inputs take the full width of the container */
+    display: block;
+    margin-bottom: 10px; /* Add space between labels and inputs */
+  }
+  
+
+
+/*   
+  .signupPage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #54665a;
+  } */
+  
+  /* .beigeBox {
+    background-color: #f5f5dc;
+    padding: 200px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 600px; 
+    min-height: 300px;
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+  }
+   */
 
   
     

@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 import enum
 
+
 db = SQLAlchemy()
 
 class TypeOfServiceEnum(enum.Enum):
@@ -19,9 +20,7 @@ class User(db.Model):
     password = db.Column(db.String(500), unique=False, nullable=False)
     first_name = db.Column(db.String(500), unique=False, nullable=True)
     last_name = db.Column(db.String(80), unique=False, nullable=True)
-    # address = db.Column(db.String(80), unique=False, nullable=False)
-    # phone_number = db.Column(db.Integer, unique=False, nullable=False)
-    # recovery_code = db.Column(db.Integer, unique=False, nullable=True)
+  
     pets = db.relationship('Pet', backref='user')
     last_services_used = db.relationship('Last_Service_Used', backref='user')
 

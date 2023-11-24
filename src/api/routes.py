@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify, Blueprint
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
+from flask_cors import CORS  # Add this import
 from werkzeug.security import generate_password_hash, check_password_hash
 from api.models import db, User
 from api.utils import APIException
@@ -11,10 +12,9 @@ import logging
 import random
 import os
 
-app = Flask(__name__)
-
 # Create the Blueprint
 api = Blueprint('api', __name__)
+CORS(api)  
 
 @api.route('/protected', methods=['GET'])
 @jwt_required()
@@ -35,31 +35,24 @@ def protected():
 @api.route('/signup', methods=['POST'])
 def signup():
     body = request.get_json()
+    print(body)
     if (
-        "email" not in body
-        or "password" not in body
-        # or "name" not in body
-        # or "phone_number" not in body
-        # or "address" not in body
-        # or "comments" not in body
-        # or "pet_name" not in body
-        # or "pet_breed" not in body
-        # or "pet_age" not in body
+        "email" not in body.keys()
+        or "password" not in body.keys()
+        or "first_name" not in body.keys()
+        or "last_name" not in body.keys()
+     
     ):
         raise APIException("Please provide all required fields", status_code=400)
+  
 
     email = body['email']
     password = body['password']
     first_name = body['first_name']
     last_name = body['last_name']
-    # phone_number = body['phone_number']
-    # address = body['address']
+    
     
 
-    # pet_name = body['pet_name']
-    # pet_breed = body['pet_breed']
-    # pet_age = body['pet_age']
-    # comments = body['comments']
 
     existing_user = User.query.filter_by(email=email).first()
     if existing_user:
@@ -71,23 +64,17 @@ def signup():
         last_name =last_name,
         email=email,
         password=hashed_password,
-        # name=name,
-        # phone_number=phone_number,
-        # address=address,
-        # comments=comments,
+    
     )
     db.session.add(new_user)
 
-    # this will save the pet information
-    # new_pet = Pet(name=pet_name, breed=pet_breed, age=pet_age, user=new_user)
-    # db.session.add(new_pet)
 
     db.session.commit()
     return jsonify(message="Successfully created user and pet"), 200
 
-@api.route('/profile', methods=['GET'])
+@api.route('/accountPage', methods=['GET'])
 @jwt_required()
-def get_profile():
+def get_account():
     try:
         current_user_email = get_jwt_identity()
         user = User.query.filter_by(email=current_user_email).first()
@@ -95,29 +82,32 @@ def get_profile():
         if not user:
             raise APIException("User not found", status_code=404)
 
-        profile_data = {
+        account_data = {
             "email": user.email,
-            "firstName": user.first_name,
-            "lastName": user.last_name,
+            "first_Name": user.first_name,
+            "last_Name": user.last_name,
             "address": user.address,
-            "phoneNumber": user.phone_number,
+            "phone_Number": user.phone_number,
             "pets": [],  
         }
 
         if user.pets:
             for pet in user.pets:
-                profile_data["pets"].append({
-                    "petName": pet.name,
+                account_data["pets"].append({
+                    "pet_Name": pet.name,
                     "breed": pet.breed,
                     "age": pet.age,
                     "description": pet.description,
-                    "detailedCareInfo": pet.detailed_care_info,
+                    "detailed_Care_Info": pet.detailed_care_info,
                 })
 
-        return jsonify(profile_data), 200
+        return jsonify(account_data), 200
 
     except Exception as e:
         return jsonify(message=str(e)), 500
+
+
+
 
 
 @api.route('/login', methods=['POST'])
@@ -128,14 +118,16 @@ def login():
 
     email = body['email']
     password = body['password']
+    
 
     user = User.query.filter_by(email=email).first()
 
     if user and check_password_hash(user.password, password):
-        access_token = create_access_token(identity=email)
+        access_token = create_access_token(identity=user.email)
         return jsonify(access_token=access_token), 200
     else:
         return jsonify(message="Login failed. Please check your credentials."), 401
+
 
 @api.route('/user', methods=['GET'])
 @jwt_required()

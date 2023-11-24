@@ -5,53 +5,53 @@ import { Link } from "react-router-dom";
 import { AboutMe } from "./AboutMe";
 import { SignupUser } from "./SignupUser";
 
-
-
 export const Home = () => {
   const { store, actions } = useContext(Context);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-
-  const handleLogin = () => {
-    console.log("Login button clicked!");
+  const handleLogin = async () => {
+    try {
+    
+      if (!email || !password) {
+        console.error("Please enter both email and password.");
+        return;
+      }
+  
+    
+      const loginSuccess = await actions.login(email, password);
+  
+   
+      if (loginSuccess) {
+        console.log("Login successful");
+       
+      } else {
+        console.error("Login failed. Please check your credentials.");
+     
+      }
+    } catch (error) {
+      console.error("An error occurred during login:", error);
+     
+    }
   };
-
-  const handleSignUp = () => {
-    console.log("Sign Up button clicked!");
-  };
-
-  const handleForgotPassword = () => {
-
-    history.push("/forgot-password");
-  }
-
 
   return (
-
-
     <div className="container-fluid homePage">
-
       <div className="row homePageText">
-
-        <p> 
-Having someone who genuinely cares for your pet while you're away is an invaluable blessing.
- Beyond the peace of mind it provides, it ensures that your furry friend receives the attention, 
- love, and care they deserve. I am a  dedicated caregiver not only do i tend to their basic needs but I also 
- understand the emotional well-being of your pet. This connection is especially crucial when it
-  comes to daily walks. Taking your dog on a walk is not just a routine task; it's a commitment 
-  to their health and happiness. Dogs, being inherently social creatures, thrive on interaction
-   and exercise. A caring walker doesn't just cover physical ground; they explore the world with
-    your pet, enriching their senses and contributing to their overall well-being. 
-    The bond formed during these outings creates a positive impact on your dog's mental and 
-    physical health, ensuring they lead a happy and fulfilling life even when you can't be by their side.</p>
+        <p>
+          Having a dedicated pet caregiver provides priceless peace of mind,
+          ensuring your furry friend gets the attention and care they need. As a
+          committed caregiver, I address both basic needs and understand their
+          emotional well-being. Daily walks are a vital commitment to your dog's
+          health and happiness, fostering both interaction and exercise. This
+          bond positively impacts their mental and physical well-being, ensuring
+          a fulfilling life in your absence.
+        </p>
       </div>
-
 
       <div className="row homePageMiddleRow ">
         <div className="container d-flex">
-
-          <div className="aboutMePic">
+          <div className="aboutMePic" style={{ position: 'relative' }}>
             <img
               src="https://cdn.pixabay.com/photo/2015/03/14/05/37/beagle-672798_1280.jpg"
               className="img-fluid rounded"
@@ -61,48 +61,101 @@ Having someone who genuinely cares for your pet while you're away is an invaluab
           </div>
 
           <div className="center processBox">
-            <h1>Hi, already apart of the family?Welcome back!</h1>
+            <h1>Hi, already a part of the family? Welcome back!</h1>
 
-            <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            <button
+              type="button"
+              className="btn btn-secondary loginButton"
+              data-bs-toggle="modal"
+              data-bs-target="#exampleModal"
+            >
               Log in
             </button>
 
-
-            <div className="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div
+              className="modal fade"
+              id="exampleModal"
+              tabIndex="-1"
+              aria-labelledby="exampleModalLabel"
+              aria-hidden="true"
+            >
               <div className="modal-dialog">
                 <div className="modal-content">
                   <div className="modal-header">
-                    <h1 className="modal-title fs-5" id="exampleModalLabel">Log in</h1>
-                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h1 className="modal-title fs-5" id="exampleModalLabel">
+                      Log in
+                    </h1>
+                    <button
+                      type="button"
+                      className="btn-close"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                    ></button>
                   </div>
                   <div className="modal-body">
-                    <form>
+                    <div>
                       <div className="mb-3">
-                        <label for="exampleInputEmail1" className="form-label">Email address</label>
-                        <input type="email" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />
+                        <label
+                          htmlFor="exampleInputEmail1"
+                          className="form-label"
+                        >
+                          Email address
+                        </label>
+                        <input
+                          type="email"
+                          className="form-control"
+                          id="exampleInputEmail1"
+                          aria-describedby="emailHelp"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                        />
                         <div id="emailHelp" className="form-text"></div>
                       </div>
                       <div className="mb-3">
-                        <label for="exampleInputPassword1" className="form-label">Password</label>
-                        <input type="password" className="form-control" id="exampleInputPassword1" />
+                        <label
+                          htmlFor="exampleInputPassword1"
+                          className="form-label"
+                        >
+                          Password
+                        </label>
+                        <input
+                          type="password"
+                          className="form-control"
+                          id="exampleInputPassword1"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                        />
                       </div>
-
-                      <button type="submit" className="btn btn-primary">Submit</button>
+                      <div>
+                        <button
+                          type="button"
+                          onClick={() => handleLogin()}
+                          className="btn btn-primary signupButton"
+                        >
+                          Submit
+                        </button>
+                      </div>
                       <Link to="/forgot-password" className="forgotPasswordLink ms-2">
-
-                      </Link>
-                    </form>
+              Forgot Password?
+            </Link>
+                    </div>
                   </div>
-                  <div className="modal-footer">
-                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 
+
+                  <div className="modal-footer">
+                    <button
+                      type="button"
+                      className="btn btn-secondary"
+                      data-bs-dismiss="modal"
+                    >
+                      Close
+                    </button>
                   </div>
                 </div>
               </div>
             </div>
-
-
           </div>
+
 
           <div className="starNowPic">
             <img
@@ -111,33 +164,56 @@ Having someone who genuinely cares for your pet while you're away is an invaluab
               alt="Dog Pic"
             />
 
-            <Link to="/signupUser" className="StartNowText">click here to join the faimly</Link>
+            <Link to="/signupUser" className=" btn btn-secondary StartNowText">click here to join the faimly</Link>
 
           </div>
         </div>
       </div>
+      <br>
+      </br>
 
-      <div className="row">
-        <p className="servicesText">
-        Sign Up and Join the Family:
-Visit my  website and navigate to the "Sign Up" section. Provide your contact information and details about your pet or pets. 
-Tell me about their preferences, habits, and any special needs they may have. By joining the Hot Doggity family, you're taking
- the first step towards ensuring your pet receives the best care possible.
+      <div className="row servicesText">
 
-Meet and Greet:
-Once you've signed up, I'll reach out to you to schedule a convenient day for a meet-and-greet. During this session, I'll have the 
-opportunity to personally meet your pet and understand their unique personality. I believe in forming a strong bond with both pet and 
-owner, so we'll also discuss your specific requirements and expectations for the care of your furry friend. This initial meeting is crucial 
-for us to tailor our services to meet your pet's individual needs.
 
-Schedule Services:
-Following the meet-and-greet, you can easily schedule my services through our user-friendly online scheduling system. Choose the days and 
-times that best fit your pet's routine, and our professional dog walkers will be there to provide the care, attention, and exercise your pet 
-deserves. My online schedule allows for flexibility, making it convenient for you to plan our services around your busy lifestyle.
+        <ul>
 
-At Hot Doggity Dog Walkers, I am committed to creating a personalized and stress-free experience for both you and your pet. My goal is to
- ensure that your furry companion receives top-notch care, keeping them happy and healthy while you're away.        </p>
+          My steps to join the family:
+          <br>
+          </br>
+          <br>
+          </br>
+
+          <li>Visit our website and sign up for Hot Doggity dog walking services.</li>
+          <span></span>
+          <br>
+          </br>
+          <li>Share your contact information and details about your pet, including preferences, habits, and any special needs.</li>
+          <span></span>
+          <br>
+          </br>
+
+          <li>After signing up, we'll schedule a meet-and-greet to personally connect with your pet, understand their unique personality, and discuss your specific requirements.</li>
+          <span></span>
+          <br>
+          </br>
+
+          <li>Once the meet-and-greet is complete, easily schedule services through our user-friendly online system. </li>
+          <span></span>
+          <br>
+          </br>
+
+          <li>Choose days and times that suit your pet's routine, and our professional dog walkers will provide the care, attention, and exercise your pet deserves.</li>
+          <span></span>
+          <br>
+          </br>
+
+          At Hot Doggity Dog Walkers, we're dedicated to creating a personalized, stress-free experience for both you and your pet. Our goal is to ensure your furry companion stays happy and healthy while you're away.
+        </ul>
       </div>
+      <br>
+      </br>
+
+
       <div id="carouselExampleFade" className="carousel slide carousel-fade" >
         <div className=" carouselView carousel-inner">
           <div className="carousel-item active">
