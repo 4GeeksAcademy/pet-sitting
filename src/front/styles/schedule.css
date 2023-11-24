@@ -1,0 +1,78 @@
+.bg-light {
+    background-color: #f2e9d8 !important;
+}
+
+.bg-light-2 {
+    background-color: #efd9b2 !important
+}
+
+.nav-link {
+    color: #313d49 !important;
+    border-color: #313d49 !important;
+    padding: 10px;
+}
+
+.body {
+    overflow: hidden;
+}
+
+@media (max-width: 479px) {
+    .nav-link {
+        width: 58px;
+    }
+
+    .schedule-row {
+        --bs-gutter-x: 0.15rem !important;
+    }
+}
+
+.nav-link.active {
+    border-right: none;
+    border-radius: 0%;
+    border-right: none;
+    background-color: #f2e9d8 !important;
+}
+
+.collapse.show {
+    padding: 0px
+}
+
+.schedule-row {
+    --bs-gutter-x: 1.15rem;
+}
+
+.modal div {
+    background-color: #f2e9d8;
+}
+
+.modal-footer > .btn{
+    background-color: #efd9b2 !important;
+    color: black;
+    border: 1px solid black;
+}
+
+.booked {
+    opacity: 0.5;
+    background-color: #efd9b2 !important
+}
+
+.booked:hover {
+    background-color: #efd9b2 !important;
+    cursor: auto;
+}
+
+.col {
+    height: fit-content !important;
+}   
+
+.container-fluid {
+    height: fit-content !important;
+}
+
+.col-1 {
+    height: fit-content !important;
+}
+
+.col-2 {
+    height: fit-content !important;
+}

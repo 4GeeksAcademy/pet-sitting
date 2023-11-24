@@ -12,26 +12,26 @@ export const Home = () => {
 
   const handleLogin = async () => {
     try {
-    
+
       if (!email || !password) {
         console.error("Please enter both email and password.");
         return;
       }
-  
-    
+
+
       const loginSuccess = await actions.login(email, password);
-  
-   
+
+
       if (loginSuccess) {
         console.log("Login successful");
-       
+
       } else {
         console.error("Login failed. Please check your credentials.");
-     
+
       }
     } catch (error) {
       console.error("An error occurred during login:", error);
-     
+
     }
   };
 
@@ -131,13 +131,15 @@ export const Home = () => {
                           type="button"
                           onClick={() => handleLogin()}
                           className="btn btn-primary signupButton"
+                          data-bs-toggle="modal"
+                          data-bs-target="#exampleModal"
                         >
                           Submit
                         </button>
                       </div>
                       <Link to="/forgot-password" className="forgotPasswordLink ms-2">
-              Forgot Password?
-            </Link>
+                        Forgot Password?
+                      </Link>
                     </div>
                   </div>
 

@@ -20,6 +20,18 @@ module.exports = {
           use: ['babel-loader']
         },
         {
+          test: /\.(pdf)$/,
+          use: [
+            {
+              loader: 'file-loader',
+              options: {
+                name: '[name].[ext]',
+                outputPath: 'pdfs/', // Change this to match your desired output path
+              },
+            },
+          ],
+        },
+        {
           test: /\.(css|scss)$/, use: [{
               loader: "style-loader" // creates style nodes from JS strings
           }, {

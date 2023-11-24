@@ -1,0 +1,33 @@
+.timeslots-day {
+    width: 13%;
+    border: 1px solid black;
+}
+
+@media (max-width: 479px) {
+    body {
+        font-size: 9px;
+    }
+}
+
+.timeslots-day-date {
+    margin: 0 auto;
+}
+
+.timeslots-day-name {
+    margin: 0 auto;
+}
+
+.timeslot {
+    border: 1px solid black;
+    border-radius: 0.25rem;
+    margin-top: 0.25rem;
+}
+
+.timeslot:hover {
+    background-color:#f2e9d8;
+    cursor: pointer;
+}
+
+.booked-by-user {
+    background-color: white;
+}

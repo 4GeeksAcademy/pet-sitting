@@ -12,14 +12,12 @@ export const Navbar = () => {
   return (
     <>
       <div style={{ backgroundColor: 'black', color: 'white', padding: '10px', textAlign: 'center' }}>(123)456-7891</div>
-      <nav className="navbar navbar-light" style={{ backgroundColor: 'beige' }}>
+      <nav className="navbar navbar-light" style={{ backgroundColor: '#f2e9d8' }}>
         <div className="container">
           <Link to="/" className="navbar-brand">
             <img className="logoImg" src="https://t4.ftcdn.net/jpg/01/26/17/71/240_F_126177158_X32G1wOL21G4Cu2Yp8CQ2CrvWq9aEy0c.jpg" alt="Logo" height="30" />
           </Link>
-
           <h1 className="navbar-title">Hot Doggity Dog Walkers</h1>
-
           <div className="dropdown">
             <button
               className="btn btn-secondary dropdown-toggle"
@@ -38,7 +36,7 @@ export const Navbar = () => {
                 </a>
               </li>
               <li>
-                <a className="dropdown-item" href="#" onClick={handleLogout}>
+                <a className="dropdown-item" href="#">
                   Services
                 </a>
               </li>

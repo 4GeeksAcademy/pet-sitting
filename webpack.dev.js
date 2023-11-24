@@ -2,6 +2,7 @@ const webpack = require('webpack');
 const path = require('path');
 const { merge } = require('webpack-merge');
 const common = require('./webpack.common.js');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 // const ErrorOverlayPlugin = require('error-overlay-webpack-plugin');
 
 const port = 3000;
@@ -34,6 +35,7 @@ module.exports = merge(common, {
         },
     },
     plugins: [
+
         // new FriendlyErrorsWebpackPlugin(),
         // new ErrorOverlayPlugin(),
         // new PrettierPlugin({
