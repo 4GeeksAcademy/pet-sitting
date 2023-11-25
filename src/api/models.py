@@ -17,6 +17,7 @@ class User(db.Model):
 
 
 
+
     password = db.Column(db.String(500), unique=False, nullable=False)
     first_name = db.Column(db.String(500), unique=False, nullable=True)
     last_name = db.Column(db.String(80), unique=False, nullable=True)

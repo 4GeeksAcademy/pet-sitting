@@ -17,9 +17,7 @@ export const Navbar = () => {
           <Link to="/" className="navbar-brand">
             <img className="logoImg" src="https://t4.ftcdn.net/jpg/01/26/17/71/240_F_126177158_X32G1wOL21G4Cu2Yp8CQ2CrvWq9aEy0c.jpg" alt="Logo" height="30" />
           </Link>
-
           <h1 className="navbar-title">Hot Doggity Dog Walkers</h1>
-
           <div className="dropdown">
             <button
               className="btn btn-secondary dropdown-toggle"
@@ -38,11 +36,12 @@ export const Navbar = () => {
                 </a>
               </li>
               <li>
-                <a className="dropdown-item" href="#" onClick={handleLogout}>
+                <a className="dropdown-item" href="#">
                   Services
                 </a>
               </li>
               <li>
+
                 <a className="dropdown-item" href="#" onClick={handleLogout}>
                   Insurance
                 </a>
@@ -55,6 +54,8 @@ export const Navbar = () => {
               <li>
                 <a className="dropdown-item" href="#" onClick={handleLogout}>
                   Log out
+
+      
                 </a>
               </li>
             </ul>
