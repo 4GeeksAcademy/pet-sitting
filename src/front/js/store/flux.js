@@ -1,4 +1,3 @@
-
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
@@ -26,9 +25,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 			typeOfSchedule: 'dog-walk'
 		},
 		actions: {
-			login: async (email, password) => {
-				const store = getStore();
-
+			// Use getActions to call a function within a fuction
+			exampleFunction: () => {
+				getActions().changeColor(0, "green");
+			},
+			login: () => {
 				try {
 					let options = {
 						method: "POST",

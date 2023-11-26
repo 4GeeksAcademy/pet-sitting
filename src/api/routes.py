@@ -6,6 +6,7 @@ from flask_cors import CORS  # Add this import
 from werkzeug.security import generate_password_hash, check_password_hash
 from api.models import db, User, Pet
 from api.utils import APIException
+
 from email.message import EmailMessage
 import ssl
 import smtplib

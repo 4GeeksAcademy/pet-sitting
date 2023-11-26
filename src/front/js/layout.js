@@ -32,16 +32,13 @@ const Layout = () => {
                     <Routes>
                         <Route element={<Home />} path="/" />
                         <Route element={<AboutMe />} path="/aboutMe" />
-                        <Route element={<Demo />} path="/demo" />
-                        <Route element={<SignupUser />} path="/signupUser" />
-                        <Route element={<Single />} path="/single/:theid" />
                         <Route element={<ForgottenPassword />} path="/forgotten-password" />
                         <Route element={<Schedule />} path="/schedule/:typeOfSchedule" />
                         <Route element={<SignupUser />} path="/signupUser" />
-                        <Route element={<Single />} path="/single/:theid" />
-                        <Route element={<Insurance />} path="/insurance" />
                         <Route element={<Insurance />} path="/insurance" />
                         <Route element={<Services />} path="/services" />
+                        <Route element={<ForgottenPassword />} path="/forgotten-password" />
+                        <Route element={<Insurance/>} path="/insurance" />
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
                     <Footer />
