@@ -28,6 +28,7 @@ const injectContext = PassedComponent => {
 			 * you should do your ajax requests or fetch api requests here. Do not use setState() to save data in the
 			 * store, instead use actions, like this:
 			 **/
+			state.actions.setAccessToken(sessionStorage.getItem("token"))
 			const newDate = new Date()
 			const currYear = newDate.getFullYear()
 			const currMonth = newDate.getMonth()

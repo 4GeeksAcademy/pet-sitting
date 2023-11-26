@@ -149,17 +149,6 @@ def get_user():
         return jsonify(user.serialize()), 200
     else:
         return jsonify(message="User not found"), 404
-    
-
-
-
-    
-
-
-
-    
-
-
 
 @api.route('/logout', methods=['DELETE'])
 @jwt_required()
@@ -199,7 +188,6 @@ def send_code ():
             smtp.sendmail(email_sender, email_receiver, em.as_string())
         return "Ok",200
 
-
 def generatePassword():
     pass_len = 12
     characters = "abcdefghilklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789!@#$%^&*+=?"
@@ -226,10 +214,43 @@ if __name__ == "__main__":
     api.run()
     
 @api.route('/get-dog-walk', methods=['POST'])
-# @jwt_required()
+@jwt_required()
 def handle_get_dog_walk_sched():
-    # user_email = get_jwt_identity()
-    user_email = 'johndurtka@gmail.com'
+    user_email = get_jwt_identity()
+    req = request.get_json()
+    minTime = req['minTime']
+    maxTime = req['maxTime']
+    try: 
+        SCOPES = ['https://www.googleapis.com/auth/calendar']
+        SERVICE_ACCOUNT_FILE = 'credentials.json'
+
+        creds = service_account.Credentials.from_service_account_file(
+        SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+        calendar_id = "f73ae5b685428f5ee9f2e95b1b39fe17de1f5851e48ab7ddd2dd0ad3765c0f5d@group.calendar.google.com"
+
+        service = build("calendar", "v3", credentials=creds)
+        events_result = (
+                service.events()
+                .list(
+                    calendarId=calendar_id,
+                    timeMin=minTime,
+                    timeMax=maxTime,
+                    maxResults=10,
+                    singleEvents=True,
+                    orderBy="startTime",
+                )
+                .execute()
+            )
+        events = events_result.get("items", [])
+        events = events = [{'start': event['start'], 'end': event['end'], 'summary': ' '.join(event['summary'].split(' ')[0:(len(event['summary'].split(' ')) - 2)]), 'owned': True if user_email in event['summary'] else False} for event in events]
+        return jsonify({'events': events, 'status': 'ok'}), 200
+    except:
+        return jsonify({'msg': 'Could not access the calendar'}), 404
+
+@api.route('/get-meeting', methods=['POST'])
+@jwt_required()
+def handle_meeting_sched():
+    user_email = get_jwt_identity()
     req = request.get_json()
     print(req)
     minTime = req['minTime']
@@ -256,50 +277,21 @@ def handle_get_dog_walk_sched():
                 .execute()
             )
         events = events_result.get("items", [])
-        print(event['summary'].split(' '))
-        events = events = [{'start': event['start'], 'end': event['end'], 'summary': ' '.join(event['summary'].split(' ')[0:len(event['summary'].split(' '))]), 'owned': True if user_email in event['summary'] else False} for event in events]
+        print(events)
+        events = events = [{'start': event['start'], 'end': event['end'], 'summary': ' '.join(event['summary'].split(' ')[0:(len(event['summary'].split(' ')) - 2)]), 'owned': True if user_email in event['summary'] else False} for event in events]
         return jsonify({'events': events, 'status': 'ok'}), 200
     except:
         return jsonify({'msg': 'Could not access the calendar'}), 404
 
-@api.route('/get-meeting', methods=['POST'])
-#@jwt_required()
-def handle_meeting_sched():
-    req = request.get_json()
-    minTime = req.minTime
-    maxTime = req.maxTime
-    try: 
-        SCOPES = ['https://www.googleapis.com/auth/calendar']
-        SERVICE_ACCOUNT_FILE = 'credentials.json'
-
-        creds = service_account.Credentials.from_service_account_file(
-        SERVICE_ACCOUNT_FILE, scopes=SCOPES)
-        calendar_id = "f73ae5b685428f5ee9f2e95b1b39fe17de1f5851e48ab7ddd2dd0ad3765c0f5d@group.calendar.google.com"
-
-        service = build("calendar", "v3", credentials=creds)
-        events_result = (
-                service.events()
-                .list(
-                    calendarId=calendar_id,
-                    timeMin=minTime,
-                    timeMax=maxTime,
-                    maxResults=10,
-                    singleEvents=True,
-                    orderBy="startTime",
-                )
-                .execute()
-            )
-        events = [{'start': event['start'], 'end': event['end'], 'summary': event['summary'], 'owned': True if user_email in event['summary'] else False} for event in events]
-        return jsonify({'events': events, 'status': 'ok'}), 200
-    except:
-        return jsonify({'msg': 'Could not access the calendar'}), 404
 
 @api.route('/get-pet-check-in', methods=['POST'])
-#@jwt_required()
+@jwt_required()
 def handle_get_pet_check_in_sched():
+    user_email = get_jwt_identity()
     req = request.get_json()
-    minTime = req.minTime
-    maxTime = req.maxTime
+    print(req)
+    minTime = req['minTime']
+    maxTime = req['maxTime']
     try: 
         SCOPES = ['https://www.googleapis.com/auth/calendar']
         SERVICE_ACCOUNT_FILE = 'credentials.json'
@@ -321,26 +313,30 @@ def handle_get_pet_check_in_sched():
                 )
                 .execute()
             )
-        events = [{'start': event['start'], 'end': event['end'], 'summary': event['summary'], 'owned': True if user_email in event['summary'] else False} for event in events]
+        events = events_result.get("items", [])
+        events = events = [{'start': event['start'], 'end': event['end'], 'summary': ' '.join(event['summary'].split(' ')[0:(len(event['summary'].split(' ')) - 2)]), 'owned': True if user_email in event['summary'] else False} for event in events]
         return jsonify({'events': events, 'status': 'ok'}), 200
     except:
         return jsonify({'msg': 'Could not access the calendar'}), 404
 
+
 @api.route('/get-pet-sitting', methods=['POST'])
-#@jwt_required()
+@jwt_required()
 def handle_get_pet_sitting_sched():
+    user_email = get_jwt_identity()
     req = request.get_json()
-    minTime = req.minTime
-    maxTime = req.maxTime
+    print(req)
+    minTime = req['minTime']
+    maxTime = req['maxTime']
     try: 
         SCOPES = ['https://www.googleapis.com/auth/calendar']
         SERVICE_ACCOUNT_FILE = 'credentials.json'
 
         creds = service_account.Credentials.from_service_account_file(
         SERVICE_ACCOUNT_FILE, scopes=SCOPES)
-        service = build("calendar", "v3", credentials=creds)
         calendar_id = "564074f66734a91ee109c5d45a58ad814986316b76f2059642ac08bb37b7acb5@group.calendar.google.com"
-        
+       
+        service = build("calendar", "v3", credentials=creds)
         events_result = (
                 service.events()
                 .list(
@@ -353,7 +349,8 @@ def handle_get_pet_sitting_sched():
                 )
                 .execute()
             )
-        events = [{'start': event['start'], 'end': event['end'], 'summary': event['summary'].split(' ')[0:-2].join(' '), 'owned': True if user_email in event['summary'] else False} for event in events]
+        events = events_result.get("items", [])
+        events = events = [{'start': event['start'], 'end': event['end'], 'summary': ' '.join(event['summary'].split(' ')[0:(len(event['summary'].split(' ')) - 2)]), 'owned': True if user_email in event['summary'] else False} for event in events]
         return jsonify({'events': events, 'status': 'ok'}), 200
     except:
         return jsonify({'msg': 'Could not access the calendar'}), 404

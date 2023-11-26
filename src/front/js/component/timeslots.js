@@ -30,7 +30,6 @@ export const Timeslots = () => {
 	const numDaysOfMonth = [31, getFebDays(store.timeSlotsStartingDay.year), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
 	const fixDatesAndSetDayNames = (weekDates) => {
-		console.log(weekDates)
 		const daysOfWeek = []
 
 		weekDates.map((date, ind) => {
@@ -45,7 +44,6 @@ export const Timeslots = () => {
 				daysOfWeek.push(dayOfWeek)
 			}
 		})
-		console.log(weekDates)
 		return [weekDates, daysOfWeek]
 	}
 
@@ -79,8 +77,6 @@ export const Timeslots = () => {
 	}
 
 	const createWeekDayDivs = (weekDatesAndDaysOfWeek, timeSlotLabels) => {
-		console.log(weekDatesAndDaysOfWeek)
-		console.log(timeSlotLabels)
 		const weekDates = weekDatesAndDaysOfWeek[0]
 		const daysOfWeek = weekDatesAndDaysOfWeek[1]
 		newMonth.current = false
@@ -204,7 +200,6 @@ export const Timeslots = () => {
 	}
 
 	useEffect(() => {
-
 	}, [])
 
 	useEffect(() => {
@@ -244,17 +239,23 @@ export const Timeslots = () => {
 			const schedStartReq = formatAPIReqStr("09:00:00-07:00", store.timeSlotsStartingDay.date, String(parseInt(store.timeSlotsStartingDay.month) + 1), store.timeSlotsStartingDay.year)
 			const schedEndReq = formatAPIReqStr("17:00:00-07:00", nextDate, String(parseInt(nextMonth) + 1), nextYear)
 			try {
-				const response = await fetch(process.env.BACKEND_URL + `api/get-${store.typeOfSchedule}`, {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify({
-						"minTime": schedStartReq,
-						"maxTime": schedEndReq
-					})
+				console.log(JSON.stringify({
+					"minTime": schedStartReq,
+					"maxTime": schedEndReq
+				}))
+				if (store.token !== null) {
+					const response = await fetch(process.env.BACKEND_URL + `api/get-${store.typeOfSchedule}`, {
+						method: "POST",
+						headers: {
+							"Authorization": 'Bearer ' + store.token
+						},
+						body: JSON.stringify({
+							"minTime": schedStartReq,
+							"maxTime": schedEndReq
+						})
+					}
+					)
 				}
-				)
 				return await response.json()
 			} catch (error) {
 				console.log("An error occurred.", error)
@@ -266,8 +267,12 @@ export const Timeslots = () => {
 				try {
 					recentlyFetched.current = true
 					const resp = await getScheduleData()
-					const events = resp.events
-					setExistingEvents(events)
+					const events = await JSON.stringify(resp.events)
+					console.log(events)
+					if (events !== undefined) {
+
+						setExistingEvents(events)
+					}
 				}
 				catch (error) {
 					console.log(error)
@@ -279,9 +284,8 @@ export const Timeslots = () => {
 		asyncFunc()
 		const fixedDatesAndWeekdays = fixDatesAndSetDayNames([...Array(7).keys()].map(i => i + parseInt(store.timeSlotsStartingDay.date)))
 		const timeSlotLabels = createTimeSlotsLabels()
-		console.log(store.timeSlotsStartingDay.year)
 		setWeekDayDivs(createWeekDayDivs(fixedDatesAndWeekdays, timeSlotLabels))
-	}, [store.timeSlotsStartingDay])
+	}, [store.timeSlotsStartingDay, store.token])
 
 	useEffect(() => {
 		const fixedDatesAndWeekdays = fixDatesAndSetDayNames([...Array(7).keys()].map(i => i + parseInt(store.timeSlotsStartingDay.date)))
