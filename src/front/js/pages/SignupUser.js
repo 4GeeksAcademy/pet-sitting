@@ -97,7 +97,6 @@ export const SignupUser = () => {
               onChange={handleChange}
               required
             />
-
             <label htmlFor="password">Password</label>
             <input
               type="password"
@@ -115,9 +114,6 @@ export const SignupUser = () => {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
-
-
-
             <div className="signupSubmitButton">
               <button type="submit" onClick={() => handleSubmit()} className=" btn btn-primary signupButton">
                 Submit

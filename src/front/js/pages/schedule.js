@@ -7,7 +7,6 @@ import { Timeslots } from '../component/timeslots.js'
 import { Lost } from '../component/lost.js'
 
 import '../../styles/schedule.css'
-import '../../styles/index.css'
 
 export const Schedule = () => {
     const { store, actions } = useContext(Context);

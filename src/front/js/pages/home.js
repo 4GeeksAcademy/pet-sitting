@@ -61,7 +61,7 @@ export const Home = () => {
           </div>
 
           <div className="center processBox">
-            <h1>Hi, already a part of the family? Welcome back!</h1>
+            <h1 style={{ color: '#54665a' }}>Hi, already a part of the family? Welcome back!</h1>
 
             <button
               type="button"
