@@ -243,10 +243,12 @@ export const Timeslots = () => {
 					"minTime": schedStartReq,
 					"maxTime": schedEndReq
 				}))
+				console.log(store.token)
 				if (store.token !== null) {
 					const response = await fetch(process.env.BACKEND_URL + `api/get-${store.typeOfSchedule}`, {
 						method: "POST",
 						headers: {
+							"Content-Type": "application/json",
 							"Authorization": 'Bearer ' + store.token
 						},
 						body: JSON.stringify({
@@ -255,8 +257,12 @@ export const Timeslots = () => {
 						})
 					}
 					)
+					console.log(response)
+					return await response.json()
 				}
-				return await response.json()
+				else {
+					return []
+				}
 			} catch (error) {
 				console.log("An error occurred.", error)
 				navigate('/services')
@@ -267,10 +273,10 @@ export const Timeslots = () => {
 				try {
 					recentlyFetched.current = true
 					const resp = await getScheduleData()
-					const events = await JSON.stringify(resp.events)
+					const events = await resp.events
 					console.log(events)
 					if (events !== undefined) {
-
+						console.log(typeof events)
 						setExistingEvents(events)
 					}
 				}

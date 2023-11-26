@@ -6,7 +6,7 @@ export const Navbar = () => {
 
   const handleLogout = () => {
     setIsLoggedIn(false);
-    window.location.href = "/home";
+    window.location.href = "/";
   };
 
   return (
