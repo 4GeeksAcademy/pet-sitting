@@ -30,8 +30,7 @@ export const Services = () => {
                   </div>
                   <div class="card-info-wrapper">
                     <div class="card-info">
-                      <i class="fa-duotone fa-apartment"></i>
-                      <div class="card-info-title">
+                      <div class="card-info-title text-center">
                         <h3>Schedule a Dog Walk</h3>
                       </div>
                     </div>
@@ -49,8 +48,7 @@ export const Services = () => {
                   </div>
                   <div class="card-info-wrapper">
                     <div class="card-info">
-                      <i class="fa-duotone fa-unicorn"></i>
-                      <div class="card-info-title">
+                      <div class="card-info-title text-center text-center">
                         <h3>Schedule a Pet Check In</h3>
                       </div>
                     </div>
@@ -68,7 +66,7 @@ export const Services = () => {
                   </div>
                   <div class="card-info-wrapper">
                     <div class="card-info">
-                      <div class="card-info-title">
+                      <div class="card-info-title text-center">
                         <h3>Schedule a Meet and Greet</h3>
                       </div>
                     </div>
@@ -86,8 +84,7 @@ export const Services = () => {
                   </div>
                   <div class="card-info-wrapper">
                     <div class="card-info">
-                      <i class="fa-duotone fa-person-to-portal"></i>
-                      <div class="card-info-title">
+                      <div class="card-info-title text-center">
                         <h3>Schedule a Pet Sitting</h3>
                       </div>
                     </div>
