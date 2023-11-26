@@ -76,7 +76,7 @@
 }
 
 body{
-    background-color:#84a3a6;
+    background-color:#84a3a6 !important;
 }
 .homePage{
   width: 100dvh;

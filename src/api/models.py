@@ -22,10 +22,6 @@ class User(db.Model):
     pets = db.relationship('Pet', backref='user')
     last_services_used = db.relationship('Last_Service_Used', backref='user')
 
-
- 
-
-
     def __repr__(self):
         return f'<User {self.email}>'
 
@@ -41,7 +37,6 @@ class User(db.Model):
             # do not serialize the password, its a security breach
         }
 
-
 class Pet(db.Model):
     __tablename__ = 'pet'
 
@@ -52,7 +47,6 @@ class Pet(db.Model):
     age = db.Column(db.Integer, unique=False, nullable=False)
     description = db.Column(db.Text, unique=False, nullable=True)
     detailed_care_info = db.Column(db.Text, unique=False, nullable=True)
-
 
     def __repr__(self):
         return '<Pet %r>' % self.id
