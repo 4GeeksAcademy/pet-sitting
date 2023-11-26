@@ -200,7 +200,6 @@ export const Timeslots = () => {
 	}
 
 	useEffect(() => {
-
 	}, [])
 
 	useEffect(() => {
