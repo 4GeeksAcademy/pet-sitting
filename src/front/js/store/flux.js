@@ -29,7 +29,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			exampleFunction: () => {
 				getActions().changeColor(0, "green");
 			},
-			login: () => {
+			login: async () => {
 				try {
 					let options = {
 						method: "POST",
