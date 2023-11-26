@@ -35,10 +35,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 						headers: {
 							'Content-Type': 'application/json',
 						},
-						body: JSON.stringify({ email, password }),
+						body: JSON.stringify({ "email": email, "password": password }),
 					};
 
-					const response = await fetch("https://glowing-spork-pjrjwg7vvwjw2rvwj-3001.app.github.dev/api/login", options);
+					const response = await fetch(process.env.BACKEND_URL + "api/login", options);
 
 					if (response.status === 200) {
 						const data = await response.json();
@@ -57,6 +57,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 					alert("An error occurred during login.");
 					return false;
 				}
+			},
+			setAccessToken: (savedToken) => {
+				setStore({ token: savedToken })
 			},
 			exampleFunction: () => {
 				getActions().changeColor(0, "green");
@@ -78,7 +81,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			signup: async (formData) => {
 				try {
-					let response = await fetch("https://glowing-spork-pjrjwg7vvwjw2rvwj-3001.app.github.dev/api/signup", {
+					let response = await fetch(process.env.BACKEND_URL + "/api/signup", {
 						method: "POST",
 						headers: { "Content-Type": "application/json" },
 						body: JSON.stringify({ "email": formData.email, "password": formData.password, "first_name": formData.first_name, "last_name": formData.last_name })
@@ -93,7 +96,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			signupPet: async (formData) => {
 				try {
-					let response = await fetch(getStore().backendURL + "/api/signupPet", {
+					let response = await fetch(process.env.BACKEND_URL + "api/signupPet", {
 						method: "POST",
 						headers: { "Content-Type": "application/json" },
 						body: JSON.stringify({ "name": formData.name, "bread": formData.bread, "age": formData.age, "description": formData.description, "detailed_care_info": formData.detailed_care_info })
