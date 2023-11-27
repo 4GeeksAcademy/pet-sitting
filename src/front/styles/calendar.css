@@ -1,6 +1,7 @@
 html,
 body {
     place-items: center;
+    overflow-x: hidden;
 }
 .calendar {
     height: max-content;
@@ -12,7 +13,8 @@ body {
     overflow: hidden;
     display: grid;
     margin-top: 5%;
-    margin-left: 21%;
+    margin-left: auto;
+    margin-right: auto;
     box-shadow: #a8a296  5px 5px 5px 3px
 }
 

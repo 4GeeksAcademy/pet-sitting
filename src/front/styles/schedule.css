@@ -69,10 +69,6 @@
     height: fit-content !important;
 }
 
-.col-1 {
-    height: fit-content !important;
-}
-
-.col-2 {
-    height: fit-content !important;
+.timeslots-container {
+    margin-left: 4%
 }

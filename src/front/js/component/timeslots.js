@@ -300,7 +300,7 @@ export const Timeslots = () => {
 	}, [existingEvents])
 
 	return (
-		<div className="container-fluid d-flex p-0 ms-md-5">
+		<div className="container-fluid d-flex timeslots-container">
 			{weekDayDivs}
 			<div className="modal fade" id="scheduleNew" tabIndex="-1" aria-labelledby="scheduleNewModal" aria-hidden="true">
 				<div className="modal-dialog">
@@ -313,7 +313,7 @@ export const Timeslots = () => {
 							<form className="form-group" onSubmit={(e) => { handleModalSubmit(e) }}>
 								<div className="modal-footer">
 									<button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-									<button type="submit" className="btn btn-primary">Submit</button>
+									<button type="submit" className="btn btn-primary" data-bs-dismiss="modal">Submit</button>
 								</div>
 							</form>
 						</div>
@@ -332,7 +332,7 @@ export const Timeslots = () => {
 								<p>{`Cancel booking on ${newScheduleStartStr.substring(0, 10)} from ${parseInt(newScheduleStartStr.substring(11, 13)) < 12 ? newScheduleStartStr.substring(11, 16) : String(parseInt(newScheduleStartStr.substring(11, 13) - 12) + newScheduleStartStr.substring(13, 16))}-${parseInt(newScheduleEndStr.substring(11, 13)) < 12 ? newScheduleEndStr.substring(11, 16) : String(parseInt(newScheduleEndStr.substring(11, 13) - 12) + newScheduleEndStr.substring(13, 16))}?`}</p>
 								<div className="modal-footer">
 									<button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Wait, go back!</button>
-									<button type="submit" className="btn btn-danger">Cancel Booking</button>
+									<button type="submit" className="btn btn-danger" data-bs-dismiss="modal">Cancel Booking</button>
 								</div>
 							</form>
 						</div>
