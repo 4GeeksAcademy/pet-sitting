@@ -33,15 +33,16 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log("Error loading message from backend", error)
 				}
 			},
-			signup: async (formData) => {
-				try {
-					let response = await fetch(getStore().backendURL + "/api/signup", {
-						method: "POST",
-						headers: { "Content-Type": "application/json" },
-						body: JSON.stringify({ "email": formData.email, "password": formData.password, " first_name": formData.first_name, "last_name": formData.last_name, "address": formData.address, "phone_number": formData.phone_number })
-					})
+			signup: async (formData)=>{
+				try{
+					let response = await fetch(getStore().backendURL+"/api/signup",{
+						method:"POST",
+						headers:{"Content-Type":"application/json"},
+						body: JSON.stringify({"email":formData.email,"password":formData.password,"first_name":formData.first_name,"last_name":formData.last_name})
 
+					})
 					let data = await response.json()
+				
 
 					if (data) {
 						console.log(data.message)
@@ -50,20 +51,17 @@ const getState = ({ getStore, getActions, setStore }) => {
 				} catch (error) { console.log(error) }
 			},
 
-			signupPet: async (formData) => {
-				try {
-					let response = await fetch(getStore().backendURL + "/api/signupPet", {
-						method: "POST",
-						headers: { "Content-Type": "application/json" },
-						body: JSON.stringify({ "name": formData.name, "bread": formData.bread, "age": formData.age, "description": formData.description, "detailed_care_info": formData.detailed_care_info })
-					})
-				}
-				catch (error) {
-					console.log(error)
-				}
-			}
-		}
+			
+		},
+
 	};
 }
 
-export default getState
+export default getState;
+
+
+
+
+
+
+	
