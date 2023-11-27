@@ -34,10 +34,10 @@ const Layout = () => {
                         <Route element={<ForgottenPassword />} path="/forgotten-password" />
                         <Route element={<Schedule />} path="/schedule/:typeOfSchedule" />
                         <Route element={<SignupUser />} path="/signupUser" />
-                        <Route element={<Insurance />} path="/insurance" />
                         <Route element={<Services />} path="/services" />
                         <Route element={<ForgottenPassword />} path="/forgotten-password" />
                         <Route element={<Insurance />} path="/insurance" />
+                        <Route element={<Services />} path="/services" />
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
                     <Footer />
