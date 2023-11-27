@@ -164,7 +164,7 @@ def send_code ():
         db.session.commit()
         email_sender = 'petsitting417@gmail.com'
         email_password = "ilhjwhdyxlxpmdfw"
-        email_receiver = 'wivodo2070@eachart.com'
+        email_receiver = email
         email_subject = "Reset your password"
         email_body = "We have sent you this temporary password so that you can recover your account. Smile with us Hot Doggity Dog Walkers! New Password: "+new_password
 

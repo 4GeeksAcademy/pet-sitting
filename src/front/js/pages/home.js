@@ -4,34 +4,31 @@ import "../../styles/home.css";
 import { Link } from "react-router-dom";
 import { AboutMe } from "./AboutMe";
 import { SignupUser } from "./SignupUser";
+import { AccountPage } from "./Account";
 
 export const Home = () => {
   const { store, actions } = useContext(Context);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLogedIn, setIsLoggedIn] = useState(false);
+
 
   const handleLogin = async () => {
     try {
-    
       if (!email || !password) {
-        console.error("Please enter both email and password.");
+        console.error('Please enter both email and password.');
         return;
       }
-  
-    
+
       const loginSuccess = await actions.login(email, password);
-  
-   
+
       if (loginSuccess) {
-        console.log("Login successful");
-       
+        console.log('Login successful');
       } else {
-        console.error("Login failed. Please check your credentials.");
-     
+        console.error('Login failed. Please check your credentials.');
       }
     } catch (error) {
-      console.error("An error occurred during login:", error);
-     
+      console.error('An error occurred during login:', error);
     }
   };
 
@@ -135,9 +132,9 @@ export const Home = () => {
                           Submit
                         </button>
                       </div>
-                      <Link to="/forgot-password" className="forgotPasswordLink ms-2">
-              Forgot Password?
-            </Link>
+                      <Link to="/forgotten-password" className="forgotPasswordLink ms-2">
+                        Forgot Password?
+                      </Link>
                     </div>
                   </div>
 

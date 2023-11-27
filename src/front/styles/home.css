@@ -165,8 +165,8 @@ body{
     background-color: #f2e9d8;
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 400px; /* Adjust the width of the signup box as needed */
-    margin: 0 auto; /* Center the signup box horizontally */
+    width: 400px; 
+    margin: 0 auto; 
   }
   
   .beigeBox {
@@ -185,30 +185,23 @@ body{
     display: block;
     margin-bottom: 10px; /* Add space between labels and inputs */
   }
-  
+  /*  account page  */
 
-
-/*   
-  .signupPage {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background-color: #54665a;
-  } */
-  
-  /* .beigeBox {
-    background-color: #f5f5dc;
-    padding: 200px;
-    border-radius: 8px;
+  .account_form{
+    border-radius: 10px;
+    position: relative;
+    z-index: 1;
+    background-color: #f2e9d8;
+    padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 600px; 
-    min-height: 300px;
-    display: flex;
-    flex-direction: column; 
-    align-items: center;
+    width: 400px; 
+    margin: 0 auto; 
+    text-align: center;
+    padding: 20px;
+  
   }
-   */
+
+
 
   
     
