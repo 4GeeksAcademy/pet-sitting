@@ -5,13 +5,15 @@ import { Context } from "../store/appContext";
 
 import '../../styles/timeslots.css'
 
-export const Timeslots = () => {
+export const Timeslots = (props) => {
 	const { store, actions } = useContext(Context);
-
+	const typeOfScheduleStr = props.typeOfScheduleStr
+	const typeOfSchedule = props.typeOfSchedule
 	const [weekDayDivs, setWeekDayDivs] = useState('')
 	const [newScheduleStartStr, setNewScheduleStartStr] = useState('')
 	const [newScheduleEndStr, setNewScheduleEndStr] = useState('')
 	const [existingEvents, setExistingEvents] = useState([])
+	const [pets, setPets] = useState([])
 	const namesOfDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 	const lastDate = useRef('1')
 	const newMonth = useRef(false)
@@ -199,7 +201,40 @@ export const Timeslots = () => {
 		return timeSlotLabelsArr
 	}
 
+	const getPets = async () => {
+		if (store.token !== null) {
+			try {
+				const response = await fetch(process.env.BACKEND_URL + 'api/get-pet-names', {
+					method: "GET",
+					headers: {
+						"Authorization": 'Bearer ' + store.token
+					},
+				}
+				)
+				return await response.json()
+			}
+			catch (error) {
+				console.log("An error occurred:", error)
+			}
+		}
+		else {
+			return []
+		}
+
+	}
+
 	useEffect(() => {
+		const asyncFunc = async () => {
+			const petsResp = await getPets()
+			const tempPets = await petsResp.pets
+			console.log(tempPets)
+			if (tempPets !== undefined) {
+				setPets(tempPets)
+			} else {
+				asyncFunc()
+			}
+		}
+		asyncFunc()
 	}, [])
 
 	useEffect(() => {
@@ -239,11 +274,6 @@ export const Timeslots = () => {
 			const schedStartReq = formatAPIReqStr("09:00:00-07:00", store.timeSlotsStartingDay.date, String(parseInt(store.timeSlotsStartingDay.month) + 1), store.timeSlotsStartingDay.year)
 			const schedEndReq = formatAPIReqStr("17:00:00-07:00", nextDate, String(parseInt(nextMonth) + 1), nextYear)
 			try {
-				console.log(JSON.stringify({
-					"minTime": schedStartReq,
-					"maxTime": schedEndReq
-				}))
-				console.log(store.token)
 				if (store.token !== null) {
 					const response = await fetch(process.env.BACKEND_URL + `api/get-${store.typeOfSchedule}`, {
 						method: "POST",
@@ -257,7 +287,6 @@ export const Timeslots = () => {
 						})
 					}
 					)
-					console.log(response)
 					return await response.json()
 				}
 				else {
@@ -274,7 +303,6 @@ export const Timeslots = () => {
 					recentlyFetched.current = true
 					const resp = await getScheduleData()
 					const events = await resp.events
-					console.log(events)
 					if (events !== undefined) {
 						console.log(typeof events)
 						setExistingEvents(events)
@@ -299,6 +327,53 @@ export const Timeslots = () => {
 		setWeekDayDivs(createWeekDayDivs(fixedDatesAndWeekdays, timeSlotLabels))
 	}, [existingEvents])
 
+	const handleModalSubmit = async (e) => {
+		e.preventDefault()
+		if (typeOfSchedule === 'dog-walk' || typeOfSchedule === 'meeting' || typeOfSchedule === 'pet-check-in') {
+			try {
+				const bookPets = pets.map((item, ind) => {
+					console.log(item)
+					if (e.target.elements[`${item}`].checked) {
+						return (item)
+					} else {
+						return null
+					}
+				}).filter(item => item !== null)
+				if (bookPets == undefined) {
+					throw new Error("You cannot book a service without pets.")
+				}
+				const resp = await fetch(process.env.BACKEND_URL + 'api/schedule-walk-or-check-in-or-meet-and-greet', {
+					method: 'POST',
+					headers: {
+						"Content-Type": "application/json",
+						"Authorization": 'Bearer ' + store.token
+					},
+					body: JSON.stringify({
+						"startTime": newScheduleStartStr,
+						"schedTime": newScheduleEndStr,
+						"type": e.target.elements.type.value,
+						"details": e.target.elements.details.value,
+						"recurring": e.target.elements.recurring.checked,
+						"recurringUntil": e.target.elements.recurringUntil.value,
+						"pets": bookPets
+					})
+				})
+				setTimeout(async () => {
+					const resp = await getScheduleData()
+					const events = await resp.events
+					if (events !== undefined) {
+						console.log(typeof events)
+						setExistingEvents(events)
+					}
+				}, 2000)
+			}
+			catch (error) {
+				console.log(`An error occurred: ${error}`)
+				alert('An error occurred. Booking failed.')
+			}
+		}
+	}
+
 	return (
 		<div className="container-fluid d-flex timeslots-container">
 			{weekDayDivs}
@@ -311,6 +386,58 @@ export const Timeslots = () => {
 						</div>
 						<div className="modal-body">
 							<form className="form-group" onSubmit={(e) => { handleModalSubmit(e) }}>
+								<div className="form-group row">
+									<label htmlFor="type" className="col-sm-2 col-form-label">Type of Booking:</label>
+									<div className="col-sm-10">
+										<input type="text" readOnly className="form-control-plaintext" id="type" value={typeOfScheduleStr} />
+									</div>
+								</div>
+								<div className="form-group row">
+									<label htmlFor="staticType" className="col-sm-2 col-form-label">Pet(s):</label>
+									<div className="col-sm-10">
+										{pets.map((petName) => {
+											return (
+												<div className="form-check">
+													<input className="form-check-input" type="checkbox" value="" id={petName} />
+													<label className="form-check-label" htmlFor={petName} name="chkboxLabel">
+														{petName}
+													</label>
+												</div>
+											)
+										})
+										}
+									</div>
+								</div>
+								<div className="form-group row">
+									<label htmlFor="details" className="col-sm-2 col-form-label">Details:</label>
+									<div className="col-sm-10">
+										<textarea className="form-control" id="details" rows="5"></textarea>
+									</div>
+								</div>
+								<div className="form-group row">
+									<label htmlFor="startTime" className="col-sm-3 col-form-label">Start Date/Time:</label>
+									<div className="col-sm-9">
+										<textarea readOnly id="startTime" value={newScheduleStartStr} />
+									</div>
+								</div>
+								<div className="form-group row">
+									<label htmlFor="endTime" className="col-sm-3 col-form-label">End Date/Time:</label>
+									<div className="col-sm-9">
+										<textarea readOnly id="endTime" value={newScheduleEndStr} />
+									</div>
+								</div>
+								<div className="form-group row">
+									<div className="form-check">
+										<label className="form-check-label col-sm-2" htmlFor='recurring'>Recurring weekly?</label>
+										<input className="form-check-input col-sm-10" type="checkbox" value="" id='recurring' />
+									</div>
+								</div>
+								<div className="form-group row">
+									<label htmlFor="recurringUntil" className="col-sm-2">Recurring until?</label>
+									<div className="col-sm-10">
+										<input type="datetime-local" id="recurringUntil" />
+									</div>
+								</div>
 								<div className="modal-footer">
 									<button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
 									<button type="submit" className="btn btn-primary" data-bs-dismiss="modal">Submit</button>

@@ -30,15 +30,15 @@ export const Services = () => {
         <div className="row d-flex w-100 mx-auto">
           <div className="col-6">
             <Link to="/schedule/dog-walk" style={{ textDecoration: 'none' }}>
-              <div class="card">
+              <div className="card">
                 <div className="card-border">
-                  <div class="card-content">
-                    <div class="card-image">
+                  <div className="card-content">
+                    <div className="card-image">
                       <img src={dogwalkingpic} />
                     </div>
-                    <div class="card-info-wrapper">
-                      <div class="card-info">
-                        <div class="card-info-title text-center">
+                    <div className="card-info-wrapper">
+                      <div className="card-info">
+                        <div className="card-info-title text-center">
                           <h3>Schedule a Dog Walk</h3>
                         </div>
                       </div>
@@ -50,15 +50,15 @@ export const Services = () => {
           </div>
           <div className="col-6">
             <Link to="/schedule/dog-walk" style={{ textDecoration: 'none' }}>
-              <div class="card">
+              <div className="card">
                 <div className="card-border">
-                  <div class="card-content">
-                    <div class="card-image">
+                  <div className="card-content">
+                    <div className="card-image">
                       <img src={petcheckinpic} />
                     </div>
-                    <div class="card-info-wrapper">
-                      <div class="card-info">
-                        <div class="card-info-title text-center">
+                    <div className="card-info-wrapper">
+                      <div className="card-info">
+                        <div className="card-info-title text-center">
                           <h3>Schedule a Pet Check In</h3>
                         </div>
                       </div>
@@ -70,15 +70,15 @@ export const Services = () => {
           </div>
           <div className="col-6">
             <Link to="/schedule/dog-walk" style={{ textDecoration: 'none' }}>
-              <div class="card">
+              <div className="card">
                 <div className="card-border">
-                  <div class="card-content">
-                    <div class="card-image">
+                  <div className="card-content">
+                    <div className="card-image">
                       <img src={meetandgreet} />
                     </div>
-                    <div class="card-info-wrapper">
-                      <div class="card-info">
-                        <div class="card-info-title text-center">
+                    <div className="card-info-wrapper">
+                      <div className="card-info">
+                        <div className="card-info-title text-center">
                           <h3>Schedule a Meeting</h3>
                         </div>
                       </div>
@@ -90,15 +90,15 @@ export const Services = () => {
           </div>
           <div className="col-6">
             <Link to="/schedule/dog-walk" style={{ textDecoration: 'none' }}>
-              <div class="card">
+              <div className="card">
                 <div className="card-border">
-                  <div class="card-content">
-                    <div class="card-image">
+                  <div className="card-content">
+                    <div className="card-image">
                       <img src={petsittingpic} />
                     </div>
-                    <div class="card-info-wrapper">
-                      <div class="card-info">
-                        <div class="card-info-title text-center">
+                    <div className="card-info-wrapper">
+                      <div className="card-info">
+                        <div className="card-info-title text-center">
                           <h3>Schedule a Pet Sitting</h3>
                         </div>
                       </div>

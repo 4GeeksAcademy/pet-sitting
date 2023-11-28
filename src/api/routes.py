@@ -356,7 +356,7 @@ def handle_get_pet_sitting_sched():
 def handle_schedule_walk_or_check_in_or_meet_and_greet():
     email = get_jwt_identity()
     user = User.query.filter_by(email=email).first()
-    user_address = user["address"]
+    user_address = user.serialize()["address"]
 
     req = request.get_json()
 
@@ -377,7 +377,7 @@ def handle_schedule_walk_or_check_in_or_meet_and_greet():
         start_time = req["startTime"]
         end_time = req["endTime"]
         recurring = req["recurring"]
-        recurring_count = req["recurring-count"]
+        recurring_until = req["recurringUntil"]
 
         event = {
                 'summary': type_of_booking + 'with' + pets + 'for' + email,
@@ -392,23 +392,23 @@ def handle_schedule_walk_or_check_in_or_meet_and_greet():
                     'timeZone': 'America/Denver',
                 },
                 'recurrence': [
-                    'RRULE:FREQ=' + recurring + ';COUNT=' + recurring_count
+                    'RRULE:FREQ=' + recurring + ';UNTIL=' + recurring_until
                 ],
             }
 
         event = service.events().insert(calendarId=calendar_id, body=event).execute()
-        return(jsonify({"msg": "Booking created successfully.", "status": "ok"})), 200
+        return jsonify({"msg": "Booking created successfully.", "status": "ok"}), 200
     
     except HttpError as error:
-        return(jsonify({"msg": "An error occurred: " + {error}})), 404
+        return jsonify({"msg": "An error occurred: " + {error}}), 404
 
 
 @api.route('/schedule-pet-sitting', methods=['POST'])
-# @jwt_required()
+@jwt_required()
 def handle_schedule_pet_sitting():
     email = get_jwt_identity()
     user = User.query.filter_by(email=email).first()
-    user_address = user["address"]
+    user_address = user.serialize()["address"]
 
     req = request.get_json()
 
@@ -449,7 +449,24 @@ def handle_schedule_pet_sitting():
             }
 
         event = service.events().insert(calendarId=calendar_id, body=event).execute()
-        return(jsonify({"msg": "Booking created successfully.", "status": "ok"})), 200
+        return jsonify({"msg": "Booking created successfully.", "status": "ok"}), 200
     
     except HttpError as error:
-        return(jsonify({"msg": "An error occurred: " + {error}})), 404
+        return jsonify({"msg": "An error occurred: " + {error}}), 404
+    
+@api.route('/get-pet-names', methods=['GET'])
+@jwt_required()
+def get_pet_names():
+    email = get_jwt_identity()
+    user = User.query.filter_by(email=email).first()
+    try: 
+        pets = user.serialize()["pets"]
+        print(pets)
+        pet_names = [pet["name"] for pet in pets]
+        print(pet_names)
+        print(type(pet_names))
+        if len(pet_names) == 0:
+            pet_names = ["N/A"]
+        return jsonify({"pets": pet_names, "status": "ok"})
+    except HttpError as error:
+        return jsonify({"msg": "An error occurred: " + {error}}), 404

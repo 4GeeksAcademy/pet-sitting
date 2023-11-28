@@ -81,7 +81,7 @@ export const Schedule = () => {
                         </div>
                     </div>
                     <div className="tab-content" id="nav-tabContent">
-                        <div className={`tab-pane fade ${store.activeScheduleTab === 'nav-timeslots' ? 'show active' : ''}`} id="nav-timeslots" role="tabpanel" aria-labelledby="nav-timeslots-tab"><Timeslots /></div>
+                        <div className={`tab-pane fade ${store.activeScheduleTab === 'nav-timeslots' ? 'show active' : ''}`} id="nav-timeslots" role="tabpanel" aria-labelledby="nav-timeslots-tab"><Timeslots typeOfScheduleStr={typeOfScheduleStr} typeOfSchedule={typeOfSchedule} /></div>
                         <div className={`tab-pane fade ${store.activeScheduleTab === 'nav-calendar' ? 'show active' : ''}`} id="nav-calendar" role="tabpanel" aria-labelledby="nav-calendar-tab"><Calendar /></div>
                     </div>
                 </div>

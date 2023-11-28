@@ -68,7 +68,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			getMessage: async () => {
 				try {
 					// fetching data from the backend
-					const resp = await fetch(getStore().backendURL + "/api/hello")
+					const resp = await fetch(getStore().backendURL + "api/hello")
 					const data = await resp.json()
 					setStore({ message: data.message })
 					// don't forget to return something, that is how the async resolves
@@ -79,7 +79,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			signup: async (formData) => {
 				try {
-					let response = await fetch(process.env.BACKEND_URL + "/api/signup", {
+					let response = await fetch(process.env.BACKEND_URL + "api/signup", {
 						method: "POST",
 						headers: { "Content-Type": "application/json" },
 						body: JSON.stringify({ "email": formData.email, "password": formData.password, "first_name": formData.first_name, "last_name": formData.last_name })
