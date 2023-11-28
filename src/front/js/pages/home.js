@@ -59,7 +59,7 @@ export const Home = () => {
                             Sign Up
                         </Link>
 
-                        <Link to="/forgot-password" className="forgotPasswordLink ms-2">
+                        <Link to="/forgotten-password" className="forgotPasswordLink ms-2">
                             Forgot Password?
                         </Link>
                     </div>

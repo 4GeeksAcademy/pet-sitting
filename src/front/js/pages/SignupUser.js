@@ -82,7 +82,6 @@ export const SignupUser = () => {
               required
             />
           
-
           
             <label htmlFor="first_name">First Name</label>
             <input
@@ -94,7 +93,6 @@ export const SignupUser = () => {
               required
             />
 
-
            <label htmlFor="last_name">Last Name</label>
             <input
               type="last_name"
@@ -104,7 +102,6 @@ export const SignupUser = () => {
               onChange={handleChange}
               required
             />
-          
          
             <label htmlFor="phoneNumber">Phone Number</label>
             <input
