@@ -1,4 +1,3 @@
-// import React, { useState } from "react";
 // import { Link } from "react-router-dom";
 
 // export const Navbar = () => {
@@ -66,15 +65,25 @@
 //   );
 // };
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link,useNavigate} from "react-router-dom";
 
 export const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(null);
+  const navigate = useNavigate();
 
- const handleLogout = () => {
-    setIsLoggedIn(false);
-    // Redirect to the home page ("/")
-    history.push("/");
+
+  const handleLogout = async () => {
+    try {
+     
+      await actions.logout();
+
+      setIsLoggedIn(false);
+
+     
+      navigate("/");
+    } catch (error) {
+      console.error('An error occurred during logout:', error);
+    }
   };
 
   return (

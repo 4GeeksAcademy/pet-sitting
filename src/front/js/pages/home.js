@@ -1,18 +1,18 @@
 import React, { useContext, useState } from "react";
 import { Context } from "../store/appContext";
 import "../../styles/home.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AboutMe } from "./AboutMe";
 import { SignupUser } from "./SignupUser";
-import { AccountPage } from "./Account";
+import { Account } from "./Account";
+import { services } from "./services";
 
 export const Home = () => {
   const { store, actions } = useContext(Context);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLogedIn, setIsLoggedIn] = useState(false);
-
-
+  const navigate = useNavigate();
   const handleLogin = async () => {
     try {
       if (!email || !password) {
@@ -24,6 +24,11 @@ export const Home = () => {
 
       if (loginSuccess) {
         console.log('Login successful');
+       
+        const modal = new bootstrap.Modal(document.getElementById('exampleModal'));
+        modal.hide();
+        // Navigate to "/services"
+        navigate("/services");
       } else {
         console.error('Login failed. Please check your credentials.');
       }
@@ -31,6 +36,8 @@ export const Home = () => {
       console.error('An error occurred during login:', error);
     }
   };
+
+
 
   return (
     <div className="container-fluid homePage">
@@ -79,15 +86,8 @@ export const Home = () => {
               <div className="modal-dialog">
                 <div className="modal-content">
                   <div className="modal-header">
-                    <h1 className="modal-title fs-5" id="exampleModalLabel">
-                      Log in
-                    </h1>
-                    <button
-                      type="button"
-                      className="btn-close"
-                      data-bs-dismiss="modal"
-                      aria-label="Close"
-                    ></button>
+
+                 
                   </div>
                   <div className="modal-body">
                     <div>
@@ -124,13 +124,15 @@ export const Home = () => {
                         />
                       </div>
                       <div>
-                        <button
-                          type="button"
-                          onClick={() => handleLogin()}
-                          className="btn btn-primary signupButton"
-                        >
-                          Submit
-                        </button>
+                      <button
+                      type="button"
+                      onClick={() => handleLogin()}
+                      className="btn btn-primary signupButton"
+                      data-bs-toggle="modal"
+                      data-bs-target="#exampleModal"
+                    >
+                      Log in
+                    </button>
                       </div>
                       <Link to="/forgotten-password" className="forgotPasswordLink ms-2">
                         Forgot Password?

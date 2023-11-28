@@ -73,24 +73,32 @@ def signup():
     db.session.commit()
     return jsonify(message="Successfully created user and pet"), 200
 
-@api.route('/accountPage', methods=['GET'])
+@api.route('/account', methods=['PUT'])
 @jwt_required()
-def get_account():
+def update_account():
+    body = request.get_json()
+    print(body)
     try:
         current_user_email = get_jwt_identity()
         user = User.query.filter_by(email=current_user_email).first()
 
         if not user:
             raise APIException("User not found", status_code=404)
-
-        account_data = {
-            "email": user.email,
-            "first_Name": user.first_name,
-            "last_Name": user.last_name,
-            "address": user.address,
-            "phone_Number": user.phone_number,
-            "pets": [],  
-        }
+        elif user: 
+            account_data = {
+                "email": body.get("email",user.email),
+                "first_name":body.get("first_name",user.first_name),
+                "last_name":body.get("last_name",user.last_name),
+                "address":body.get("address",user.address),
+                "city":body.get("city",user.city),
+                "state":body.get("state",user.state),
+                "zip":body.get("zip",user.zip),
+                "phone_number":body.get("phone_number",user.phone_number),
+                "pets": [],  
+            }
+           
+            db.session.commit()
+            return jsonify(user.serlize())
 
         if user.pets:
             for pet in user.pets:

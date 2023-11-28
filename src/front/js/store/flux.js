@@ -47,6 +47,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				  if (response.ok) {
 					const data = await response.json();
 					console.log('Login successful', data);
+					localStorage.setItem("token", data.access_token);
 					return true;
 				  } else {
 					console.error('Login failed. Please check your credentials.');
@@ -79,6 +80,28 @@ const getState = ({ getStore, getActions, setStore }) => {
 					}
 				} catch (error) { console.log(error) }
 			},
+			account: async (formData) => {
+				let token=localStorage.getItem("token")
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/account`, {
+					  method: "PUT",
+					  headers: {
+						"Content-Type": "application/json",
+						
+						  "Authorization": `Bearer ${token}`,
+					  },
+					  body: JSON.stringify(formData),
+					});
+				
+					if (!response.ok) {
+					  throw new Error(`HTTP error! Status: ${response.status}`);
+					}
+				
+					return await response.json();
+				  } catch (error) {
+					throw new Error(`Error: ${error.message}`);
+				  }
+			}
 
 			
 		},
