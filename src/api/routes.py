@@ -242,7 +242,7 @@ def handle_get_dog_walk_sched():
                 .execute()
             )
         events = events_result.get("items", [])
-        events = [{'start': event['start'],'end': event['end'],'summary': ' '.join(event['summary'].split(' ')[0:(len(event['summary'].split()) - 2)]), 'owned': True if user_email in event['summary'] else False} for event in events]
+        events = [{'id': event['id'], 'start': event['start'],'end': event['end'],'summary': ' '.join(event['summary'].split(' ')[0:(len(event['summary'].split()) - 2)]), 'owned': True if user_email in event['summary'] else False} for event in events]
         return jsonify({'events': events, 'status': 'ok'}), 200
     except HttpError as Error:
         print(Error)
@@ -368,7 +368,6 @@ def handle_schedule_walk_or_check_in_or_meet_and_greet():
 
     calendar_id = "f73ae5b685428f5ee9f2e95b1b39fe17de1f5851e48ab7ddd2dd0ad3765c0f5d@group.calendar.google.com"
 
-
     try:
         service = build("calendar", "v3", credentials=creds)
         type_of_booking = req["type"]
@@ -433,7 +432,8 @@ def handle_schedule_walk_or_check_in_or_meet_and_greet():
         return jsonify({"msg": "Booking created successfully.", "status": "ok"}), 200
     
     except HttpError as error:
-        return jsonify({"msg": "An error occurred: " + {error}}), 404
+        print(error)
+        return jsonify({"msg": "An error occurred."}), 404
 
 
 @api.route('/schedule-pet-sitting', methods=['POST'])
@@ -451,9 +451,9 @@ def handle_schedule_pet_sitting():
     creds = service_account.Credentials.from_service_account_file(
     SERVICE_ACCOUNT_FILE, scopes=SCOPES)
 
-
     calendar_id = "564074f66734a91ee109c5d45a58ad814986316b76f2059642ac08bb37b7acb5@group.calendar.google.com"
 
+    
     try:
         service = build("calendar", "v3", credentials=creds)
         type_of_booking = req["type"]
@@ -462,30 +462,64 @@ def handle_schedule_pet_sitting():
         start_time = req["startTime"]
         end_time = req["endTime"]
         recurring = req["recurring"]
-        recurring_count = req["recurring-count"]
+        recurring_until = req["recurringUntil"]
 
-        event = {
-                'summary': type_of_booking + 'with' + pets + 'for' + email,
-                'location': user_address,
-                'description': details,
-                'start': {
-                    'dateTime': start_time,
-                    'timeZone': 'America/Denver',
-                },
-                'end': {
-                    'dateTime': end_time,
-                    'timeZone': 'America/Denver',
-                },
-                'recurrence': [
-                    'RRULE:FREQ=' + recurring + ';COUNT=' + recurring_count
-                ],
-            }
+        if recurring and recurring_until:
+            event = {
+                    'summary': type_of_booking + ' with ' + ' and '.join(pets) + ' for ' + email,
+                    'location': user_address,
+                    'description': details,
+                    'start': {
+                        'dateTime': start_time,
+                        'timeZone': 'America/Denver',
+                    },
+                    'end': {
+                        'dateTime': end_time,
+                        'timeZone': 'America/Denver',
+                    },
+                    'recurrence': [
+                        'RRULE:FREQ=WEEKLY' + ';UNTIL=' + ''.join(recurring_until.split('-'))
+                    ],
+                }
+        elif recurring:
+            event = {
+                    'summary': type_of_booking + ' with ' + ' and '.join(pets) + ' for ' + email,
+                    'location': user_address,
+                    'description': details,
+                    'start': {
+                        'dateTime': start_time,
+                        'timeZone': 'America/Denver',
+                    },
+                    'end': {
+                        'dateTime': end_time,
+                        'timeZone': 'America/Denver',
+                    },
+                    'recurrence': [
+                        'RRULE:FREQ=WEEKLY'
+                    ],
+                }
+        else:
+            event = {
+                    'summary': type_of_booking + ' with ' + ' and '.join(pets) + ' for ' + email,
+                    'location': user_address,
+                    'description': details,
+                    'start': {
+                        'dateTime': start_time,
+                        'timeZone': 'America/Denver',
+                    },
+                    'end': {
+                        'dateTime': end_time,
+                        'timeZone': 'America/Denver',
+                    },
+                }
+
 
         event = service.events().insert(calendarId=calendar_id, body=event).execute()
         return jsonify({"msg": "Booking created successfully.", "status": "ok"}), 200
     
     except HttpError as error:
-        return jsonify({"msg": "An error occurred: " + {error}}), 404
+        print(error)
+        return jsonify({"msg": "An error occurred."}), 404
     
 @api.route('/get-pet-names', methods=['GET'])
 @jwt_required()
@@ -499,4 +533,59 @@ def get_pet_names():
             pet_names = ["N/A"]
         return jsonify({"pets": pet_names, "status": "ok"})
     except HttpError as error:
-        return jsonify({"msg": "An error occurred: " + {error}}), 404
+        print(error)
+        return jsonify({"msg": "An error occurred."}), 404
+    
+@api.route('/cancel/pet-check-in-or-meeting-or-dog-walk', methods=['POST', 'OPTIONS'])
+@jwt_required()
+def cancel_pet_check_in_or_meeting_or_dog_walk():
+    req = request.get_json()
+    print(req)
+    SCOPES = ['https://www.googleapis.com/auth/calendar']
+    SERVICE_ACCOUNT_FILE = 'credentials.json'
+
+    creds = service_account.Credentials.from_service_account_file(
+    SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+
+
+    calendar_id = "f73ae5b685428f5ee9f2e95b1b39fe17de1f5851e48ab7ddd2dd0ad3765c0f5d@group.calendar.google.com"
+
+    service = build("calendar", "v3", credentials=creds)
+
+    try:
+        service.events().delete(calendarId=calendar_id, eventId=req['id']).execute()
+        return jsonify({"msg": "Event deleted successfully."})
+    except HttpError as error:
+        print(error)
+        return jsonify({"msg": "An error occurred."}), 404
+
+
+@api.route('/cancel/pet-sitting', methods=['POST'])
+@jwt_required()
+def cancel_pet_sitting():
+    req = request.get_json()
+    SCOPES = ['https://www.googleapis.com/auth/calendar']
+    SERVICE_ACCOUNT_FILE = 'credentials.json'
+
+    creds = service_account.Credentials.from_service_account_file(
+    SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+
+
+    calendar_id = "564074f66734a91ee109c5d45a58ad814986316b76f2059642ac08bb37b7acb5@group.calendar.google.com"
+
+    service = build("calendar", "v3", credentials=creds)
+
+    try:
+        service.events().delete(calendarId=calendar_id, eventId=req['id']).execute()
+        return jsonify({"msg": "Event deleted successfully."})
+    except HttpError as error:
+        print(error)
+        return jsonify({"msg": "An error occurred."}), 404
+    
+
+@api.before_request 
+def before_request(): 
+    headers = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' } 
+    print(headers)
+    if request.method == 'OPTIONS' or request.method == 'options': 
+        return jsonify(headers), 200
