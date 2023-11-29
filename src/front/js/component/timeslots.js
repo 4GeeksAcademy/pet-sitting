@@ -510,7 +510,7 @@ export const Timeslots = (props) => {
 						</div>
 						<div className="modal-body">
 							<form onSubmit={(e) => { handleModalCancel(e) }}>
-								<p>{`Cancel booking on ${newScheduleStartStr.substring(0, 10)} from ${parseInt(newScheduleStartStr.substring(11, 13)) <= 12 ? newScheduleStartStr.substring(11, 16) : String(parseInt(newScheduleStartStr.substring(11, 13) - 12) + newScheduleStartStr.substring(13, 16))}-${parseInt(newScheduleEndStr.substring(11, 13)) <= 12 ? newScheduleEndStr.substring(11, 16) : String(parseInt(newScheduleEndStr.substring(11, 13) - 12) + newScheduleEndStr.substring(13, 16))}?`}</p>
+								<p>{`Cancel booking starting on ${newScheduleStartStr.substring(0, 10)} from ${parseInt(newScheduleStartStr.substring(11, 13)) <= 12 ? newScheduleStartStr.substring(11, 16) : String(parseInt(newScheduleStartStr.substring(11, 13) - 12) + newScheduleStartStr.substring(13, 16))}-${parseInt(newScheduleEndStr.substring(11, 13)) <= 12 ? newScheduleEndStr.substring(11, 16) : String(parseInt(newScheduleEndStr.substring(11, 13) - 12) + newScheduleEndStr.substring(13, 16))}?`}</p>
 								<div className="modal-footer">
 									<button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Wait, go back!</button>
 									<button type="submit" className="btn btn-danger" data-bs-dismiss="modal">Cancel Booking</button>
