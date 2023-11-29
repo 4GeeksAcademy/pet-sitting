@@ -14,6 +14,9 @@ export const Timeslots = (props) => {
 	const [newScheduleEndStr, setNewScheduleEndStr] = useState('')
 	const [existingEvents, setExistingEvents] = useState([])
 	const [pets, setPets] = useState([])
+	const [firstTimeslotClicked, setFirstTimeslotClicked] = useState(false)
+	const dtStart = useRef('')
+	const dtEnd = useRef('')
 	const namesOfDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 	const lastDate = useRef('1')
 	const newMonth = useRef(false)
@@ -50,32 +53,65 @@ export const Timeslots = (props) => {
 	}
 
 	const handleTimeslotClick = (e) => {
-		const time = e.target.getAttribute('data-time')
-		const dateStr = e.target.parentNode.getAttribute('data-date')
-		let timeHr = time[1] === ':' ? parseInt(time[0]) : parseInt(time[0] + time[1])
-		timeHr = timeHr < 5 ? timeHr + 12 : timeHr
-		const timeHrStr = timeHr < 10 ? '0' + String(timeHr) : String(timeHr)
-		const timeMins = time[1] === ':' ? time[2] + time[3] : time[3] + time[4]
-		let timeStr = timeHrStr + ':' + timeMins + ':00-07:00'
-		let nextTimeStr = ''
-		if (timeStr[3] === '0') {
-			nextTimeStr += timeStr[0] + timeStr[1] + timeStr[2] + '3' + timeStr[4] + ':00-07:00'
-		} else {
-			nextTimeStr += String(parseInt(timeStr[0] + timeStr[1]) + 1) + timeStr[2] + '0' + timeStr[4] + ':00-07:00'
-		}
-		let month = e.target.parentNode.getAttribute('data-month')
-		month = parseInt(month)
-		if (month < 10) {
-			month = '0' + String(month)
-		} else {
-			month = String(month)
-		}
+		if (firstTimeslotClicked === false) {
+			if (e.target.parentNode.getAttribute('data-start')) {
+				setNewScheduleStartStr(e.target.parentNode.getAttribute('data-start'))
+				setNewScheduleEndStr(e.target.parentNode.getAttribute('data-end'))
+				console.log(e.target.parentNode.getAttribute('data-end'))
+			} else {
+				const time = e.target.getAttribute('data-time')
+				const dateStr = e.target.parentNode.getAttribute('data-date')
+				let timeHr = time[1] === ':' ? parseInt(time[0]) : parseInt(time[0] + time[1])
+				timeHr = timeHr < 5 ? timeHr + 12 : timeHr
+				const timeHrStr = timeHr < 10 ? '0' + String(timeHr) : String(timeHr)
+				const timeMins = time[1] === ':' ? time[2] + time[3] : time[3] + time[4]
+				let timeStr = timeHrStr + ':' + timeMins + ':00-07:00'
+				let month = e.target.parentNode.getAttribute('data-month')
+				month = parseInt(month)
+				if (month < 10) {
+					month = '0' + String(month)
+				} else {
+					month = String(month)
+				}
 
-		let year = String(parseInt(e.target.parentNode.getAttribute('data-year')) + 2000)
-		const scheduleStartStr = `${year}-${month}-${dateStr}T${timeStr}`
-		const scheduleEndStr = `${year}-${month}-${dateStr}T${nextTimeStr}`
-		setNewScheduleStartStr(scheduleStartStr)
-		setNewScheduleEndStr(scheduleEndStr)
+				let year = String(parseInt(e.target.parentNode.getAttribute('data-year')) + 2000)
+				const scheduleStartStr = `${year}-${month}-${dateStr}T${timeStr}`
+				setNewScheduleStartStr(scheduleStartStr)
+				if (typeOfSchedule === 'dog-walk' || typeOfSchedule === 'pet-check-in' || typeOfSchedule === 'meeting') {
+					let nextTimeStr = ''
+					if (timeStr[3] === '0') {
+						nextTimeStr += timeStr[0] + timeStr[1] + timeStr[2] + '3' + timeStr[4] + ':00-07:00'
+					} else {
+						nextTimeStr += String(parseInt(timeStr[0] + timeStr[1]) + 1) + timeStr[2] + '0' + timeStr[4] + ':00-07:00'
+					}
+					const scheduleEndStr = `${year}-${month}-${dateStr}T${nextTimeStr}`
+					setNewScheduleEndStr(scheduleEndStr)
+				} else {
+					setFirstTimeslotClicked(true)
+					e.target.classList.add('selected')
+				}
+			}
+		} else {
+			setFirstTimeslotClicked(false)
+			const time = e.target.getAttribute('data-time')
+			const dateStr = e.target.parentNode.getAttribute('data-date')
+			let timeHr = time[1] === ':' ? parseInt(time[0]) : parseInt(time[0] + time[1])
+			timeHr = timeHr < 5 ? timeHr + 12 : timeHr
+			const timeHrStr = timeHr < 10 ? '0' + String(timeHr) : String(timeHr)
+			const timeMins = time[1] === ':' ? time[2] + time[3] : time[3] + time[4]
+			let timeStr = timeHrStr + ':' + timeMins + ':00-07:00'
+			let month = e.target.parentNode.getAttribute('data-month')
+			month = parseInt(month)
+			if (month < 10) {
+				month = '0' + String(month)
+			} else {
+				month = String(month)
+			}
+
+			let year = String(parseInt(e.target.parentNode.getAttribute('data-year')) + 2000)
+			const scheduleEndStr = `${year}-${month}-${dateStr}T${timeStr}`
+			setNewScheduleEndStr(scheduleEndStr)
+		}
 	}
 
 	const createWeekDayDivs = (weekDatesAndDaysOfWeek, timeSlotLabels) => {
@@ -120,34 +156,55 @@ export const Timeslots = (props) => {
 						{
 							timeSlotLabels.map((timeLabel, ind) => {
 								booked.current = false
-								existingEvents.map((event) => {
+								existingEvents.map((evnt) => {
 									owned.current = false
-									const dateTimeStart = event.start.dateTime
+									const dateTimeStart = evnt.start.dateTime
+									const dateTimeEnd = evnt.end.dateTime
 									const startYear = dateTimeStart.substring(0, 4)
 									const startMonth = dateTimeStart.substring(5, 7)
 									const startDate = dateTimeStart.substring(8, 10)
-									let startTime = dateTimeStart.substring(11, 16)
-									if (parseInt(startTime[0] + startTime[1]) > 12) {
-										const pmHr = String(parseInt(startTime[0] + startTime[1]) - 12)
-										startTime = startTime.slice(2)
-										startTime = pmHr + startTime
+									const startTime = dateTimeStart.substring(11, 16)
+									const endYear = dateTimeEnd.substring(0, 4)
+									const endMonth = dateTimeEnd.substring(5, 7)
+									const endDate = dateTimeEnd.substring(8, 10)
+									const endTime = dateTimeEnd.substring(11, 16)
+									let timeHr = timeLabel.props['data-time'][1] === ':' ? parseInt(timeLabel.props['data-time'][0]) : parseInt(timeLabel.props['data-time'][0] + timeLabel.props['data-time'][1])
+									const timeMin = timeLabel.props['data-time'][1] === ':' ? parseInt(timeLabel.props['data-time'][2] + timeLabel.props['data-time'][3]) : parseInt(timeLabel.props['data-time'][3] + timeLabel.props['data-time'][4])
+									if (timeHr < 9) {
+										timeHr += 12
 									}
-									if ((startTime == timeLabel.props['data-time']) && (startDate == date) && (startMonth == monthStr) && (startYear == String(parseInt(yearStr) + 2000))) {
+									const startTimeHr = parseInt(startTime[0] + startTime[1])
+									const startTimeMin = parseInt(startTime[3] + startTime[4])
+									const endTimeHr = parseInt(endTime[0] + endTime[1])
+									const endTimeMin = parseInt(endTime[3] + endTime[4])
+									const startYearInt = parseInt(startYear)
+									const startMonthInt = parseInt(startMonth)
+									const startDateInt = parseInt(startDate)
+									const endYearInt = parseInt(endYear)
+									const endMonthInt = parseInt(endMonth)
+									const endDateInt = parseInt(endDate)
+									const evntYear = ((startYearInt <= (parseInt(yearStr) + 2000)) && (endYearInt >= parseInt(yearStr) + 2000))
+									const evntMonth = ((startMonthInt <= parseInt(monthStr)) && endMonthInt >= parseInt(monthStr))
+									const evntDate = ((startDateInt <= parseInt(date)) && endDateInt >= parseInt(date))
+									const evntTime = ((startTimeHr <= timeHr) && (endTimeHr > timeHr)) || ((startTimeHr <= timeHr) && (endTimeHr === timeHr) && (endTimeMin >= timeMin))
+									if (evntYear && evntMonth && evntDate && evntTime) {
 										booked.current = true
-										if (event.owned === true) {
+										if (evnt.owned === true) {
 											owned.current = true
+											dtStart.current = dateTimeStart
+											dtEnd.current = dateTimeEnd
 										}
 									}
 								})
 								if (booked.current === false) {
 									return (
-										<div className={`timeslot text-center`} data-year={yearStr} data-date={newDate} data-month={monthStr} data-bs-toggle="modal" data-bs-target="#scheduleNew" onClick={(e) => handleTimeslotClick(e)} key={ind}>
+										<div className={`timeslot text-center`} data-year={yearStr} data-date={newDate} data-month={monthStr} data-bs-toggle="modal" data-bs-target={typeOfSchedule === 'pet-sitting' && firstTimeslotClicked === true ? '#scheduleNew' : typeOfSchedule === 'pet-sitting' ? '#firstTimeslotModal' : '#scheduleNew'} onClick={(e) => handleTimeslotClick(e)} key={ind}>
 											{timeLabel}
 										</div>
 									)
 								} else if (booked.current === true && owned.current === true) {
 									return (
-										<div className={`timeslot text-center booked-by-user`} data-year={yearStr} data-date={newDate} data-month={monthStr} data-bs-toggle="modal" data-bs-target="#cancelSchedule" onClick={(e) => handleTimeslotClick(e)} key={ind}>
+										<div className={`timeslot text-center booked-by-user`} data-start={dtStart.current} data-end={dtEnd.current} data-year={yearStr} data-date={newDate} data-month={monthStr} data-bs-toggle="modal" data-bs-target="#cancelSchedule" onClick={(e) => handleTimeslotClick(e)} key={ind}>
 											{timeLabel}
 										</div>
 									)
@@ -224,20 +281,16 @@ export const Timeslots = (props) => {
 	}
 
 	useEffect(() => {
-		const asyncFunc = async () => {
+		const asyncFunc1 = async () => {
 			const petsResp = await getPets()
 			const tempPets = await petsResp.pets
-			console.log(tempPets)
 			if (tempPets !== undefined) {
 				setPets(tempPets)
 			} else {
 				asyncFunc()
 			}
 		}
-		asyncFunc()
-	}, [])
-
-	useEffect(() => {
+		asyncFunc1()
 		const getScheduleData = async () => {
 			const formatAPIReqStr = (time, date, month, year) => {
 				const dateStr = date
@@ -287,6 +340,7 @@ export const Timeslots = (props) => {
 						})
 					}
 					)
+
 					return await response.json()
 				}
 				else {
@@ -297,14 +351,13 @@ export const Timeslots = (props) => {
 				navigate('/services')
 			}
 		}
-		const asyncFunc = async () => {
+		const asyncFunc2 = async () => {
 			if (recentlyFetched.current === false)
 				try {
 					recentlyFetched.current = true
 					const resp = await getScheduleData()
 					const events = await resp.events
 					if (events !== undefined) {
-						console.log(typeof events)
 						setExistingEvents(events)
 					}
 				}
@@ -315,7 +368,10 @@ export const Timeslots = (props) => {
 				recentlyFetched.current = false
 			}, 2000)
 		}
-		asyncFunc()
+		asyncFunc2()
+	}, [])
+
+	useEffect(() => {
 		const fixedDatesAndWeekdays = fixDatesAndSetDayNames([...Array(7).keys()].map(i => i + parseInt(store.timeSlotsStartingDay.date)))
 		const timeSlotLabels = createTimeSlotsLabels()
 		setWeekDayDivs(createWeekDayDivs(fixedDatesAndWeekdays, timeSlotLabels))
@@ -332,14 +388,13 @@ export const Timeslots = (props) => {
 		if (typeOfSchedule === 'dog-walk' || typeOfSchedule === 'meeting' || typeOfSchedule === 'pet-check-in') {
 			try {
 				const bookPets = pets.map((item, ind) => {
-					console.log(item)
 					if (e.target.elements[`${item}`].checked) {
 						return (item)
 					} else {
 						return null
 					}
 				}).filter(item => item !== null)
-				if (bookPets == undefined) {
+				if (bookPets.length === 0) {
 					throw new Error("You cannot book a service without pets.")
 				}
 				const resp = await fetch(process.env.BACKEND_URL + 'api/schedule-walk-or-check-in-or-meet-and-greet', {
@@ -350,7 +405,7 @@ export const Timeslots = (props) => {
 					},
 					body: JSON.stringify({
 						"startTime": newScheduleStartStr,
-						"schedTime": newScheduleEndStr,
+						"endTime": newScheduleEndStr,
 						"type": e.target.elements.type.value,
 						"details": e.target.elements.details.value,
 						"recurring": e.target.elements.recurring.checked,
@@ -362,14 +417,13 @@ export const Timeslots = (props) => {
 					const resp = await getScheduleData()
 					const events = await resp.events
 					if (events !== undefined) {
-						console.log(typeof events)
 						setExistingEvents(events)
 					}
 				}, 2000)
 			}
 			catch (error) {
 				console.log(`An error occurred: ${error}`)
-				alert('An error occurred. Booking failed.')
+				alert('An error occurred. Booking failed. Make sure to select some pets!')
 			}
 		}
 	}
@@ -435,7 +489,7 @@ export const Timeslots = (props) => {
 								<div className="form-group row">
 									<label htmlFor="recurringUntil" className="col-sm-2">Recurring until?</label>
 									<div className="col-sm-10">
-										<input type="datetime-local" id="recurringUntil" />
+										<input type="date" id="recurringUntil" />
 									</div>
 								</div>
 								<div className="modal-footer">

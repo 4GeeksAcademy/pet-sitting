@@ -31,3 +31,7 @@
 .booked-by-user {
     background-color: white;
 }
+
+.selected {
+    background-color: white;
+}

@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify, Blueprint
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
-from flask_cors import CORS  # Add this import
+from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
 from api.models import db, User, Pet
 from api.utils import APIException
@@ -46,7 +46,6 @@ api = Blueprint('api', __name__)
 @api.route('/signup', methods=['POST'])
 def signup():
     body = request.get_json()
-    print(body)
     if (
         "email" not in body.keys()
         or "password" not in body.keys()
@@ -243,9 +242,10 @@ def handle_get_dog_walk_sched():
                 .execute()
             )
         events = events_result.get("items", [])
-        events = [{'start': event['start'],'end': event['end'],'summary': event['summary'].split(' ')[0:(len(event['summary'].split()) - 2)].join(' '), 'owned': True if user_email in event['summary'] else False} for event in events]
+        events = [{'start': event['start'],'end': event['end'],'summary': ' '.join(event['summary'].split(' ')[0:(len(event['summary'].split()) - 2)]), 'owned': True if user_email in event['summary'] else False} for event in events]
         return jsonify({'events': events, 'status': 'ok'}), 200
-    except:
+    except HttpError as Error:
+        print(Error)
         return jsonify({'msg': 'Could not access the calendar'}), 404
 
 @api.route('/get-meeting', methods=['POST'])
@@ -277,7 +277,7 @@ def handle_meeting_sched():
                 .execute()
             )
         events = events_result.get("items", [])
-        events = [{'start': event['start'],'end': event['end'],'summary': event['summary'].split(' ')[0:(len(event['summary'].split()) - 2)].join(' '), 'owned': True if user_email in event['summary'] else False} for event in events]
+        events = [{'start': event['start'],'end': event['end'],'summary': ' '.join(event['summary'].split(' ')[0:(len(event['summary'].split()) - 2)]), 'owned': True if user_email in event['summary'] else False} for event in events]
         return jsonify({'events': events, 'status': 'ok'}), 200
     except:
         return jsonify({'msg': 'Could not access the calendar'}), 404
@@ -312,7 +312,7 @@ def handle_get_pet_check_in_sched():
                 .execute()
             )
         events = events_result.get("items", [])
-        events = [{'start': event['start'],'end': event['end'],'summary': event['summary'].split(' ')[0:(len(event['summary'].split()) - 2)].join(' '), 'owned': True if user_email in event['summary'] else False} for event in events]
+        events = [{'start': event['start'],'end': event['end'],'summary': ' '.join(event['summary'].split(' ')[0:(len(event['summary'].split()) - 2)]), 'owned': True if user_email in event['summary'] else False} for event in events]
         return jsonify({'events': events, 'status': 'ok'}), 200
     except:
         return jsonify({'msg': 'Could not access the calendar'}), 404
@@ -346,7 +346,7 @@ def handle_get_pet_sitting_sched():
                 .execute()
             )
         events = events_result.get("items", [])
-        events = [{'start': event['start'],'end': event['end'],'summary': event['summary'].split(' ')[0:(len(event['summary'].split()) - 2)].join(' '), 'owned': True if user_email in event['summary'] else False} for event in events]
+        events = [{'start': event['start'],'end': event['end'],'summary': ' '.join(event['summary'].split(' ')[0:(len(event['summary'].split()) - 2)]), 'owned': True if user_email in event['summary'] else False} for event in events]
         return jsonify({'events': events, 'status': 'ok'}), 200
     except:
         return jsonify({'msg': 'Could not access the calendar'}), 404
@@ -379,22 +379,55 @@ def handle_schedule_walk_or_check_in_or_meet_and_greet():
         recurring = req["recurring"]
         recurring_until = req["recurringUntil"]
 
-        event = {
-                'summary': type_of_booking + 'with' + pets + 'for' + email,
-                'location': user_address,
-                'description': details,
-                'start': {
-                    'dateTime': start_time,
-                    'timeZone': 'America/Denver',
-                },
-                'end': {
-                    'dateTime': end_time,
-                    'timeZone': 'America/Denver',
-                },
-                'recurrence': [
-                    'RRULE:FREQ=' + recurring + ';UNTIL=' + recurring_until
-                ],
-            }
+        if recurring and recurring_until:
+            event = {
+                    'summary': type_of_booking + ' with ' + ' and '.join(pets) + ' for ' + email,
+                    'location': user_address,
+                    'description': details,
+                    'start': {
+                        'dateTime': start_time,
+                        'timeZone': 'America/Denver',
+                    },
+                    'end': {
+                        'dateTime': end_time,
+                        'timeZone': 'America/Denver',
+                    },
+                    'recurrence': [
+                        'RRULE:FREQ=WEEKLY' + ';UNTIL=' + ''.join(recurring_until.split('-'))
+                    ],
+                }
+        elif recurring:
+            event = {
+                    'summary': type_of_booking + ' with ' + ' and '.join(pets) + ' for ' + email,
+                    'location': user_address,
+                    'description': details,
+                    'start': {
+                        'dateTime': start_time,
+                        'timeZone': 'America/Denver',
+                    },
+                    'end': {
+                        'dateTime': end_time,
+                        'timeZone': 'America/Denver',
+                    },
+                    'recurrence': [
+                        'RRULE:FREQ=WEEKLY'
+                    ],
+                }
+        else:
+            event = {
+                    'summary': type_of_booking + ' with ' + ' and '.join(pets) + ' for ' + email,
+                    'location': user_address,
+                    'description': details,
+                    'start': {
+                        'dateTime': start_time,
+                        'timeZone': 'America/Denver',
+                    },
+                    'end': {
+                        'dateTime': end_time,
+                        'timeZone': 'America/Denver',
+                    },
+                }
+
 
         event = service.events().insert(calendarId=calendar_id, body=event).execute()
         return jsonify({"msg": "Booking created successfully.", "status": "ok"}), 200
@@ -461,10 +494,7 @@ def get_pet_names():
     user = User.query.filter_by(email=email).first()
     try: 
         pets = user.serialize()["pets"]
-        print(pets)
         pet_names = [pet["name"] for pet in pets]
-        print(pet_names)
-        print(type(pet_names))
         if len(pet_names) == 0:
             pet_names = ["N/A"]
         return jsonify({"pets": pet_names, "status": "ok"})

@@ -11,7 +11,6 @@ export const Services = () => {
     document.body.className = "services"
 
     return function cleanup() {
-      console.log('running cleanup')
       document.body.classList.remove('services')
     }
   }, [])
@@ -49,7 +48,7 @@ export const Services = () => {
             </Link>
           </div>
           <div className="col-6">
-            <Link to="/schedule/dog-walk" style={{ textDecoration: 'none' }}>
+            <Link to="/schedule/pet-check-in" style={{ textDecoration: 'none' }}>
               <div className="card">
                 <div className="card-border">
                   <div className="card-content">
@@ -69,7 +68,7 @@ export const Services = () => {
             </Link>
           </div>
           <div className="col-6">
-            <Link to="/schedule/dog-walk" style={{ textDecoration: 'none' }}>
+            <Link to="/schedule/meeting" style={{ textDecoration: 'none' }}>
               <div className="card">
                 <div className="card-border">
                   <div className="card-content">
@@ -89,7 +88,7 @@ export const Services = () => {
             </Link>
           </div>
           <div className="col-6">
-            <Link to="/schedule/dog-walk" style={{ textDecoration: 'none' }}>
+            <Link to="/schedule/pet-sitting" style={{ textDecoration: 'none' }}>
               <div className="card">
                 <div className="card-border">
                   <div className="card-content">
