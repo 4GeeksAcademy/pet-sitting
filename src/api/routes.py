@@ -132,7 +132,7 @@ def send_code ():
     user = User.query.filter_by(email=email).first()
     print(user)
     if user is None:
-        return jsonify("User doesn't exist"), 404
+        return jsonify({"message":"User doesn't exist"}), 404
     else :
         new_password = generatePassword()
         new_hashed_password = generate_password_hash(new_password)

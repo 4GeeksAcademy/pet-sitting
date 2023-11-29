@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 export const ForgottenPassword = () => {
     const [email, setEmail] = useState("");
@@ -7,7 +8,7 @@ export const ForgottenPassword = () => {
         console.log(email)
         let options = {
             method: "PUT",
-            mode:"cors",
+            mode: "cors",
             headers: {
                 "Content-Type": "application/json",
                 "Access-Control-Allow-Origin": "*",
@@ -16,35 +17,47 @@ export const ForgottenPassword = () => {
         }
         try {
             let response = await fetch(process.env.BACKEND_URL + "/api/forgotten-password", options)
-            let data = await response.json()
-            if (data) {
+            if (response.status == 200) {
                 setMessageStatus("sent")
-                console.log(data)
             }
-            else{
-                console.log(response)
+            else {
+                alert("email doesn't exist")
             }
         }
         catch (error) {
             console.log(error)
+            alert (error)
         }
     }
-
-    return (
-        <div className="container pt-3"  >
-            {messageStatus=="pending"?(
-                 <div className="Card mx-auto" style={{ width: "25rem" }}>
-                 <h3 className="text-center">Reset your password</h3>
-                 <p className="text-center">Enter the email address registered with your account. We'll email you a temporary password, so that you may access your account and change your password.</p>
-                 <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Email" />
-                 <button className="btn btn-outline-primary mt-3 w-100" onClick={handleResetPassword}>Continue</button>
+    switch (messageStatus) {
+        case "pending":
+            return (
+                <div className="container pt-3"  >
+                    <div className="Card mx-auto" style={{ width: "25rem" }}>
+                        <h3 className="text-center">Reset your password</h3>
+                        <p className="text-center">Enter the email address registered with your account. We'll email you a temporary password, so that you may access your account and change your password.</p>
+                        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Email" />
+                        <button className="btn btn-outline-primary mt-3 w-100" onClick={handleResetPassword} type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Continue</button>
+                    </div>
                 </div>
-            ):(
-                <div>Your message has been sent</div>
             )
-            }
-        </div>
-    )
+            break;
+        case "sent":
+            return (
+                <div className="container pt-3">
+                <div className="Card mx-auto " style={{ width: "18rem" }}>
+                    <div className="card-body">
+                        <h5 className="card-title">Success!</h5>
+                        <p className="card-text">You'll receive an email shortly with a new password</p>
+                        <Link to="/"><a href="#" className="btn btn-primary">Go to the login page</a></Link>
+                    </div>
+                </div>
+                </div>
+            )
+            break;
+        default:
+        // code block
+    }
 
 
 }
