@@ -472,7 +472,7 @@ export const Timeslots = (props) => {
 	}
 
 	return (
-		<div className="container-fluid d-flex timeslots-container">
+		<div className="container d-flex timeslots-container">
 			{weekDayDivs}
 			<div className="modal fade" id="scheduleNew" tabIndex="-1" aria-labelledby="scheduleNewModal" aria-hidden="true">
 				<div className="modal-dialog">

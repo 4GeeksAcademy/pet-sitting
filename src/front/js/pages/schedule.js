@@ -41,6 +41,11 @@ export const Schedule = () => {
     }
     return (
         <div className="container-fluid gx-0">
+            <div className="row d-flex gx-0 mx-auto">
+                <div className="col-6 mx-auto text-center">
+                    <h1>{`Schedule a ${typeOfScheduleStr}`}</h1>
+                </div>
+            </div>
             <div className="row flex-nowrap schedule-row gx-0">
                 <div className="col-1 px-0 bg-light-2 d-none d-md-flex">
                     <div className="d-flex flex-column align-items-sm-center pt-2 text-light h-100">
@@ -75,11 +80,6 @@ export const Schedule = () => {
                     </nav>
                 </div>
                 <div className="col px-0">
-                    <div className="row d-flex gx-0 mx-auto">
-                        <div className="col-6 mx-auto text-center">
-                            <h1>{`Schedule a ${typeOfScheduleStr}`}</h1>
-                        </div>
-                    </div>
                     <div className="tab-content" id="nav-tabContent">
                         <div className={`tab-pane fade ${store.activeScheduleTab === 'nav-timeslots' ? 'show active' : ''}`} id="nav-timeslots" role="tabpanel" aria-labelledby="nav-timeslots-tab"><Timeslots typeOfScheduleStr={typeOfScheduleStr} typeOfSchedule={typeOfSchedule} /></div>
                         <div className={`tab-pane fade ${store.activeScheduleTab === 'nav-calendar' ? 'show active' : ''}`} id="nav-calendar" role="tabpanel" aria-labelledby="nav-calendar-tab"><Calendar /></div>
