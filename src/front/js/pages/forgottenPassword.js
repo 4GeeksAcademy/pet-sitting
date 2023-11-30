@@ -44,9 +44,9 @@ export const ForgottenPassword = () => {
             break;
         case "sent":
             return (
-                <div className="container pt-3">
+                <div className="container pt-4 pb-3">
                 <div className="Card mx-auto " style={{ width: "18rem" }}>
-                    <div className="card-body">
+                    <div className="card-body text-center">
                         <h5 className="card-title">Success!</h5>
                         <p className="card-text">You'll receive an email shortly with a new password</p>
                         <Link to="/"><a href="#" className="btn btn-primary">Go to the login page</a></Link>

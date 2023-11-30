@@ -28,11 +28,6 @@ def protected():
 
 
 
-
-
-
-
-
 @api.route('/signup', methods=['POST'])
 def signup():
     body = request.get_json()
@@ -51,7 +46,6 @@ def signup():
     password = body['password']
     first_name = body['first_name']
     last_name = body['last_name']
-    
     
 
 
@@ -106,9 +100,6 @@ def get_account():
 
     except Exception as e:
         return jsonify(message=str(e)), 500
-
-
-
 
 
 @api.route('/login', methods=['POST'])
