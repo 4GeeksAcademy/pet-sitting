@@ -80,7 +80,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					}
 				} catch (error) { console.log(error) }
 			},
-			account: async (formData) => {
+			account: async (userFormData,petFormData) => {
 				let token=localStorage.getItem("token")
 				try {
 					const response = await fetch(`${process.env.BACKEND_URL}/api/account`, {
@@ -90,7 +90,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 						
 						  "Authorization": `Bearer ${token}`,
 					  },
-					  body: JSON.stringify(formData),
+					  body: JSON.stringify({
+						userFormData:userFormData,
+						petFormData:petFormData
+
+					  }),
 					});
 				
 					if (!response.ok) {

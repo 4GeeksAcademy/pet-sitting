@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import React, { useContext, useState } from "react";
 import { Context } from "../store/appContext";
@@ -14,7 +13,7 @@ export const Account = () => {
   });
 
   // Pet States
-  const [pets, setPets] = useState([]);
+  const [pet, setPet] = useState([]);
   const [petFormData, setPetFormData] = useState({
     pet_name: "",
     breed: "",
@@ -26,6 +25,8 @@ export const Account = () => {
 
   const [editPetIndex, setEditPetIndex] = useState(null);
   const [isEditModalOpen, setEditModalOpen] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
   const navigate = useNavigate();
 
   const handleUserChange = (e) => {
@@ -34,6 +35,19 @@ export const Account = () => {
       ...userData,
       [name]: value,
     });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      await actions.account(userData,petFormData);
+      setModalMessage("Update successful!");
+      setShowModal(true);
+    } catch (error) {
+      setModalMessage("Update unsuccessful. Please try again.");
+      setShowModal(true);
+    }
   };
 
   const handlePetChange = (e) => {
@@ -53,7 +67,7 @@ export const Account = () => {
   };
 
   const addPet = () => {
-    setPets([...pets, petFormData]);
+    setPet([...pet, petFormData]);
     setPetFormData({
       pet_name: "",
       breed: "",
@@ -76,7 +90,7 @@ export const Account = () => {
 
   const handleEditPet = () => {
     if (editPetIndex !== null) {
-      const updatedPets = [...pets];
+      const updatedPets = [...pet];
       updatedPets[editPetIndex] = {
         pet_name: petFormData.pet_name,
         breed: petFormData.breed,
@@ -85,118 +99,79 @@ export const Account = () => {
         detailed_care_info: petFormData.detailed_care_info,
         pet_picture: petFormData.pet_picture,
       };
-      setPets(updatedPets);
+      setPet(updatedPets);
     }
     closeEditModal();
   };
 
   const deletePet = (index) => {
-    const updatedPets = [...pets];
+    const updatedPets = [...pet];
     updatedPets.splice(index, 1);
-    setPets(updatedPets);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-     actions.account(userData)
-    console.log("User Form submitted:", userData);
-    console.log("Pets:", pets);
-    navigate("/services");
+    setPet(updatedPets);
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <div>
       <div className="account_form">
-
         <h2>Client information</h2>
-
         <div class="form-group">
           <div>
-          <label htmlFor="first_name">First Name</label>
-          <input
-            type="text"
-            id="first_name"
-            name="first_name"
-            value={userData.first_name}
-            onChange={handleUserChange}
-          />
+            <label htmlFor="first_name">First Name</label>
+            <input
+              type="text"
+              id="first_name"
+              name="first_name"
+              value={userData.first_name}
+              onChange={handleUserChange}
+            />
+          </div>
+          <div>
+            <label htmlFor="last_name">Last Name</label>
+            <input
+              type="text"
+              id="last_name"
+              name="last_name"
+              value={userData.last_name}
+              onChange={handleUserChange}
+            />
+          </div>
+          <div>
+            <label htmlFor="email">Email</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={userData.email}
+              onChange={handleUserChange}
+            />
+          </div>
+          <div>
+            <label htmlFor="phone_number">Phone Number</label>
+            <input
+              type="text"
+              id="phone_number"
+              name="phone_number"
+              value={userData.phone_number}
+              onChange={handleUserChange}
+            />
+          </div>
+          <div>
+            <label htmlFor="address">Address</label>
+            <input
+              type="text"
+              id="address"
+              name="address"
+              value={userData.address}
+              onChange={handleUserChange}
+            />
+          </div>
+          {/* ... (other user information inputs) */}
         </div>
-        <div>
-          <label htmlFor="last_name">Last Name</label>
-          <input
-            type="text"
-            id="last_name"
-            name="last_name"
-            value={userData.last_name}
-            onChange={handleUserChange}
-          />
-        </div>
-        <div>
-          <label htmlFor="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={userData.email}
-            onChange={handleUserChange}
-          />
-        </div>
-        <div>
-          <label htmlFor="phone_number">Phone Number</label>
-          <input
-            type="text"
-            id="phone_number"
-            name="phone_number"
-            value={userData.phone_number}
-            onChange={handleUserChange}
-          />
-        </div>
-        <div>
-          <label htmlFor="address">Address</label>
-          <input
-            type="text"
-            id="address"
-            name="address"
-            value={userData.address}
-            onChange={handleUserChange}
-          />
-        </div>
-        <div>
-          <label htmlFor="city">City</label>
-          <input
-            type="text"
-            id="city"
-            name="city"
-            value={userData.city}
-            onChange={handleUserChange}
-          />
-        </div>
-        <div>
-          <label htmlFor="state">State</label>
-          <input
-            type="text"
-            id="state"
-            name="state"
-            value={userData.state}
-            onChange={handleUserChange}
-          />
-        </div>
-        <div>
-          <label htmlFor="zip">zip</label>
-          <input
-            type="text"
-            id="zip"
-            name="zip"
-            value={userData.zip}
-            onChange={handleUserChange}
-          />
-        </div>
-
 
         {/* Pet Section */}
         <div className="pet_form">
           <h2>Pet information</h2>
-          {pets.map((pet, index) => (
+          {pet.map((pet, index) => (
             <div key={index}>
               <p>{pet.pet_name}</p>
               <button type="button" onClick={() => openEditModal(index)}>
@@ -218,87 +193,143 @@ export const Account = () => {
             />
           </div>
           <div>
-            <label htmlFor="breed">Breed</label>
-            <input
-              type="text"
-              id="breed"
-              name="breed"
-              value={petFormData.breed}
-              onChange={handlePetChange}
-            />
-          </div>
-          <div>
-            <label htmlFor="age">Age</label>
-            <input
-              type="text"
-              id="age"
-              name="age"
-              value={petFormData.age}
-              onChange={handlePetChange}
-            />
-          </div>
-          <div>
-            <label htmlFor="description">Description</label>
-            <input
-              type="text"
-              id="description"
-              name="description"
-              value={petFormData.description}
-              onChange={handlePetChange}
-            />
-          </div>
-          <div>
-            <label htmlFor="detailed_care_info">Detailed care information</label>
-            <input
-              type="text"
-              id="detailed_care_info"
-              name="detailed_care_info"
-              value={petFormData.detailed_care_info}
-              onChange={handlePetChange}
-            />
-          </div>
-          <div>
-            <label htmlFor="pet_picture">Pet Picture</label>
-            <input
-              type="file"
-              id="pet_picture"
-              name="pet_picture"
-              onChange={handlePetPictureChange}
-            />
-          </div>
+              <label htmlFor="breed">Breed</label>
+              <input
+                type="text"
+                id="breed"
+                name="breed"
+                value={petFormData.breed}
+                onChange={handlePetChange}
+              />
+            </div>
+            <div>
+              <label htmlFor="age">Age</label>
+              <input
+                type="text"
+                id="age"
+                name="age"
+                value={petFormData.age}
+                onChange={handlePetChange}
+              />
+            </div>
+            <div>
+              <label htmlFor="description">Description</label>
+              <input
+                type="text"
+                id="description"
+                name="description"
+                value={petFormData.description}
+                onChange={handlePetChange}
+              />
+            </div>
+            <div>
+              <label htmlFor="detailed_care_info">Detailed care information</label>
+              <input
+                type="text"
+                id="detailed_care_info"
+                name="detailed_care_info"
+                value={petFormData.detailed_care_info}
+                onChange={handlePetChange}
+              />
+            </div>
+            <div>
+              <label htmlFor="pet_picture">Pet Picture</label>
+              <input
+                type="file"
+                id="pet_picture"
+                name="pet_picture"
+                onChange={handlePetPictureChange}
+              />
+            </div>
           <button type="button" onClick={addPet}>
             Add Pet
           </button>
           <button type="button" onClick={handleSubmit}>
-          submit
-        </button>
+            Submit
+          </button>
+          {/* Modal for success/failure */}
+          {showModal && (
+            <div className="modal">
+              <p>You have successfully updated account</p>
+              <button
+                onClick={() => {
+                  setShowModal(false);
+                  navigate("/services"); // Navigate to "/services" after closing modal
+                }}
+              >
+                Close
+              </button>
+            </div>
+          )}
         </div>
       </div>
-      </div>
 
-      {
-        isEditModalOpen && (
-          <div className="edit-modal">
-            <h2>Edit Pet</h2>
-
-            <button type="button" onClick={handleEditPet}>
-              Save Changes
-            </button>
-            <button type="button" onClick={closeEditModal}>
-              Cancel
-            </button>
-
-          
-          </div>
-
-        )
-      }
-
-      
-
-
-    </form >
-
-
+      {isEditModalOpen && (
+        <div className="edit-modal">
+          <h2>Edit Pet</h2>
+          <button type="button" onClick={handleEditPet}>
+            Save Changes
+          </button>
+          <button type="button" onClick={closeEditModal}>
+            Cancel
+          </button>
+        </div>
+      )}
+    </div>
   );
 };
+
+
+
+
+
+
+{/* <div>
+              <label htmlFor="breed">Breed</label>
+              <input
+                type="text"
+                id="breed"
+                name="breed"
+                value={petFormData.breed}
+                onChange={handlePetChange}
+              />
+            </div>
+            <div>
+              <label htmlFor="age">Age</label>
+              <input
+                type="text"
+                id="age"
+                name="age"
+                value={petFormData.age}
+                onChange={handlePetChange}
+              />
+            </div>
+            <div>
+              <label htmlFor="description">Description</label>
+              <input
+                type="text"
+                id="description"
+                name="description"
+                value={petFormData.description}
+                onChange={handlePetChange}
+              />
+            </div>
+            <div>
+              <label htmlFor="detailed_care_info">Detailed care information</label>
+              <input
+                type="text"
+                id="detailed_care_info"
+                name="detailed_care_info"
+                value={petFormData.detailed_care_info}
+                onChange={handlePetChange}
+              />
+            </div>
+            <div>
+              <label htmlFor="pet_picture">Pet Picture</label>
+              <input
+                type="file"
+                id="pet_picture"
+                name="pet_picture"
+                onChange={handlePetPictureChange}
+              />
+            </div> */}
