@@ -14,7 +14,8 @@ export const Timeslots = (props) => {
 	const [newScheduleEndStr, setNewScheduleEndStr] = useState('')
 	const [existingEvents, setExistingEvents] = useState([])
 	const [pets, setPets] = useState([])
-	const [invalidBooking, setInvalidBooking] = useState(false)
+	const invalidBookingOverlap = useRef(false)
+	const invalidBookingEndBfrStart = useRef(false)
 	const firstTimeslotClicked = useRef(false)
 	const dtStart = useRef('')
 	const dtEnd = useRef('')
@@ -121,9 +122,13 @@ export const Timeslots = (props) => {
 				const evntDTStart = new Date(dateTimeStart)
 				const evntDTEnd = new Date(dateTimeEnd)
 				if ((evntDTStart >= newSchedStart && evntDTStart < newSchedEnd) || (evntDTEnd > newSchedStart && evntDTEnd <= newSchedEnd)) {
-					setInvalidBooking(true)
+					invalidBookingOverlap.current = true
 				}
 			})
+			if (newSchedStart >= newSchedEnd) {
+				invalidBookingEndBfrStart.current = true
+				console.log(invalidBookingEndBfrStart.current)
+			}
 		}
 	}
 
@@ -468,79 +473,87 @@ export const Timeslots = (props) => {
 							<h5 className="modal-title" id="modalLabel1">{`Schedule a ${typeOfScheduleStr}`}</h5>
 							<button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={() => {
 								firstTimeslotClicked.current = false
-								setTimeout(setInvalidBooking(false), 3000)
+								setTimeout(invalidBookingOverlap.current = false, 2000)
+								setTimeout(invalidBookingEndBfrStart.current = false, 2000)
+								setNewScheduleStartStr('')
+								setNewScheduleEndStr('')
 							}}></button>
 						</div>
 						<div className="modal-body">
-							{invalidBooking === false ?
-								<form className="form-group" onSubmit={(e) => { handleModalSubmit(e) }}>
-									<div className="form-group row">
-										<label htmlFor="type" className="col-sm-2 col-form-label">Type of Booking:</label>
-										<div className="col-sm-10">
-											<input type="text" readOnly className="form-control-plaintext" id="type" value={typeOfScheduleStr} />
-										</div>
-									</div>
-									<div className="form-group row">
-										<label htmlFor="staticType" className="col-sm-2 col-form-label">Pet(s):</label>
-										<div className="col-sm-10">
-											{pets.map((petName) => {
-												return (
-													<div className="form-check">
-														<input className="form-check-input" type="checkbox" value="" id={petName} />
-														<label className="form-check-label" htmlFor={petName} name="chkboxLabel">
-															{petName}
-														</label>
-													</div>
-												)
-											})
-											}
-										</div>
-									</div>
-									<div className="form-group row">
-										<label htmlFor="details" className="col-sm-2 col-form-label">Details:</label>
-										<div className="col-sm-10">
-											<textarea className="form-control" id="details" rows="5"></textarea>
-										</div>
-									</div>
-									<div className="form-group row">
-										<label htmlFor="startTime" className="col-sm-3 col-form-label">Start Date/Time:</label>
-										<div className="col-sm-9">
-											<textarea readOnly id="startTime" value={newScheduleStartStr} />
-										</div>
-									</div>
-									<div className="form-group row">
-										<label htmlFor="endTime" className="col-sm-3 col-form-label">End Date/Time:</label>
-										<div className="col-sm-9">
-											<textarea readOnly id="endTime" value={newScheduleEndStr} />
-										</div>
-									</div>
-									<div className="form-group row">
-										<div className="form-check">
-											<label className="form-check-label col-sm-2" htmlFor='recurring'>Recurring weekly?</label>
-											<input className="form-check-input col-sm-10" type="checkbox" value="" id='recurring' />
-										</div>
-									</div>
-									<div className="form-group row">
-										<label htmlFor="recurringUntil" className="col-sm-2">Recurring until?</label>
-										<div className="col-sm-10">
-											<input type="date" id="recurringUntil" />
-										</div>
-									</div>
-									<div className="modal-footer">
-										<button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={() => {
-											firstTimeslotClicked.current = false
-											setInvalidBooking(false)
-										}}>Cancel</button>
-										<button type="submit" className="btn btn-primary" data-bs-dismiss="modal" onClick={() => {
-											firstTimeslotClicked.current = false
-											setInvalidBooking(false)
-										}}>Submit</button>
-									</div>
-								</form>
-								:
+							{invalidBookingOverlap.current === true ?
 								<p>
 									You may not schedule a pet-sitting that overlaps any other booked pet-sitting. If it is your own, cancel the original booking and book the new one. Otherwise, you can schedule multiple pet check ins for the times you will not be available to care for your pet(s).
 								</p>
+								:
+								invalidBookingEndBfrStart.current === true ?
+									<p>
+										Your end date must be after your start date.
+									</p>
+									:
+									<form className="form-group" onSubmit={(e) => { handleModalSubmit(e) }}>
+										<div className="form-group row">
+											<label htmlFor="type" className="col-sm-2 col-form-label">Type of Booking:</label>
+											<div className="col-sm-10">
+												<input type="text" readOnly className="form-control-plaintext" id="type" value={typeOfScheduleStr} />
+											</div>
+										</div>
+										<div className="form-group row">
+											<label htmlFor="staticType" className="col-sm-2 col-form-label">Pet(s):</label>
+											<div className="col-sm-10">
+												{pets.map((petName) => {
+													return (
+														<div className="form-check">
+															<input className="form-check-input" type="checkbox" value="" id={petName} />
+															<label className="form-check-label" htmlFor={petName} name="chkboxLabel">
+																{petName}
+															</label>
+														</div>
+													)
+												})
+												}
+											</div>
+										</div>
+										<div className="form-group row">
+											<label htmlFor="details" className="col-sm-2 col-form-label">Details:</label>
+											<div className="col-sm-10">
+												<textarea className="form-control" id="details" rows="5"></textarea>
+											</div>
+										</div>
+										<div className="form-group row">
+											<label htmlFor="startTime" className="col-sm-3 col-form-label">Start Date/Time:</label>
+											<div className="col-sm-9">
+												<textarea readOnly id="startTime" value={newScheduleStartStr} />
+											</div>
+										</div>
+										<div className="form-group row">
+											<label htmlFor="endTime" className="col-sm-3 col-form-label">End Date/Time:</label>
+											<div className="col-sm-9">
+												<textarea readOnly id="endTime" value={newScheduleEndStr} />
+											</div>
+										</div>
+										<div className="form-group row">
+											<div className="form-check">
+												<label className="form-check-label col-sm-2" htmlFor='recurring'>Recurring weekly?</label>
+												<input className="form-check-input col-sm-10" type="checkbox" value="" id='recurring' />
+											</div>
+										</div>
+										<div className="form-group row">
+											<label htmlFor="recurringUntil" className="col-sm-2">Recurring until?</label>
+											<div className="col-sm-10">
+												<input type="date" id="recurringUntil" />
+											</div>
+										</div>
+										<div className="modal-footer">
+											<button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={() => {
+												firstTimeslotClicked.current = false
+												invalidBookingOverlap.current = false
+											}}>Cancel</button>
+											<button type="submit" className="btn btn-primary" data-bs-dismiss="modal" onClick={() => {
+												firstTimeslotClicked.current = false
+												invalidBookingOverlap.current = false
+											}}>Submit</button>
+										</div>
+									</form>
 							}
 						</div>
 					</div>
@@ -569,20 +582,20 @@ export const Timeslots = (props) => {
 				<div className="modal-dialog">
 					<div className="modal-content">
 						<div className="modal-header">
-							<h5 className="modal-title" id="modalLabel2">Select another timeslot to book a sitting.</h5>
+							<h5 className="modal-title" id="modalLabel2">First timeslot selected.</h5>
 							<button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 						</div>
 						<div className="modal-body">
-							<p>If you would like to schedule a booking longer than one week, please contact the business owner to negotiate.</p>
+							<p>Select another timeslot to book a sitting.</p>
 						</div>
 						<div className="modal-footer">
 							<button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={() => {
 								firstTimeslotClicked.current = false
-								setInvalidBooking(false)
+								invalidBookingOverlap.current = false
 							}}><p>Cancel {`(reselect start time/date)`}</p></button>
 							<button type="submit" className="btn btn-danger" data-bs-dismiss="modal" onClick={() => {
 								firstTimeslotClicked.current = true
-								setInvalidBooking(false)
+								invalidBookingOverlap.current = false
 							}}>Continue</button>
 						</div>
 					</div>
