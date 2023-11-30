@@ -299,7 +299,7 @@ export const Timeslots = (props) => {
 		const schedEndReq = formatAPIReqStr("17:00:00-07:00", nextDate, String(parseInt(nextMonth) + 1), nextYear)
 		try {
 			if (store.token !== null) {
-				const response = await fetch(process.env.BACKEND_URL + `api/get-${store.typeOfSchedule}`, {
+				const response = await fetch(process.env.BACKEND_URL + `api/get-${typeOfSchedule}`, {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",

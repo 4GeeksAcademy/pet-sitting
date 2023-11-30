@@ -12,10 +12,6 @@ export const Schedule = () => {
     const { store, actions } = useContext(Context);
     let { typeOfSchedule } = useParams()
 
-    useEffect(() => {
-        actions.setTypeOfSchedule(typeOfSchedule)
-    }, [])
-
     let typeOfScheduleStr = ''
     if (typeOfSchedule === 'dog-walk' || typeOfSchedule === 'meeting' || typeOfSchedule === 'pet-check-in' || typeOfSchedule === 'pet-sitting') {
         let nextUpper = false

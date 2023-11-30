@@ -107,9 +107,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 			changeActiveScheduleTab: (payload) => {
 				setStore({ activeScheduleTab: payload })
 			},
-			setTypeOfSchedule: (payload) => {
-				setStore({ typeOfSchedule: payload })
-			}
 		}
 	};
 }
