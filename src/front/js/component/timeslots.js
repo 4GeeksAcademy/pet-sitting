@@ -160,34 +160,15 @@ export const Timeslots = (props) => {
 								existingEvents.map((evnt) => {
 									const dateTimeStart = evnt.start.dateTime
 									const dateTimeEnd = evnt.end.dateTime
-									const startYear = dateTimeStart.substring(0, 4)
-									const startMonth = dateTimeStart.substring(5, 7)
-									const startDate = dateTimeStart.substring(8, 10)
-									const startTime = dateTimeStart.substring(11, 16)
-									const endYear = dateTimeEnd.substring(0, 4)
-									const endMonth = dateTimeEnd.substring(5, 7)
-									const endDate = dateTimeEnd.substring(8, 10)
-									const endTime = dateTimeEnd.substring(11, 16)
 									let timeHr = timeLabel.props['data-time'][1] === ':' ? parseInt(timeLabel.props['data-time'][0]) : parseInt(timeLabel.props['data-time'][0] + timeLabel.props['data-time'][1])
 									const timeMin = timeLabel.props['data-time'][1] === ':' ? parseInt(timeLabel.props['data-time'][2] + timeLabel.props['data-time'][3]) : parseInt(timeLabel.props['data-time'][3] + timeLabel.props['data-time'][4])
 									if (timeHr < 9) {
 										timeHr += 12
 									}
-									const startTimeHr = parseInt(startTime[0] + startTime[1])
-									const startTimeMin = parseInt(startTime[3] + startTime[4])
-									const endTimeHr = parseInt(endTime[0] + endTime[1])
-									const endTimeMin = parseInt(endTime[3] + endTime[4])
-									const startYearInt = parseInt(startYear)
-									const startMonthInt = parseInt(startMonth)
-									const startDateInt = parseInt(startDate)
-									const endYearInt = parseInt(endYear)
-									const endMonthInt = parseInt(endMonth)
-									const endDateInt = parseInt(endDate)
-									const evntYear = ((startYearInt <= (parseInt(yearStr) + 2000)) && (endYearInt >= parseInt(yearStr) + 2000))
-									const evntMonth = ((startMonthInt <= parseInt(monthStr)) && endMonthInt >= parseInt(monthStr))
-									const evntDate = ((startDateInt <= parseInt(date)) && endDateInt >= parseInt(date))
-									const evntTime = ((startTimeHr <= timeHr) && (endTimeHr >= timeHr) && (startTimeMin <= timeMin) && (endTimeMin > timeMin))
-									if (evntYear && evntMonth && evntDate && evntTime) {
+									const currDateTime = new Date(String(parseInt(yearStr) + 2000), (parseInt(monthStr) - 1), date, timeHr, timeMin)
+									const startDateTime = new Date(dateTimeStart)
+									const endDateTime = new Date(dateTimeEnd)
+									if (startDateTime <= currDateTime && currDateTime < endDateTime) {
 										booked.current = true
 										if (evnt.owned === true) {
 											owned.current = true

@@ -28,6 +28,10 @@
     cursor: pointer;
 }
 
+.booked {
+    opacity: 0.5
+}
+
 .booked-by-user {
     background-color: white;
 }
