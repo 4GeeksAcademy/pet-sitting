@@ -163,7 +163,7 @@ export const Home = () => {
               alt="Dog Pic"
             />
 
-            <Link to="/signupUser" className=" btn btn-secondary StartNowText">click here to join the faimly</Link>
+            <Link to="/signupUser" className=" btn btn-secondary StartNowText">Click here to join the family</Link>
 
           </div>
         </div>

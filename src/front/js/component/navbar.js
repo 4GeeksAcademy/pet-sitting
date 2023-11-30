@@ -113,9 +113,9 @@ export const Navbar = () => {
                 </Link>
               </li>
               <li>
-                <a className="dropdown-item" href="#">
-                  Services
-                </a>
+              <Link to="/services" className="dropdown-item">
+                  service
+                </Link>
               </li>
               <li>
                 <Link to="/insurance" className="dropdown-item">

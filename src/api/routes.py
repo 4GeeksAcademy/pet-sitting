@@ -76,44 +76,45 @@ def signup():
 @api.route('/account', methods=['PUT'])
 @jwt_required()
 def update_account():
-    body = request.get_json()
-    print(body)
     try:
         current_user_email = get_jwt_identity()
         user = User.query.filter_by(email=current_user_email).first()
 
         if not user:
             raise APIException("User not found", status_code=404)
-        elif user: 
-            account_data = {
-                "email": body.get("email",user.email),
-                "first_name":body.get("first_name",user.first_name),
-                "last_name":body.get("last_name",user.last_name),
-                "address":body.get("address",user.address),
-                "city":body.get("city",user.city),
-                "state":body.get("state",user.state),
-                "zip":body.get("zip",user.zip),
-                "phone_number":body.get("phone_number",user.phone_number),
-                "pets": [],  
-            }
-           
-            db.session.commit()
-            return jsonify(user.serlize())
 
-        if user.pets:
-            for pet in user.pets:
-                account_data["pets"].append({
-                    "pet_Name": pet.name,
-                    "breed": pet.breed,
-                    "age": pet.age,
-                    "description": pet.description,
-                    "detailed_Care_Info": pet.detailed_care_info,
-                })
+        body = request.get_json()
 
-        return jsonify(account_data), 200
+        user.email = body.get("email", user.email)
+        user.first_name = body.get("first_name", user.first_name)
+        user.last_name = body.get("last_name", user.last_name)
+        user.address = body.get("address", user.address)
+        user.city = body.get("city", user.city)
+        user.state = body.get("state", user.state)
+        user.zip = body.get("zip", user.zip)
+        user.phone_number = body.get("phone_number", user.phone_number)
+
+        if "pets" in body and isinstance(body["pets"], list):
+            user.pets = [] 
+            for pet_data in body["pets"]:
+                pet = pet(
+                    name=pet_data.get("pet_Name"),
+                    breed=pet_data.get("breed"),
+                    age=pet_data.get("age"),
+                    description=pet_data.get("description"),
+                    detailed_care_info=pet_data.get("detailed_Care_Info"),
+                    user=user
+                )
+               
+                user.pets.append(pet)
+
+        db.session.commit()
+
+        return jsonify(user.serialize()), 200
 
     except Exception as e:
         return jsonify(message=str(e)), 500
+
 
 
 
