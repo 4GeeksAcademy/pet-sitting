@@ -442,9 +442,10 @@ def handle_schedule_pet_sitting():
     email = get_jwt_identity()
     user = User.query.filter_by(email=email).first()
     user_address = user.serialize()["address"]
+    [print(user_address)]
 
     req = request.get_json()
-
+    print(req)
     SCOPES = ['https://www.googleapis.com/auth/calendar']
     SERVICE_ACCOUNT_FILE = 'credentials.json'
 

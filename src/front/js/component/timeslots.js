@@ -14,9 +14,12 @@ export const Timeslots = (props) => {
 	const [newScheduleEndStr, setNewScheduleEndStr] = useState('')
 	const [existingEvents, setExistingEvents] = useState([])
 	const [pets, setPets] = useState([])
+	const [rerender, setRerender] = useState(false)
 	const invalidBookingOverlap = useRef(false)
 	const invalidBookingEndBfrStart = useRef(false)
+	// const [invalidBookingEndBfrStart, setInvalidBookingEndBfrStart] = useState(false)
 	const firstTimeslotClicked = useRef(false)
+	const invalidBookingDate = useRef(false)
 	const dtStart = useRef('')
 	const dtEnd = useRef('')
 	const eventId = useRef('')
@@ -64,7 +67,7 @@ export const Timeslots = (props) => {
 				setNewScheduleStartStr(e.target.parentNode.getAttribute('data-start'))
 				setNewScheduleEndStr(e.target.parentNode.getAttribute('data-end'))
 			} else {
-				const time = e.target.getAttribute('data-time')
+				const time = e.target.getInnerHTML()
 				const dateStr = e.target.parentNode.getAttribute('data-date')
 				let timeHr = time[1] === ':' ? parseInt(time[0]) : parseInt(time[0] + time[1])
 				timeHr = timeHr < 5 ? timeHr + 12 : timeHr
@@ -96,7 +99,7 @@ export const Timeslots = (props) => {
 				}
 			}
 		} else {
-			const time = e.target.getAttribute('data-time')
+			const time = e.target.getInnerHTML()
 			const dateStr = e.target.parentNode.getAttribute('data-date')
 			let timeHr = time[1] === ':' ? parseInt(time[0]) : parseInt(time[0] + time[1])
 			timeHr = timeHr < 5 ? timeHr + 12 : timeHr
@@ -123,11 +126,18 @@ export const Timeslots = (props) => {
 				const evntDTEnd = new Date(dateTimeEnd)
 				if ((evntDTStart >= newSchedStart && evntDTStart < newSchedEnd) || (evntDTEnd > newSchedStart && evntDTEnd <= newSchedEnd)) {
 					invalidBookingOverlap.current = true
+					setRerender(!rerender)
 				}
 			})
+			console.log(newSchedStart, newSchedEnd)
 			if (newSchedStart >= newSchedEnd) {
 				invalidBookingEndBfrStart.current = true
 				console.log(invalidBookingEndBfrStart.current)
+				setRerender(!rerender)
+			}
+			if (newSchedEnd == null || newSchedStart == null || newSchedStart.getTime() == NaN || newSchedEnd.getTime() == NaN) {
+				invalidBookingDate.current = true
+				setRerender(!rerender)
 			}
 		}
 	}
@@ -376,7 +386,7 @@ export const Timeslots = (props) => {
 		const fixedDatesAndWeekdays = fixDatesAndSetDayNames([...Array(7).keys()].map(i => i + parseInt(store.timeSlotsStartingDay.date)))
 		const timeSlotLabels = createTimeSlotsLabels()
 		setWeekDayDivs(createWeekDayDivs(fixedDatesAndWeekdays, timeSlotLabels))
-	}, [store.timeSlotsStartingDay, store.token, existingEvents, firstTimeslotClicked.current])
+	}, [store.timeSlotsStartingDay, store.token, existingEvents, firstTimeslotClicked.current, newScheduleStartStr, newScheduleEndStr, rerender])
 
 	const handleModalSubmit = async (e) => {
 		e.preventDefault()
@@ -473,10 +483,11 @@ export const Timeslots = (props) => {
 							<h5 className="modal-title" id="modalLabel1">{`Schedule a ${typeOfScheduleStr}`}</h5>
 							<button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={() => {
 								firstTimeslotClicked.current = false
+								console.log(firstTimeslotClicked.current)
+								setRerender(!rerender)
 								setTimeout(invalidBookingOverlap.current = false, 2000)
 								setTimeout(invalidBookingEndBfrStart.current = false, 2000)
-								setNewScheduleStartStr('')
-								setNewScheduleEndStr('')
+								setTimeout(invalidBookingDate.current = false, 2000)
 							}}></button>
 						</div>
 						<div className="modal-body">
@@ -490,70 +501,77 @@ export const Timeslots = (props) => {
 										Your end date must be after your start date.
 									</p>
 									:
-									<form className="form-group" onSubmit={(e) => { handleModalSubmit(e) }}>
-										<div className="form-group row">
-											<label htmlFor="type" className="col-sm-2 col-form-label">Type of Booking:</label>
-											<div className="col-sm-10">
-												<input type="text" readOnly className="form-control-plaintext" id="type" value={typeOfScheduleStr} />
+									invalidBookingDate.current === true ?
+										<p>
+											An error occurred when selecting your booking dates/times, please try again.
+										</p>
+										:
+										<form className="form-group" onSubmit={(e) => { handleModalSubmit(e) }}>
+											<div className="form-group row">
+												<label htmlFor="type" className="col-sm-2 col-form-label">Type of Booking:</label>
+												<div className="col-sm-10">
+													<input type="text" readOnly className="form-control-plaintext" id="type" value={typeOfScheduleStr} />
+												</div>
 											</div>
-										</div>
-										<div className="form-group row">
-											<label htmlFor="staticType" className="col-sm-2 col-form-label">Pet(s):</label>
-											<div className="col-sm-10">
-												{pets.map((petName) => {
-													return (
-														<div className="form-check">
-															<input className="form-check-input" type="checkbox" value="" id={petName} />
-															<label className="form-check-label" htmlFor={petName} name="chkboxLabel">
-																{petName}
-															</label>
-														</div>
-													)
-												})
-												}
+											<div className="form-group row">
+												<label htmlFor="staticType" className="col-sm-2 col-form-label">Pet(s):</label>
+												<div className="col-sm-10">
+													{pets.map((petName) => {
+														return (
+															<div className="form-check">
+																<input className="form-check-input" type="checkbox" value="" id={petName} />
+																<label className="form-check-label" htmlFor={petName} name="chkboxLabel">
+																	{petName}
+																</label>
+															</div>
+														)
+													})
+													}
+												</div>
 											</div>
-										</div>
-										<div className="form-group row">
-											<label htmlFor="details" className="col-sm-2 col-form-label">Details:</label>
-											<div className="col-sm-10">
-												<textarea className="form-control" id="details" rows="5"></textarea>
+											<div className="form-group row">
+												<label htmlFor="details" className="col-sm-2 col-form-label">Details:</label>
+												<div className="col-sm-10">
+													<textarea className="form-control" id="details" rows="5"></textarea>
+												</div>
 											</div>
-										</div>
-										<div className="form-group row">
-											<label htmlFor="startTime" className="col-sm-3 col-form-label">Start Date/Time:</label>
-											<div className="col-sm-9">
-												<textarea readOnly id="startTime" value={newScheduleStartStr} />
+											<div className="form-group row">
+												<label htmlFor="startTime" className="col-sm-3 col-form-label">Start Date/Time:</label>
+												<div className="col-sm-9">
+													<textarea readOnly id="startTime" value={newScheduleStartStr} />
+												</div>
 											</div>
-										</div>
-										<div className="form-group row">
-											<label htmlFor="endTime" className="col-sm-3 col-form-label">End Date/Time:</label>
-											<div className="col-sm-9">
-												<textarea readOnly id="endTime" value={newScheduleEndStr} />
+											<div className="form-group row">
+												<label htmlFor="endTime" className="col-sm-3 col-form-label">End Date/Time:</label>
+												<div className="col-sm-9">
+													<textarea readOnly id="endTime" value={newScheduleEndStr} />
+												</div>
 											</div>
-										</div>
-										<div className="form-group row">
-											<div className="form-check">
-												<label className="form-check-label col-sm-2" htmlFor='recurring'>Recurring weekly?</label>
-												<input className="form-check-input col-sm-10" type="checkbox" value="" id='recurring' />
+											<div className="form-group row">
+												<div className="form-check">
+													<label className="form-check-label col-sm-2" htmlFor='recurring'>Recurring weekly?</label>
+													<input className="form-check-input col-sm-10" type="checkbox" value="" id='recurring' />
+												</div>
 											</div>
-										</div>
-										<div className="form-group row">
-											<label htmlFor="recurringUntil" className="col-sm-2">Recurring until?</label>
-											<div className="col-sm-10">
-												<input type="date" id="recurringUntil" />
+											<div className="form-group row">
+												<label htmlFor="recurringUntil" className="col-sm-2">Recurring until?</label>
+												<div className="col-sm-10">
+													<input type="date" id="recurringUntil" />
+												</div>
 											</div>
-										</div>
-										<div className="modal-footer">
-											<button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={() => {
-												firstTimeslotClicked.current = false
-												invalidBookingOverlap.current = false
-											}}>Cancel</button>
-											<button type="submit" className="btn btn-primary" data-bs-dismiss="modal" onClick={() => {
-												firstTimeslotClicked.current = false
-												invalidBookingOverlap.current = false
-											}}>Submit</button>
-										</div>
-									</form>
+											<div className="modal-footer">
+												<button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={() => {
+													firstTimeslotClicked.current = false
+													invalidBookingEndBfrStart.current = false
+													invalidBookingDate.current = false
+												}}>Cancel</button>
+												<button type="submit" className="btn btn-primary" data-bs-dismiss="modal" onClick={() => {
+													firstTimeslotClicked.current = false
+													invalidBookingOverlap.current = false
+													invalidBookingDate.current = false
+												}}>Submit</button>
+											</div>
+										</form>
 							}
 						</div>
 					</div>
@@ -592,10 +610,12 @@ export const Timeslots = (props) => {
 							<button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={() => {
 								firstTimeslotClicked.current = false
 								invalidBookingOverlap.current = false
+								invalidBookingDate.current = false
 							}}><p>Cancel {`(reselect start time/date)`}</p></button>
 							<button type="submit" className="btn btn-danger" data-bs-dismiss="modal" onClick={() => {
 								firstTimeslotClicked.current = true
 								invalidBookingOverlap.current = false
+								invalidBookingDate.current = false
 							}}>Continue</button>
 						</div>
 					</div>
