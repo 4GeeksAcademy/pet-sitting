@@ -19,6 +19,7 @@ ENV = "development" if os.getenv("FLASK_DEBUG") == "1" else "production"
 static_file_dir = os.path.join(os.path.dirname(
     os.path.realpath(__file__)), '../public/')
 app = Flask(__name__)
+CORS(app)
 app.url_map.strict_slashes = False
 
 CORS(app)
@@ -40,8 +41,8 @@ db.init_app(app)
 # add the admin
 setup_admin(app)
 
-# add the admin
-setup_commands(app)
+# # add the admin
+# setup_commands(app)
 
 # Add all endpoints form the API with a "api" prefix
 app.register_blueprint(api, url_prefix='/api')
