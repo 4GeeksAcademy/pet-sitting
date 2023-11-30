@@ -14,6 +14,17 @@ class User(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
+<<<<<<< HEAD
+    password = db.Column(db.String(256), unique=False, nullable=False)
+
+    first_name = db.Column(db.String(80), unique=False, nullable=False)
+    last_name = db.Column(db.String(80), unique=False, nullable=False)
+    address = db.Column(db.String(80), unique=False, nullable=False)
+    phone_number = db.Column(db.String(80), unique=False, nullable=False)
+    pets = db.relationship('Pet', backref='user')
+    last_services_used = db.relationship('Last_Service_Used', backref='user')
+
+=======
 
 
 
@@ -29,6 +40,7 @@ class User(db.Model):
  
 
 
+>>>>>>> 18dcec07105a3a1ae4a1765f2105588976eaf8b0
     def __repr__(self):
         return f'<User {self.email}>'
 

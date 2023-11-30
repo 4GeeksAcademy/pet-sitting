@@ -134,10 +134,21 @@ export const Home = () => {
                         >
                           Submit
                         </button>
+<<<<<<< HEAD
+
+                        <Link to="/signupUser" className="btn btn-secondary ms-2">
+                            Sign Up
+                        </Link>
+
+                        <Link to="/forgotten-password" className="forgotPasswordLink ms-2">
+                            Forgot Password?
+                        </Link>
+=======
                       </div>
                       <Link to="/forgot-password" className="forgotPasswordLink ms-2">
               Forgot Password?
             </Link>
+>>>>>>> 18dcec07105a3a1ae4a1765f2105588976eaf8b0
                     </div>
                   </div>
 
