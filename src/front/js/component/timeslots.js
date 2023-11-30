@@ -14,17 +14,18 @@ export const Timeslots = (props) => {
 	const [newScheduleEndStr, setNewScheduleEndStr] = useState('')
 	const [existingEvents, setExistingEvents] = useState([])
 	const [pets, setPets] = useState([])
+	const [invalidBooking, setInvalidBooking] = useState(false)
+	const firstTimeslotClicked = useRef(false)
 	const dtStart = useRef('')
 	const dtEnd = useRef('')
 	const eventId = useRef('')
 	const targetEventId = useRef('')
-	const namesOfDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 	const lastDate = useRef('1')
 	const newMonth = useRef(false)
 	const booked = useRef(false)
 	const owned = useRef(false)
 	const recentlyFetched = useRef(false)
-	const firstTimeslotClicked = useRef(false)
+	const namesOfDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 	const navigate = useNavigate()
 
 	const isLeapYear = (year) => {
@@ -56,6 +57,7 @@ export const Timeslots = (props) => {
 
 	const handleTimeslotClick = (e) => {
 		targetEventId.current = e.target.parentNode.getAttribute('data-id')
+		console.log(firstTimeslotClicked.current)
 		if (firstTimeslotClicked.current === false) {
 			if (e.target.parentNode.getAttribute('data-start')) {
 				setNewScheduleStartStr(e.target.parentNode.getAttribute('data-start'))
@@ -111,6 +113,17 @@ export const Timeslots = (props) => {
 			let year = String(parseInt(e.target.parentNode.getAttribute('data-year')) + 2000)
 			const scheduleEndStr = `${year}-${month}-${dateStr}T${timeStr}`
 			setNewScheduleEndStr(scheduleEndStr)
+			const newSchedStart = new Date(newScheduleStartStr)
+			const newSchedEnd = new Date(scheduleEndStr)
+			existingEvents.map((evnt) => {
+				const dateTimeStart = evnt.start.dateTime
+				const dateTimeEnd = evnt.end.dateTime
+				const evntDTStart = new Date(dateTimeStart)
+				const evntDTEnd = new Date(dateTimeEnd)
+				if ((evntDTStart >= newSchedStart && evntDTStart < newSchedEnd) || (evntDTEnd > newSchedStart && evntDTEnd <= newSchedEnd)) {
+					setInvalidBooking(true)
+				}
+			})
 		}
 	}
 
@@ -180,7 +193,7 @@ export const Timeslots = (props) => {
 								})
 								if (booked.current === false) {
 									return (
-										<div className={`timeslot text-center`} data-year={yearStr} data-date={newDate} data-month={monthStr} data-bs-toggle="modal" data-bs-target={typeOfSchedule === 'pet-sitting' && firstTimeslotClicked.current === true ? '#scheduleNew' : typeOfSchedule === 'pet-sitting' ? '#firstTimeslotModal' : '#scheduleNew'} onClick={(e) => handleTimeslotClick(e)} key={ind}>
+										<div className={`timeslot text-center`} data-year={yearStr} data-date={newDate} data-month={monthStr} data-bs-toggle="modal" data-bs-target={firstTimeslotClicked.current === true ? '#scheduleNew' : typeOfSchedule === 'pet-sitting' ? '#firstTimeslotModal' : '#scheduleNew'} onClick={(e) => handleTimeslotClick(e)} key={ind}>
 											{timeLabel}
 										</div>
 									)
@@ -358,13 +371,7 @@ export const Timeslots = (props) => {
 		const fixedDatesAndWeekdays = fixDatesAndSetDayNames([...Array(7).keys()].map(i => i + parseInt(store.timeSlotsStartingDay.date)))
 		const timeSlotLabels = createTimeSlotsLabels()
 		setWeekDayDivs(createWeekDayDivs(fixedDatesAndWeekdays, timeSlotLabels))
-	}, [store.timeSlotsStartingDay, store.token])
-
-	useEffect(() => {
-		const fixedDatesAndWeekdays = fixDatesAndSetDayNames([...Array(7).keys()].map(i => i + parseInt(store.timeSlotsStartingDay.date)))
-		const timeSlotLabels = createTimeSlotsLabels()
-		setWeekDayDivs(createWeekDayDivs(fixedDatesAndWeekdays, timeSlotLabels))
-	}, [existingEvents])
+	}, [store.timeSlotsStartingDay, store.token, existingEvents, firstTimeslotClicked.current])
 
 	const handleModalSubmit = async (e) => {
 		e.preventDefault()
@@ -419,7 +426,6 @@ export const Timeslots = (props) => {
 	const handleModalCancel = async (e) => {
 		e.preventDefault()
 		const idOfEventToCancel = targetEventId.current
-		console.log(idOfEventToCancel)
 		const apiStr = typeOfSchedule === 'pet-sitting' ? 'pet-sitting' : 'pet-check-in-or-meeting-or-dog-walk'
 		try {
 			const resp = await fetch(process.env.BACKEND_URL + `api/cancel/${apiStr}`, {
@@ -459,68 +465,83 @@ export const Timeslots = (props) => {
 				<div className="modal-dialog">
 					<div className="modal-content">
 						<div className="modal-header">
-							<h5 className="modal-title" id="modalLabel1">Schedule a dog walk</h5>
-							<button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={() => { firstTimeslotClicked.current = false }}></button>
+							<h5 className="modal-title" id="modalLabel1">{`Schedule a ${typeOfScheduleStr}`}</h5>
+							<button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={() => {
+								firstTimeslotClicked.current = false
+								setTimeout(setInvalidBooking(false), 3000)
+							}}></button>
 						</div>
 						<div className="modal-body">
-							<form className="form-group" onSubmit={(e) => { handleModalSubmit(e) }}>
-								<div className="form-group row">
-									<label htmlFor="type" className="col-sm-2 col-form-label">Type of Booking:</label>
-									<div className="col-sm-10">
-										<input type="text" readOnly className="form-control-plaintext" id="type" value={typeOfScheduleStr} />
+							{invalidBooking === false ?
+								<form className="form-group" onSubmit={(e) => { handleModalSubmit(e) }}>
+									<div className="form-group row">
+										<label htmlFor="type" className="col-sm-2 col-form-label">Type of Booking:</label>
+										<div className="col-sm-10">
+											<input type="text" readOnly className="form-control-plaintext" id="type" value={typeOfScheduleStr} />
+										</div>
 									</div>
-								</div>
-								<div className="form-group row">
-									<label htmlFor="staticType" className="col-sm-2 col-form-label">Pet(s):</label>
-									<div className="col-sm-10">
-										{pets.map((petName) => {
-											return (
-												<div className="form-check">
-													<input className="form-check-input" type="checkbox" value="" id={petName} />
-													<label className="form-check-label" htmlFor={petName} name="chkboxLabel">
-														{petName}
-													</label>
-												</div>
-											)
-										})
-										}
+									<div className="form-group row">
+										<label htmlFor="staticType" className="col-sm-2 col-form-label">Pet(s):</label>
+										<div className="col-sm-10">
+											{pets.map((petName) => {
+												return (
+													<div className="form-check">
+														<input className="form-check-input" type="checkbox" value="" id={petName} />
+														<label className="form-check-label" htmlFor={petName} name="chkboxLabel">
+															{petName}
+														</label>
+													</div>
+												)
+											})
+											}
+										</div>
 									</div>
-								</div>
-								<div className="form-group row">
-									<label htmlFor="details" className="col-sm-2 col-form-label">Details:</label>
-									<div className="col-sm-10">
-										<textarea className="form-control" id="details" rows="5"></textarea>
+									<div className="form-group row">
+										<label htmlFor="details" className="col-sm-2 col-form-label">Details:</label>
+										<div className="col-sm-10">
+											<textarea className="form-control" id="details" rows="5"></textarea>
+										</div>
 									</div>
-								</div>
-								<div className="form-group row">
-									<label htmlFor="startTime" className="col-sm-3 col-form-label">Start Date/Time:</label>
-									<div className="col-sm-9">
-										<textarea readOnly id="startTime" value={newScheduleStartStr} />
+									<div className="form-group row">
+										<label htmlFor="startTime" className="col-sm-3 col-form-label">Start Date/Time:</label>
+										<div className="col-sm-9">
+											<textarea readOnly id="startTime" value={newScheduleStartStr} />
+										</div>
 									</div>
-								</div>
-								<div className="form-group row">
-									<label htmlFor="endTime" className="col-sm-3 col-form-label">End Date/Time:</label>
-									<div className="col-sm-9">
-										<textarea readOnly id="endTime" value={newScheduleEndStr} />
+									<div className="form-group row">
+										<label htmlFor="endTime" className="col-sm-3 col-form-label">End Date/Time:</label>
+										<div className="col-sm-9">
+											<textarea readOnly id="endTime" value={newScheduleEndStr} />
+										</div>
 									</div>
-								</div>
-								<div className="form-group row">
-									<div className="form-check">
-										<label className="form-check-label col-sm-2" htmlFor='recurring'>Recurring weekly?</label>
-										<input className="form-check-input col-sm-10" type="checkbox" value="" id='recurring' />
+									<div className="form-group row">
+										<div className="form-check">
+											<label className="form-check-label col-sm-2" htmlFor='recurring'>Recurring weekly?</label>
+											<input className="form-check-input col-sm-10" type="checkbox" value="" id='recurring' />
+										</div>
 									</div>
-								</div>
-								<div className="form-group row">
-									<label htmlFor="recurringUntil" className="col-sm-2">Recurring until?</label>
-									<div className="col-sm-10">
-										<input type="date" id="recurringUntil" />
+									<div className="form-group row">
+										<label htmlFor="recurringUntil" className="col-sm-2">Recurring until?</label>
+										<div className="col-sm-10">
+											<input type="date" id="recurringUntil" />
+										</div>
 									</div>
-								</div>
-								<div className="modal-footer">
-									<button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={() => { firstTimeslotClicked.current = false }}>Cancel</button>
-									<button type="submit" className="btn btn-primary" data-bs-dismiss="modal">Submit</button>
-								</div>
-							</form>
+									<div className="modal-footer">
+										<button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={() => {
+											firstTimeslotClicked.current = false
+											setInvalidBooking(false)
+										}}>Cancel</button>
+										<button type="submit" className="btn btn-primary" data-bs-dismiss="modal" onClick={() => {
+											firstTimeslotClicked.current = false
+											setInvalidBooking(false)
+										}}>Submit</button>
+									</div>
+								</form>
+								:
+								<p>
+									You may not schedule a pet-sitting that overlaps any other booked pet-sitting. If it is your own, cancel the original booking and book the new one. Otherwise, you can schedule multiple pet check ins for the times you will not be available to care for your pet(s).
+								</p>
+							}
 						</div>
 					</div>
 				</div>
@@ -555,8 +576,14 @@ export const Timeslots = (props) => {
 							<p>If you would like to schedule a booking longer than one week, please contact the business owner to negotiate.</p>
 						</div>
 						<div className="modal-footer">
-							<button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={() => { firstTimeslotClicked.current = false }}><p>Cancel {`(reselect start time/date)`}</p></button>
-							<button type="submit" className="btn btn-danger" data-bs-dismiss="modal">Continue</button>
+							<button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={() => {
+								firstTimeslotClicked.current = false
+								setInvalidBooking(false)
+							}}><p>Cancel {`(reselect start time/date)`}</p></button>
+							<button type="submit" className="btn btn-danger" data-bs-dismiss="modal" onClick={() => {
+								firstTimeslotClicked.current = true
+								setInvalidBooking(false)
+							}}>Continue</button>
 						</div>
 					</div>
 				</div>

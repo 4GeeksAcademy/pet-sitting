@@ -41,8 +41,17 @@
     --bs-gutter-x: 1.15rem;
 }
 
+.modal-dialog {
+    border-radius: 0.3rem;
+}
+
+.modal-content {
+    border-radius: 0.3rem
+}
+
 .modal div {
     background-color: #f2e9d8;
+    border: 1px solid #f2e9d8
 }
 
 .modal-footer > .btn{
