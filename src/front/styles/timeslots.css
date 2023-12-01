@@ -7,6 +7,9 @@
     body {
         font-size: 9px;
     }
+    .timeslots-day {
+        width: 13%
+    }
 }
 
 .timeslots-day-date {

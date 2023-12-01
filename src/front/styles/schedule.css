@@ -20,6 +20,12 @@
     .nav-link {
         width: 58px;
     }
+    .nav-link.active {
+        border-radius: 0%;
+        border-bottom: none !important;
+        border-right: 1px solid black !important;
+        background-color: #f2e9d8 !important;
+    }
 
     .schedule-row {
         --bs-gutter-x: 0.15rem !important;
@@ -27,7 +33,6 @@
 }
 
 .nav-link.active {
-    border-right: none;
     border-radius: 0%;
     border-right: none;
     background-color: #f2e9d8 !important;
@@ -80,4 +85,21 @@
 
 .timeslots-container {
     margin-left: 4%
+}
+
+.horiz-li {
+    display: flex;
+    margin-left: auto;
+}
+
+.horiz-li.active {
+    border-radius: 0%;
+    border-bottom: none !important;
+    border-right: 1px solid black !important;
+    background-color: #f2e9d8 !important;
+}
+
+.horiz {
+    flex-direction: row;
+    justify-content: space-between;
 }

@@ -37,6 +37,31 @@ export const Schedule = () => {
     }
     return (
         <div className="container-fluid gx-0">
+            <div className="row gx-0 mx-auto d-md-none">
+                <nav className="navbar bg-light-2 d-md-none py-0">
+                    <div className="container-fluid">
+                        <button className="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggleContent" aria-controls="navbarToggleContent" aria-expanded="false" aria-label="Toggle navigation">
+                            <i className="fa-solid fa-bars"></i>
+                        </button>
+                    </div>
+                    <div className="collapse" id="navbarToggleContent">
+                        <div className="bg-light">
+                            <ul className="navbar-nav horiz">
+                                <li className="horiz-li">
+                                    <button className={`nav-link bg-light-2 ${store.activeScheduleTab === 'nav-timeslots' ? 'active' : ''}`} id="nav-timeslots-tab" type="button" role="tab" aria-controls="nav-timeslots" aria-selected="true" onClick={() => actions.changeActiveScheduleTab('nav-timeslots')}>
+                                        <i className="fa-solid fa-table-cells"></i>
+                                    </button>
+                                </li>
+                                <li className="horiz-li">
+                                    <button className={`nav-link bg-light-2 ${store.activeScheduleTab === 'nav-calendar' ? 'active' : ''}`} id="nav-calendar-tab" type="button" role="tab" aria-controls="nav-monthly-calendar" aria-selected="false" onClick={() => actions.changeActiveScheduleTab('nav-calendar')}>
+                                        <i className="fa-regular fa-calendar-days"></i>
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+            </div>
             <div className="row d-flex gx-0 mx-auto">
                 <div className="col-6 mx-auto text-center">
                     <h1>{`Schedule a ${typeOfScheduleStr}`}</h1>
@@ -57,23 +82,6 @@ export const Schedule = () => {
                             </button>
                         </div>
                     </div>
-                </div>
-                <div className="col-2 rounded d-md-none">
-                    <nav className="navbar bg-light-2 d-md-none py-0">
-                        <button className="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggleContent" aria-controls="navbarToggleContent" aria-expanded="false" aria-label="Toggle navigation">
-                            <i className="fa-solid fa-bars"></i>
-                        </button>
-                        <div className="collapse w-100" id="navbarToggleContent">
-                            <div className="bg-light">
-                                <button className={`nav-link bg-light-2 ${store.activeScheduleTab === 'nav-timeslots' ? 'active' : ''}`} id="nav-timeslots-tab" type="button" role="tab" aria-controls="nav-timeslots" aria-selected="true" onClick={() => actions.changeActiveScheduleTab('nav-timeslots')}>
-                                    <i className="fa-solid fa-table-cells"></i>
-                                </button>
-                                <button className={`nav-link bg-light-2 ${store.activeScheduleTab === 'nav-calendar' ? 'active' : ''}`} id="nav-calendar-tab" type="button" role="tab" aria-controls="nav-monthly-calendar" aria-selected="false" onClick={() => actions.changeActiveScheduleTab('nav-calendar')}>
-                                    <i className="fa-regular fa-calendar-days"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </nav>
                 </div>
                 <div className="col px-0">
                     <div className="tab-content" id="nav-tabContent">

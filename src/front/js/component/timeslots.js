@@ -61,7 +61,6 @@ export const Timeslots = (props) => {
 
 	const handleTimeslotClick = (e) => {
 		targetEventId.current = e.target.parentNode.getAttribute('data-id')
-		console.log(firstTimeslotClicked.current)
 		if (firstTimeslotClicked.current === false) {
 			if (e.target.parentNode.getAttribute('data-start')) {
 				setNewScheduleStartStr(e.target.parentNode.getAttribute('data-start'))
@@ -129,10 +128,8 @@ export const Timeslots = (props) => {
 					setRerender(!rerender)
 				}
 			})
-			console.log(newSchedStart, newSchedEnd)
 			if (newSchedStart >= newSchedEnd) {
 				invalidBookingEndBfrStart.current = true
-				console.log(invalidBookingEndBfrStart.current)
 				setRerender(!rerender)
 			}
 			if (newSchedEnd == null || newSchedStart == null || newSchedStart.getTime() == NaN || newSchedEnd.getTime() == NaN) {
@@ -483,7 +480,6 @@ export const Timeslots = (props) => {
 							<h5 className="modal-title" id="modalLabel1">{`Schedule a ${typeOfScheduleStr}`}</h5>
 							<button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={() => {
 								firstTimeslotClicked.current = false
-								console.log(firstTimeslotClicked.current)
 								setRerender(!rerender)
 								setTimeout(invalidBookingOverlap.current = false, 2000)
 								setTimeout(invalidBookingEndBfrStart.current = false, 2000)
@@ -564,11 +560,13 @@ export const Timeslots = (props) => {
 													firstTimeslotClicked.current = false
 													invalidBookingEndBfrStart.current = false
 													invalidBookingDate.current = false
+													setRerender(!rerender)
 												}}>Cancel</button>
 												<button type="submit" className="btn btn-primary" data-bs-dismiss="modal" onClick={() => {
 													firstTimeslotClicked.current = false
 													invalidBookingOverlap.current = false
 													invalidBookingDate.current = false
+													setRerender(!rerender)
 												}}>Submit</button>
 											</div>
 										</form>
@@ -611,11 +609,13 @@ export const Timeslots = (props) => {
 								firstTimeslotClicked.current = false
 								invalidBookingOverlap.current = false
 								invalidBookingDate.current = false
+								setRerender(!rerender)
 							}}><p>Cancel {`(reselect start time/date)`}</p></button>
 							<button type="submit" className="btn btn-danger" data-bs-dismiss="modal" onClick={() => {
 								firstTimeslotClicked.current = true
 								invalidBookingOverlap.current = false
 								invalidBookingDate.current = false
+								setRerender(!rerender)
 							}}>Continue</button>
 						</div>
 					</div>
