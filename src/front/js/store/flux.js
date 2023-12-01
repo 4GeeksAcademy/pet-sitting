@@ -19,7 +19,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             // Use getActions to call a function within a fuction
             login: async (email, password) => {
                 const store = getStore();
-            
+
                 try {
                     let options = {
                         method: "POST",
@@ -28,11 +28,11 @@ const getState = ({ getStore, getActions, setStore }) => {
                         },
                         body: JSON.stringify({ email, password }),
                     };
-            
-                    const response = await fetch(store.backendURL + "/api/login", options);
-            
+
+                    const response = await fetch(process.env.BACKEND_URL + "/api/login", options);
+
                     console.log('Login response:', response);
-            
+
                     if (response.status === 200) {
                         const data = await response.json();
                         console.log("access token", data.access_token);
@@ -51,7 +51,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     return false;
                 }
             },
-            
+
             signup: async (formData) => {
                 try {
                     const token = localStorage.getItem("token");
@@ -94,17 +94,17 @@ const getState = ({ getStore, getActions, setStore }) => {
                             pets: pets
                         }),
                     });
-            
+
                     if (!response.ok) {
                         throw new Error(`HTTP error! Status: ${response.status}`);
                     }
-            
+
                     return await response.json();
                 } catch (error) {
                     throw new Error(`Error: ${error.message}`);
                 }
             },
-            
+
             addPet: async (petData) => {
                 try {
                     const token = localStorage.getItem("token");

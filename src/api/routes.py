@@ -68,6 +68,7 @@ def signup():
 
     db.session.commit()
     return jsonify(message="Successfully created user and pet"), 200
+
 @api.route('/account', methods=['POST'])
 @jwt_required()
 def update_account():

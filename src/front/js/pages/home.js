@@ -36,7 +36,7 @@ export const Home = () => {
     }
   };
 
-    
+
 
   return (
     <div className="container-fluid homePage">
@@ -65,7 +65,7 @@ export const Home = () => {
 
           <div className="center processBox">
             <h1>Hi, already a part of the family? Welcome back!</h1>
-            
+
 
             <button
               type="button"
@@ -124,20 +124,20 @@ export const Home = () => {
                         />
                       </div>
                       <div>
-                    
-                       <button
-                       type="button"
-                       className="btn btn-secondary loginButton"
-                       data-bs-toggle="modal"
-                       data-bs-target="#exampleModal" >
-          
+
+                        <button
+                          type="button"
+                          className="btn btn-secondary loginButton"
+                          data-bs-toggle="modal"
+                          data-bs-target="#exampleModal"
+                          onClick={handleLogin} >
                           Log in
                         </button>
                       </div>
                       <Link to="/forgotten-password" className="forgotPasswordLink ms-2">
                         Forgot Password?
                       </Link>
-                    
+
                       <div
                         className={`modal fade ${showModal ? 'show' : ''}`}
                         id="exampleModal"

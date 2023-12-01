@@ -4,19 +4,67 @@ import { Context } from "../store/appContext";
 
 export const Account = () => {
 
-  
-    const { store, dispatch } = useContext(Context);
-    const [userData, setUserData] = useState({
-      first_name: "",
-      last_name: "",
-      email: "",
-      phone_number: "",
-      address: "",
+
+  const { store, dispatch } = useContext(Context);
+  const [userData, setUserData] = useState({
+    first_name: "",
+    last_name: "",
+    email: "",
+    phone_number: "",
+    address: "",
+  });
+
+  // Pet States
+  const [pets, setPets] = useState([]);
+  const [petFormData, setPetFormData] = useState({
+    pet_name: "",
+    breed: "",
+    age: "",
+    description: "",
+    detailed_care_info: "",
+    pet_picture: null,
+  });
+
+  const [editPetIndex, setEditPetIndex] = useState(null);
+  const [isEditModalOpen, setEditModalOpen] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [showSubmissionModal, setShowSubmissionModal] = useState(false); // New state for submission modal
+  const [submissionModalMessage, setSubmissionModalMessage] = useState(""); // New state for submission modal message
+  const navigate = useNavigate();
+
+  const handleUserChange = (e) => {
+    const { name, value } = e.target;
+    setUserData({
+      ...userData,
+      [name]: value,
     });
-  
-    // Pet States
-    const [pets, setPets] = useState([]);
-    const [petFormData, setPetFormData] = useState({
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const resp = await actions.updateAccount(userData, petFormData);
+      console.log(resp);
+      setModalMessage("Update successful!");
+      setShowModal(true);
+    } catch (error) {
+      setModalMessage("Update unsuccessful. Please try again.");
+      setShowModal(true);
+    }
+  };
+  // const handlePetPictureChange = (e) => {
+  //   const file = e.target.files[0];
+  //   setPetFormData({
+  //     ...petFormData,
+  //     pet_picture: file,
+  //   });
+  // };
+
+  const addPet = () => {
+    setPets([...pets, petFormData]);
+    setPetFormData({
       pet_name: "",
       breed: "",
       age: "",
@@ -24,113 +72,48 @@ export const Account = () => {
       detailed_care_info: "",
       pet_picture: null,
     });
-  
-    const [editPetIndex, setEditPetIndex] = useState(null);
-    const [isEditModalOpen, setEditModalOpen] = useState(false);
-    const [showModal, setShowModal] = useState(false);
-    const [modalMessage, setModalMessage] = useState("");
-    const [showSubmissionModal, setShowSubmissionModal] = useState(false); // New state for submission modal
-    const [submissionModalMessage, setSubmissionModalMessage] = useState(""); // New state for submission modal message
-    const navigate = useNavigate();
-  
-    const handleUserChange = (e) => {
-      const { name, value } = e.target;
-      setUserData({
-        ...userData,
-        [name]: value,
-      });
-    };
-  
-    const handleSubmit = async (e) => {
-      e.preventDefault();
-  
-      try {
-  
-        dispatch(updateUser(userData));
-  
-       
-        dispatch(updatePets(pets));
-  
-    
-        await new Promise(resolve => setTimeout(resolve, 1000));
-  
-        setModalMessage("Update successful!");
-        setShowModal(true);
-  
-      
-        setSubmissionModalMessage("Update successful!");
-        setShowSubmissionModal(true);
-      } catch (error) {
-        console.error("API Error:", error);
-        setModalMessage("Update unsuccessful. Please try again.");
-        setShowModal(true);
-  
-       
-        setSubmissionModalMessage("Update unsuccessful. Please try again.");
-        setShowSubmissionModal(true);
-      }
-    };
-  
-    // const handlePetPictureChange = (e) => {
-    //   const file = e.target.files[0];
-    //   setPetFormData({
-    //     ...petFormData,
-    //     pet_picture: file,
-    //   });
-    // };
-  
-    const addPet = () => {
-      setPets([...pets, petFormData]);
-      setPetFormData({
-        pet_name: "",
-        breed: "",
-        age: "",
-        description: "",
-        detailed_care_info: "",
-        pet_picture: null,
-      });
-    };
-  
-    const openEditModal = (index) => {
-      setEditPetIndex(index);
-      setEditModalOpen(true);
-    };
-  
-    const closeEditModal = () => {
-      setEditPetIndex(null);
-      setEditModalOpen(false);
-    };
-  
-    const handlePetChange = (e) => {
-      const { name, value } = e.target;
-      setPetFormData({
-        ...petFormData,
-        [name]: value,
-      });
-    };
-  
-    const handleEditPet = () => {
-      if (editPetIndex !== null) {
-        const updatedPets = [...pets];
-        updatedPets[editPetIndex] = {
-          pet_name: petFormData.pet_name,
-          breed: petFormData.breed,
-          age: petFormData.age,
-          description: petFormData.description,
-          detailed_care_info: petFormData.detailed_care_info,
-          pet_picture: petFormData.pet_picture,
-        };
-        setPets(updatedPets);
-      }
-      closeEditModal();
-    };
-  
-    const deletePet = (index) => {
+  };
+
+  const openEditModal = (index) => {
+    setEditPetIndex(index);
+    setEditModalOpen(true);
+  };
+
+  const closeEditModal = () => {
+    setEditPetIndex(null);
+    setEditModalOpen(false);
+  };
+
+  const handlePetChange = (e) => {
+    const { name, value } = e.target;
+    setPetFormData({
+      ...petFormData,
+      [name]: value,
+    });
+  };
+
+  const handleEditPet = () => {
+    if (editPetIndex !== null) {
       const updatedPets = [...pets];
-      updatedPets.splice(index, 1);
+      updatedPets[editPetIndex] = {
+        pet_name: petFormData.pet_name,
+        breed: petFormData.breed,
+        age: petFormData.age,
+        description: petFormData.description,
+        detailed_care_info: petFormData.detailed_care_info,
+        pet_picture: petFormData.pet_picture,
+      };
       setPets(updatedPets);
-    };
-  
+    }
+    closeEditModal();
+  };
+
+  const deletePet = (index) => {
+    const updatedPets = [...pets];
+    updatedPets.splice(index, 1);
+    setPets(updatedPets);
+  };
+
 
   return (
     <div>
@@ -200,7 +183,6 @@ export const Account = () => {
           {/* ... (other user information inputs) */}
         </div>
 
-        {/* Pet Section */}
         <div className="pet_form">
           <h2>Pet information</h2>
           {pets.map((pet, index) => (
@@ -264,7 +246,6 @@ export const Account = () => {
               onChange={handlePetChange}
             />
           </div>
-          {/* ... (other pet information inputs) */}
           <button type="button" onClick={addPet}>
             Add Pet
           </button>
@@ -284,7 +265,7 @@ export const Account = () => {
               </button>
             </div>
           )}
-        </div>
+        </div>        </div>
       </div>
 
       {isEditModalOpen && (
