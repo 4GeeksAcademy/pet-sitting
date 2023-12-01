@@ -95,9 +95,22 @@ def update_account():
 
     # Check if there are pets in the request and update them
     if "pets" in body and body["pets"] is not None:
-        update_pets(user, body["pets"]) # This is the hangup
+         add_pet(user, body["pets"][0]) # This is the hangup
 
     return jsonify(user.serialize()), 200
+
+def add_pet(user, pet):
+    print(pet)
+    new_pet = Pet(
+        name=pet.get("pet_name"),
+        breed=pet.get("breed"),
+        age=pet.get("age"),
+        description=pet.get("description"),
+        detailed_care_info=pet.get("detailed_care_info"),
+        user=user
+    )
+    db.session.add(new_pet)
+    db.session.commit()
 
 
 @api.route('/pets', methods=['GET'])
@@ -129,7 +142,6 @@ def add_user_pet():
             raise APIException("User not found", status_code=404)
 
         body = request.get_json()
-
         new_pet = Pet(
             name=body.get("pet_Name"),
             breed=body.get("breed"),
