@@ -72,37 +72,32 @@ def signup():
 @api.route('/account', methods=['POST'])
 @jwt_required()
 def update_account():
-    try:
-        current_user_email = get_jwt_identity()
-        user = User.query.filter_by(email=current_user_email).first()
+    current_user_email = get_jwt_identity()
+    user = User.query.filter_by(email=current_user_email).first()
 
-        if not user:
-            raise APIException("User not found", status_code=404)
+    if not user:
+        raise APIException("User not found", status_code=404)
 
-        body = request.get_json()
+    body = request.get_json()
 
-        # Update user information
-        user.email = body["userData"].get("email")
-        user.first_name = body["userData"].get("first_name")
-        user.last_name = body["userData"].get("last_name")
-        user.address = body["userData"].get("address")
-        user.city = body["userData"].get("city")
-        user.state = body["userData"].get("state")
-        user.zip = body["userData"].get("zip")
-        user.phone_number = body["userData"].get("phone_number")
+    # Update user information
+    user.email = body["userData"].get("email")
+    user.first_name = body["userData"].get("first_name")
+    user.last_name = body["userData"].get("last_name")
+    user.address = body["userData"].get("address")
+    user.city = body["userData"].get("city")
+    user.state = body["userData"].get("state")
+    user.zip = body["userData"].get("zip")
+    user.phone_number = body["userData"].get("phone_number")
 
-        # Commit the changes to the user
-        db.session.commit()
+    # Commit the changes to the user
+    db.session.commit()
 
-        # Check if there are pets in the request and update them
-        if "pets" in body and body["pets"] is not None:
-            update_pets(user, body["pets"])
+    # Check if there are pets in the request and update them
+    if "pets" in body and body["pets"] is not None:
+        update_pets(user, body["pets"]) # This is the hangup
 
-        return jsonify(user.serialize()), 200
-
-    except Exception as e:
-        print("Exception:", e)
-        return jsonify(message=str(e)), 500
+    return jsonify(user.serialize()), 200
 
 
 @api.route('/pets', methods=['GET'])

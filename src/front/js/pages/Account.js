@@ -2,10 +2,13 @@ import { useNavigate } from "react-router-dom";
 import React, { useContext, useState } from "react";
 import { Context } from "../store/appContext";
 
+import { PetForm } from "../component/PetForm.js"
+
 export const Account = () => {
 
 
-  const { store, dispatch } = useContext(Context);
+  const { store, actions } = useContext(Context);
+
   const [userData, setUserData] = useState({
     first_name: "",
     last_name: "",
@@ -44,16 +47,19 @@ export const Account = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    try {
-      const resp = await actions.updateAccount(userData, petFormData);
-      console.log(resp);
-      setModalMessage("Update successful!");
-      setShowModal(true);
-    } catch (error) {
-      setModalMessage("Update unsuccessful. Please try again.");
-      setShowModal(true);
-    }
+    const resp = await actions.updateAccount(userData, pets);
+
+    // try {
+    //   const resp = await actions.updateAccount(userData, pets);
+    //   console.log(resp);
+    //   setModalMessage("Update successful!");
+    //   setShowModal(true);
+    // } catch (error) {
+    //   setModalMessage("Update unsuccessful. Please try again.");
+    //   setShowModal(true);
+    // }
   };
+
   // const handlePetPictureChange = (e) => {
   //   const file = e.target.files[0];
   //   setPetFormData({
@@ -91,6 +97,10 @@ export const Account = () => {
       [name]: value,
     });
   };
+
+  const updatePetByIdx = (pet, idx) => {
+    setPets(pets.toSpliced(idx, 1, pet));
+  }
 
   const handleEditPet = () => {
     if (editPetIndex !== null) {
@@ -185,101 +195,16 @@ export const Account = () => {
 
         <div className="pet_form">
           <h2>Pet information</h2>
-          {pets.map((pet, index) => (
-            <div key={index}>
-              <p>{pet.pet_name}</p>
-              <button type="button" onClick={() => openEditModal(index)}>
-                Edit
-              </button>
-              <button type="button" onClick={() => deletePet(index)}>
-                Delete
-              </button>
-            </div>
-          ))}
-          <div>
-            <label htmlFor="pet_name">Pet Name *</label>
-            <input
-              type="text"
-              id="pet_name"
-              name="pet_name"
-              value={petFormData.pet_name}
-              onChange={handlePetChange}
-            />
-          </div>
-          <div>
-            <label htmlFor="breed">Breed *</label>
-            <input
-              type="text"
-              id="breed"
-              name="breed"
-              value={petFormData.breed}
-              onChange={handlePetChange}
-            />
-          </div>
-          <div>
-            <label htmlFor="age">Age *</label>
-            <input
-              type="text"
-              id="age"
-              name="age"
-              value={petFormData.age}
-              onChange={handlePetChange}
-            />
-          </div>
-          <div>
-            <label htmlFor="description">Description</label>
-            <input
-              type="text"
-              id="description"
-              name="description"
-              value={petFormData.description}
-              onChange={handlePetChange}
-            />
-          </div>
-          <div>
-            <label htmlFor="detailed_care_info">Detailed care info *</label>
-            <input
-              type="text"
-              id="detailed_care_info"
-              name="detailed_care_info"
-              value={petFormData.detailed_care_info}
-              onChange={handlePetChange}
-            />
-          </div>
-          <button type="button" onClick={addPet}>
+          {pets.map((pet, idx) => <PetForm petFormData={pet} idx={idx} key={idx} handlePetChange={updatePetByIdx} />)}
+          < button type="button" onClick={addPet} >
             Add Pet
           </button>
           <button type="button" onClick={handleSubmit}>
             Submit
           </button>
-          {showModal && (
-            <div className="modal">
-              <p>You have successfully updated account</p>
-              <button
-                onClick={() => {
-                  setShowModal(false);
-                  navigate("/services"); // Navigate to "/services" after closing modal
-                }}
-              >
-                Close
-              </button>
-            </div>
-          )}
-        </div>        </div>
-      </div>
-
-      {isEditModalOpen && (
-        <div className="edit-modal">
-          <h2>Edit Pet</h2>
-          <button type="button" onClick={handleEditPet}>
-            Save Changes
-          </button>
-          <button type="button" onClick={closeEditModal}>
-            Cancel
-          </button>
         </div>
-      )}
-    </div>
+      </div>
+    </div >
   );
 };
 

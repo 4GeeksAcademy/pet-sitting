@@ -13,7 +13,9 @@ const getState = ({ getStore, getActions, setStore }) => {
                     background: "white",
                     initial: "white"
                 }
-            ]
+            ],
+            email: "",
+            token: null,
         },
         actions: {
             // Use getActions to call a function within a fuction
@@ -37,8 +39,10 @@ const getState = ({ getStore, getActions, setStore }) => {
                         const data = await response.json();
                         console.log("access token", data.access_token);
                         sessionStorage.setItem("token", data.access_token);
+                        sessionStorage.setItem("email", email);
                         setStore({
                             token: data.access_token,
+                            email: email,
                         });
                         return true;
                     } else {
@@ -82,7 +86,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 
             updateAccount: async (userData, pets) => {
                 try {
-                    const token = localStorage.getItem("token");
+                    const token = sessionStorage.getItem("token");
+                    const email = sessionStorage.getItem("email");
+                    console.log({ ...userData, email: email });
                     const response = await fetch(`${process.env.BACKEND_URL}/api/account`, {
                         method: "POST",
                         headers: {
@@ -90,7 +96,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                             "Authorization": `Bearer ${token}`,
                         },
                         body: JSON.stringify({
-                            userData: userData,
+                            userData: { ...userData, email: email },
                             pets: pets
                         }),
                     });

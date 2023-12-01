@@ -54,7 +54,7 @@
 //                 <a className="dropdown-item" href="#" onClick={handleLogout}>
 //                   Log out
 
-      
+
 //                 </a>
 //               </li>
 //             </ul>
@@ -64,22 +64,24 @@
 //     </>
 //   );
 // };
-import React, { useState } from "react";
-import { Link,useNavigate} from "react-router-dom";
+import React, { useState, useContext } from "react";
+import { Context } from "../store/appContext";
+import { Link, useNavigate } from "react-router-dom";
 
 export const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(null);
   const navigate = useNavigate();
+  const { store, actions } = useContext(Context);
 
 
   const handleLogout = async () => {
     try {
-     
+
       await actions.logout();
 
       setIsLoggedIn(false);
 
-     
+
       navigate("/");
     } catch (error) {
       console.error('An error occurred during logout:', error);
@@ -113,7 +115,7 @@ export const Navbar = () => {
                 </Link>
               </li>
               <li>
-              <Link to="/services" className="dropdown-item">
+                <Link to="/services" className="dropdown-item">
                   service
                 </Link>
               </li>
