@@ -1,117 +1,136 @@
 const getState = ({ getStore, getActions, setStore }) => {
-	return {
-		store: {
-			message: null,
-			demo: [
-				{
-					title: "FIRST",
-					background: "white",
-					initial: "white"
-				},
-				{
-					title: "SECOND",
-					background: "white",
-					initial: "white"
-				}
-			]
-		},
-		actions: {
-			// Use getActions to call a function within a fuction
-			exampleFunction: () => {
-				getActions().changeColor(0, "green");
-			},
+    return {
+        store: {
+            message: null,
+            demo: [
+                {
+                    title: "FIRST",
+                    background: "white",
+                    initial: "white"
+                },
+                {
+                    title: "SECOND",
+                    background: "white",
+                    initial: "white"
+                }
+            ]
+        },
+        actions: {
+            // Use getActions to call a function within a fuction
+            login: async (email, password) => {
+                const store = getStore();
+            
+                try {
+                    let options = {
+                        method: "POST",
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ email, password }),
+                    };
+            
+                    const response = await fetch(store.backendURL + "/api/login", options);
+            
+                    console.log('Login response:', response);
+            
+                    if (response.status === 200) {
+                        const data = await response.json();
+                        console.log("access token", data.access_token);
+                        sessionStorage.setItem("token", data.access_token);
+                        setStore({
+                            token: data.access_token,
+                        });
+                        return true;
+                    } else {
+                        console.error("Login failed. Please check your credentials.");
+                        return false;
+                    }
+                } catch (error) {
+                    console.error("Login error:", error);
+                    alert("An error occurred during login.");
+                    return false;
+                }
+            },
+            
+            signup: async (formData) => {
+                try {
+                    const token = localStorage.getItem("token");
 
-			getMessage: async () => {
-				try {
-					// fetching data from the backend
-					const resp = await fetch(process.env.BACKEND_URL + "/api/hello")
-					const data = await resp.json()
-					setStore({ message: data.message })
-					// don't forget to return something, that is how the async resolves
-					return data;
-				} catch (error) {
-					console.log("Error loading message from backend", error)
-				}
-			},
-			login: async (email, password) => {
-				
-				try {
-				  const response = await fetch(process.env.BACKEND_URL + "/api/login", {
-					method: 'POST',
-					headers: {
-					  'Content-Type': 'application/json',
-					},
-					body: JSON.stringify({ email, password }),
-				  });
-		
-				  if (response.ok) {
-					const data = await response.json();
-					console.log('Login successful', data);
-					localStorage.setItem("token", data.access_token);
-					return true;
-				  } else {
-					console.error('Login failed. Please check your credentials.');
-					return false;
-				  }
-				} catch (error) {
-				  console.error('An error occurred during login:', error);
-				  return false;
-				}
-			  },
-			
-				signup: async (formData) => {
-					try {
-						let response = await fetch(process.env.BACKEND_URL + "/api/signup", {
-							method: "POST",
-							headers: { "Content-Type": "application/json" },
-							body: JSON.stringify({
-								"email": formData.email,
-								"password": formData.password,
-								"first_name": formData.first_name,
-								"last_name": formData.last_name
-							})
-						});
-					let data = await response.json()
-				
+                    const response = await fetch(process.env.BACKEND_URL + "/api/signup", {
+                        method: "POST",
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            "email": formData.email,
+                            "password": formData.password,
+                            "first_name": formData.first_name,
+                            "last_name": formData.last_name
+                        })
+                    });
 
-					if (data) {
-						console.log(data.message)
-						return true
-					}
-				} catch (error) { console.log(error) }
-			},
-			account: async (userFormData,petFormData) => {
-				let token=localStorage.getItem("token")
-				try {
-					const response = await fetch(`${process.env.BACKEND_URL}/api/account`, {
-					  method: "PUT",
-					  headers: {
-						"Content-Type": "application/json",
-						
-						  "Authorization": `Bearer ${token}`,
-					  },
-					  body: JSON.stringify({
-						userFormData:userFormData,
-						petFormData:petFormData
+                    let data = await response.json();
 
-					  }),
-					});
-				
-					if (!response.ok) {
-					  throw new Error(`HTTP error! Status: ${response.status}`);
-					}
-				
-					return await response.json();
-				  } catch (error) {
-					throw new Error(`Error: ${error.message}`);
-				  }
-			}
+                    if (data) {
+                        console.log(data.message)
+                        return true;
+                    }
+                } catch (error) {
+                    console.log(error)
+                }
+            },
 
-			
-		},
+            updateAccount: async (userData, pets) => {
+                try {
+                    const token = localStorage.getItem("token");
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/account`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${token}`,
+                        },
+                        body: JSON.stringify({
+                            userData: userData,
+                            pets: pets
+                        }),
+                    });
+            
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+            
+                    return await response.json();
+                } catch (error) {
+                    throw new Error(`Error: ${error.message}`);
+                }
+            },
+            
+            addPet: async (petData) => {
+                try {
+                    const token = localStorage.getItem("token");
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/pets`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${token}`,
+                        },
+                        body: JSON.stringify(petData),
+                    });
 
-	};
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+
+                    return await response.json();
+                } catch (error) {
+                    throw new Error(`Error: ${error.message}`);
+                }
+            },
+        },
+    };
 }
+
+
 
 export default getState;
 
@@ -119,5 +138,3 @@ export default getState;
 
 
 
-
-	

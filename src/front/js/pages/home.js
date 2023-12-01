@@ -11,8 +11,9 @@ export const Home = () => {
   const { store, actions } = useContext(Context);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isLogedIn, setIsLoggedIn] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
+
   const handleLogin = async () => {
     try {
       if (!email || !password) {
@@ -21,13 +22,11 @@ export const Home = () => {
       }
 
       const loginSuccess = await actions.login(email, password);
-
       if (loginSuccess) {
         console.log('Login successful');
-       
-        const modal = new bootstrap.Modal(document.getElementById('exampleModal'));
-        modal.hide();
-        // Navigate to "/services"
+        setShowModal(false); // Close the login modal
+
+        // Navigate to "/services" after a successful login
         navigate("/services");
       } else {
         console.error('Login failed. Please check your credentials.');
@@ -37,7 +36,7 @@ export const Home = () => {
     }
   };
 
-
+    
 
   return (
     <div className="container-fluid homePage">
@@ -66,6 +65,7 @@ export const Home = () => {
 
           <div className="center processBox">
             <h1>Hi, already a part of the family? Welcome back!</h1>
+            
 
             <button
               type="button"
@@ -87,7 +87,7 @@ export const Home = () => {
                 <div className="modal-content">
                   <div className="modal-header">
 
-                 
+
                   </div>
                   <div className="modal-body">
                     <div>
@@ -124,19 +124,29 @@ export const Home = () => {
                         />
                       </div>
                       <div>
-                      <button
-                      type="button"
-                      onClick={() => handleLogin()}
-                      className="btn btn-primary signupButton"
-                      data-bs-toggle="modal"
-                      data-bs-target="#exampleModal"
-                    >
-                      Log in
-                    </button>
+                    
+                       <button
+                       type="button"
+                       className="btn btn-secondary loginButton"
+                       data-bs-toggle="modal"
+                       data-bs-target="#exampleModal" >
+          
+                          Log in
+                        </button>
                       </div>
                       <Link to="/forgotten-password" className="forgotPasswordLink ms-2">
                         Forgot Password?
                       </Link>
+                    
+                      <div
+                        className={`modal fade ${showModal ? 'show' : ''}`}
+                        id="exampleModal"
+                        tabIndex="-1"
+                        aria-labelledby="exampleModalLabel"
+                        aria-hidden="true"
+                        style={{ display: showModal ? 'block' : 'none' }}
+                        onClick={() => setShowModal(false)}
+                      ></div>
                     </div>
                   </div>
 
