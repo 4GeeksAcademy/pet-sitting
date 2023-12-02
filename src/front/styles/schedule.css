@@ -1,3 +1,7 @@
+body.waiting {
+    cursor: wait !important;
+}
+
 .bg-light {
     background-color: #f2e9d8 !important;
 }

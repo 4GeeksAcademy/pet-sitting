@@ -288,6 +288,7 @@ export const Timeslots = (props) => {
 	}
 
 	const getScheduleData = async () => {
+		document.body.classList.add('waiting')
 		const formatAPIReqStr = (time, date, month, year) => {
 			const dateStr = date
 			let timeHr = time[1] === ':' ? parseInt(time[0]) : parseInt(time[0] + time[1])
@@ -337,7 +338,7 @@ export const Timeslots = (props) => {
 					})
 				}
 				)
-
+				await document.body.classList.remove('waiting')
 				return await response.json()
 			}
 			else {
@@ -345,7 +346,7 @@ export const Timeslots = (props) => {
 			}
 		} catch (error) {
 			console.log("An error occurred.", error)
-			navigate('/services')
+			await document.body.classList.remove('waiting')
 		}
 	}
 
@@ -363,18 +364,21 @@ export const Timeslots = (props) => {
 		asyncFunc1()
 		const asyncFunc2 = async () => {
 			if (recentlyFetched.current === false)
-				try {
-					recentlyFetched.current = true
-					const resp = await getScheduleData()
-					const events = await resp.events
-					if (events !== undefined) {
-						setExistingEvents(await events)
-						console.log(events)
-					}
+				document.body.classList.add('waiting')
+			try {
+				recentlyFetched.current = true
+				const resp = await getScheduleData()
+				const events = await resp.events
+				if (events !== undefined) {
+					setExistingEvents(await events)
+					console.log(events)
+					document.body.classList.remove('waiting')
 				}
-				catch (error) {
-					console.log(error)
-				}
+			}
+			catch (error) {
+				console.log(error)
+				document.body.classList.remove('waiting')
+			}
 			setTimeout(() => {
 				recentlyFetched.current = false
 			}, 2000)
@@ -385,6 +389,7 @@ export const Timeslots = (props) => {
 	useEffect(() => {
 		const asyncFunc2 = async () => {
 			if (recentlyFetched.current === false)
+
 				try {
 					recentlyFetched.current = true
 					const resp = await getScheduleData()
@@ -405,10 +410,17 @@ export const Timeslots = (props) => {
 		const fixedDatesAndWeekdays = fixDatesAndSetDayNames([...Array(7).keys()].map(i => i + parseInt(store.timeSlotsStartingDay.date)))
 		const timeSlotLabels = createTimeSlotsLabels()
 		setWeekDayDivs(createWeekDayDivs(fixedDatesAndWeekdays, timeSlotLabels))
+	}, [store.timeSlotsStartingDay])
+
+	useEffect(() => {
+		const fixedDatesAndWeekdays = fixDatesAndSetDayNames([...Array(7).keys()].map(i => i + parseInt(store.timeSlotsStartingDay.date)))
+		const timeSlotLabels = createTimeSlotsLabels()
+		setWeekDayDivs(createWeekDayDivs(fixedDatesAndWeekdays, timeSlotLabels))
 	}, [store.timeSlotsStartingDay, store.token, existingEvents, firstTimeslotClicked.current, newScheduleStartStr, newScheduleEndStr, rerender])
 
 	const handleModalSubmit = async (e) => {
 		e.preventDefault()
+		document.body.classList.add('waiting')
 		try {
 			const bookPets = pets.map((item, ind) => {
 				if (e.target.elements[`${item}`].checked) {
@@ -439,6 +451,7 @@ export const Timeslots = (props) => {
 			})
 			if (resp.ok) {
 				alert("Booked successfully.")
+				document.body.classList.remove('waiting')
 			}
 			setTimeout(async () => {
 				const resp = await getScheduleData()
@@ -454,11 +467,13 @@ export const Timeslots = (props) => {
 		catch (error) {
 			console.log(`An error occurred: ${error}`)
 			alert('An error occurred. Booking failed. Make sure to select some pets!')
+			document.body.classList.remove('waiting')
 		}
 	}
 
 	const handleModalCancel = async (e) => {
 		e.preventDefault()
+		document.body.classList.add('waiting')
 		const idOfEventToCancel = targetEventId.current
 		const apiStr = typeOfSchedule === 'pet-sitting' ? 'pet-sitting' : 'pet-check-in-or-meeting-or-dog-walk'
 		try {
@@ -475,6 +490,7 @@ export const Timeslots = (props) => {
 			})
 			if (resp.ok) {
 				alert("Cancelled successfully.")
+				document.body.classList.remove('waiting')
 			}
 			setTimeout(async () => {
 				const resp = await getScheduleData()
@@ -490,6 +506,7 @@ export const Timeslots = (props) => {
 		catch (error) {
 			console.log(`An error occurred: ${error}`)
 			alert('An error occurred. Cancelling the booking failed.')
+			document.body.classList.remove('waiting')
 		}
 	}
 	return (
