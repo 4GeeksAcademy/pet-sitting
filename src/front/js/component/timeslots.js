@@ -323,6 +323,7 @@ export const Timeslots = (props) => {
 		const schedStartReq = formatAPIReqStr("09:00:00-07:00", store.timeSlotsStartingDay.date, String(parseInt(store.timeSlotsStartingDay.month) + 1), store.timeSlotsStartingDay.year)
 		const schedEndReq = formatAPIReqStr("17:00:00-07:00", nextDate, String(parseInt(nextMonth) + 1), nextYear)
 		try {
+			console.log(schedStartReq, schedEndReq)
 			if (store.token !== null) {
 				const response = await fetch(process.env.BACKEND_URL + `api/get-${typeOfSchedule}`, {
 					method: "POST",
@@ -355,7 +356,8 @@ export const Timeslots = (props) => {
 			if (tempPets !== undefined) {
 				setPets(tempPets)
 			} else {
-				asyncFunc1()
+				alert('An error occurred while accessing your pets. Please try again. If you have not added any pets, add some on the account page.')
+				navigate('/')
 			}
 		}
 		asyncFunc1()
@@ -366,7 +368,8 @@ export const Timeslots = (props) => {
 					const resp = await getScheduleData()
 					const events = await resp.events
 					if (events !== undefined) {
-						setExistingEvents(events)
+						setExistingEvents(await events)
+						console.log(events)
 					}
 				}
 				catch (error) {
@@ -380,6 +383,25 @@ export const Timeslots = (props) => {
 	}, [])
 
 	useEffect(() => {
+		const asyncFunc2 = async () => {
+			if (recentlyFetched.current === false)
+				try {
+					recentlyFetched.current = true
+					const resp = await getScheduleData()
+					const events = await resp.events
+					if (events !== undefined) {
+						setExistingEvents(await events)
+						console.log(events)
+					}
+				}
+				catch (error) {
+					console.log(error)
+				}
+			setTimeout(() => {
+				recentlyFetched.current = false
+			}, 2000)
+		}
+		asyncFunc2()
 		const fixedDatesAndWeekdays = fixDatesAndSetDayNames([...Array(7).keys()].map(i => i + parseInt(store.timeSlotsStartingDay.date)))
 		const timeSlotLabels = createTimeSlotsLabels()
 		setWeekDayDivs(createWeekDayDivs(fixedDatesAndWeekdays, timeSlotLabels))
@@ -447,7 +469,8 @@ export const Timeslots = (props) => {
 					"Authorization": 'Bearer ' + store.token
 				},
 				body: JSON.stringify({
-					"id": idOfEventToCancel
+					"id": idOfEventToCancel,
+					"recurring": e.target.elements.recurringCancel.checked
 				})
 			})
 			if (resp.ok) {
@@ -469,7 +492,6 @@ export const Timeslots = (props) => {
 			alert('An error occurred. Cancelling the booking failed.')
 		}
 	}
-
 	return (
 		<div className="container d-flex timeslots-container">
 			{weekDayDivs}
@@ -585,6 +607,12 @@ export const Timeslots = (props) => {
 						<div className="modal-body">
 							<form onSubmit={(e) => { handleModalCancel(e) }}>
 								<p>{`Cancel booking starting on ${newScheduleStartStr.substring(0, 10)} from ${parseInt(newScheduleStartStr.substring(11, 13)) <= 12 ? newScheduleStartStr.substring(11, 16) : String(parseInt(newScheduleStartStr.substring(11, 13) - 12) + newScheduleStartStr.substring(13, 16))} to ${parseInt(newScheduleEndStr.substring(11, 13)) <= 12 ? newScheduleEndStr.substring(11, 16) : String(parseInt(newScheduleEndStr.substring(11, 13) - 12) + newScheduleEndStr.substring(13, 16))} on ${newScheduleEndStr.substring(0, 10)}?`}</p>
+								<div className="form-group row">
+									<div className="form-check">
+										<label className="form-check-label col-sm-2" htmlFor='recurring'>Cancel recurring events at this time?</label>
+										<input className="form-check-input col-sm-10" type="checkbox" value="" id='recurringCancel' />
+									</div>
+								</div>
 								<div className="modal-footer">
 									<button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Wait, go back!</button>
 									<button type="submit" className="btn btn-danger" data-bs-dismiss="modal">Cancel Booking</button>
@@ -622,5 +650,5 @@ export const Timeslots = (props) => {
 				</div>
 			</div>
 		</div>
-	);
+	)
 };

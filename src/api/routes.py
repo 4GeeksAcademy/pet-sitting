@@ -541,7 +541,7 @@ def get_pet_names():
 @jwt_required()
 def cancel_pet_check_in_or_meeting_or_dog_walk():
     req = request.get_json()
-    print(req)
+    recurring = req['recurring']
     SCOPES = ['https://www.googleapis.com/auth/calendar']
     SERVICE_ACCOUNT_FILE = 'credentials.json'
 
@@ -552,10 +552,16 @@ def cancel_pet_check_in_or_meeting_or_dog_walk():
     calendar_id = "f73ae5b685428f5ee9f2e95b1b39fe17de1f5851e48ab7ddd2dd0ad3765c0f5d@group.calendar.google.com"
 
     service = build("calendar", "v3", credentials=creds)
-
+    
     try:
         service.events().delete(calendarId=calendar_id, eventId=req['id']).execute()
-        return jsonify({"msg": "Event deleted successfully."})
+        if recurring:
+            events = service.events().instances(calendarId=calendar_id, eventId=req['id']).execute()
+            recurring_id = events['items'][0]['recurringEventId']
+            service.events().delete(calendarId=calendar_id, eventId=recurring_id).execute()
+            return jsonify({"msg": "Events deleted successfully."})
+        else:
+            return jsonify({"msg": "Event deleted successfully."})
     except HttpError as error:
         print(error)
         return jsonify({"msg": "An error occurred."}), 404
@@ -565,6 +571,7 @@ def cancel_pet_check_in_or_meeting_or_dog_walk():
 @jwt_required()
 def cancel_pet_sitting():
     req = request.get_json()
+    recurring = req['recurring']
     SCOPES = ['https://www.googleapis.com/auth/calendar']
     SERVICE_ACCOUNT_FILE = 'credentials.json'
 
@@ -578,7 +585,13 @@ def cancel_pet_sitting():
 
     try:
         service.events().delete(calendarId=calendar_id, eventId=req['id']).execute()
-        return jsonify({"msg": "Event deleted successfully."})
+        if recurring:
+            events = service.events().instances(calendarId=calendar_id, eventId=req['id']).execute()
+            recurring_id = events['items'][0]['recurringEventId']
+            service.events().delete(calendarId=calendar_id, eventId=recurring_id).execute()
+            return jsonify({"msg": "Events deleted successfully."})
+        else:
+            return jsonify({"msg": "Event deleted successfully."})
     except HttpError as error:
         print(error)
         return jsonify({"msg": "An error occurred."}), 404

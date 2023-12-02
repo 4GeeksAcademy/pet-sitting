@@ -73,7 +73,6 @@ export const Calendar = () => {
                 <div className="calendar-days" dangerouslySetInnerHTML={{ __html: newDaysArr.join('') }} onClick={(e) => {
                     const el = e.target.closest("div");
                     if (el && e.currentTarget.contains(el)) {
-                        console.log(el.getAttribute('data-year'))
                         actions.setTimeslotsStartingDay({
                             "date": el.getAttribute('data-day'),
                             "month": el.getAttribute('data-month'),
