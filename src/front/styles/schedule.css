@@ -30,6 +30,10 @@
     .schedule-row {
         --bs-gutter-x: 0.15rem !important;
     }
+    .body {
+        max-width: 100vw !important;
+        overflow-x: hidden !important;
+    }
 }
 
 .nav-link.active {

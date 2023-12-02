@@ -10,6 +10,9 @@
     .timeslots-day {
         width: 13%
     }
+    .timeslots-container {
+        box-shadow: none !important;
+    }
 }
 
 .timeslots-day-date {

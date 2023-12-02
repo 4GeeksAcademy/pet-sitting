@@ -163,7 +163,7 @@
 /* -- ↓ ↓ ↓ some responsiveness ↓ ↓ ↓ -- */
 
 @media(max-width: 1000px) {
-  body {
+  .services {
     align-items: flex-start;  
     overflow: auto;
   }
@@ -181,12 +181,12 @@
 
 @media(max-width: 500px) {
   .card {
-    height: 20vh;
-    width: 40vw
+    height: 40vh;
+    width: 100%;
   }
   
   .card-image {
-    height: 16vh;  
+    height: 35vh;  
   }
   
   .card-image > i {
@@ -198,21 +198,39 @@
   }
   
   .card-info > i { 
-    font-size: 0.8em; 
+    font-size: 2em; 
   }
   
   .card-info-title > h3 {
-    font-size: 0.9em;
+    font-size: 2em;
   }
 
   .card-info-title > h4 {
-    font-size: 0.8em;
+    font-size: 2em;
     margin-top: 4px;
   }
 }
 
-@media(max-width: 320px) {
+@media(max-width: 380px) {
   .card {
+    height: 40vh;
     width: 100%;
+  }
+
+  .card-image {
+    height: 35vh;
+  }
+
+  .card-info > i { 
+    font-size: 1.5em; 
+  }
+  
+  .card-info-title > h3 {
+    font-size: 1.5em;
+  }
+
+  .card-info-title > h4 {
+    font-size: 1.5em;
+    margin-top: 4px;
   }
 }

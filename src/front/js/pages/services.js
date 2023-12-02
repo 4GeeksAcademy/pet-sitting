@@ -23,14 +23,14 @@ export const Services = () => {
           for (const card of document.getElementsByClassName("card")) {
             const rect = card.getBoundingClientRect(),
               x = e.clientX - rect.left,
-            y = e.clientY - rect.top;
+              y = e.clientY - rect.top;
 
             card.style.setProperty("--mouse-x", `${x}px`);
             card.style.setProperty("--mouse-y", `${y}px`);
           }
         }}>
           <div className="row d-flex w-100 mx-auto">
-            <div className="col-6">
+            <div className="col-md-6 col-s-12">
               <Link to="/schedule/dog-walk" style={{ textDecoration: 'none' }}>
                 <div className="card">
                   <div className="card-border">
@@ -50,7 +50,7 @@ export const Services = () => {
                 </div>
               </Link>
             </div>
-            <div className="col-6">
+            <div className="col-md-6 col-s-12">
               <Link to="/schedule/pet-check-in" style={{ textDecoration: 'none' }}>
                 <div className="card">
                   <div className="card-border">
@@ -70,7 +70,7 @@ export const Services = () => {
                 </div>
               </Link>
             </div>
-            <div className="col-6">
+            <div className="col-md-6 col-s-12">
               <Link to="/schedule/meeting" style={{ textDecoration: 'none' }}>
                 <div className="card">
                   <div className="card-border">
@@ -90,7 +90,7 @@ export const Services = () => {
                 </div>
               </Link>
             </div>
-            <div className="col-6">
+            <div className="col-md-6 col-s-12">
               <Link to="/schedule/pet-sitting" style={{ textDecoration: 'none' }}>
                 <div className="card">
                   <div className="card-border">
@@ -119,7 +119,7 @@ export const Services = () => {
     return (
       <div className="container-fluid">
         <div className="row">
-          <div className="col-s-6 mx-auto text-center" style={{'color': 'white'}}>
+          <div className="col-s-6 mx-auto text-center" style={{ 'color': 'white' }}>
             <p>You must be logged in to see this page.</p>
             <Link to="/">Log in?</Link>
           </div>
