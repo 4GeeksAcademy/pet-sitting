@@ -412,6 +412,7 @@ def handle_schedule_walk_or_check_in_or_meet_and_greet():
                         'RRULE:FREQ=WEEKLY'
                     ],
                 }
+                
         else:
             event = {
                     'summary': type_of_booking + ' with ' + ' and '.join(pets) + ' for ' + email,
@@ -429,6 +430,30 @@ def handle_schedule_walk_or_check_in_or_meet_and_greet():
 
 
         event = service.events().insert(calendarId=calendar_id, body=event).execute()
+
+        start_date_time = datetime.datetime.fromisoformat(start_time)
+        end_date_time = datetime.datetime.fromisoformat(end_time)
+
+        email_sender = 'petsitting417@gmail.com'
+        email_password = "ilhjwhdyxlxpmdfw"
+        email_receiver = email
+        email_subject = 'Pet Care Service Scheduled.'
+        if(recurring):
+            email_body = 'You have successfully scheduled a recurring ' + type_of_booking + ' for ' + ' and '.join(pets) + ' at ' + user_address + ' starting at ' + start_date_time.strftime("%Y %B %d %I:%M %p") + ' and ending at ' + end_date_time.strftime("%Y %B %d %I:%M %p.")
+        else:
+            email_body = 'You have successfully scheduled a ' + type_of_booking + ' for ' + ' and '.join(pets) + ' at ' + user_address + ' starting at ' + start_date_time.strftime("%Y %B %d %I:%M %p") + ' and ending at ' + end_date_time.strftime("%Y %B %d %I:%M %p.")
+       
+        em = EmailMessage()
+        em['from'] = email_sender
+        em['to'] = email_receiver
+        em['subject'] = email_subject
+        em.set_content(email_body)
+
+        context = ssl.create_default_context
+        with smtplib.SMTP_SSL('smtp.gmail.com',465) as smtp:
+            smtp.login(email_sender, email_password)
+            smtp.sendmail(email_sender, email_receiver, em.as_string())
+        
         return jsonify({"msg": "Booking created successfully.", "status": "ok"}), 200
     
     except HttpError as error:
@@ -516,6 +541,31 @@ def handle_schedule_pet_sitting():
 
 
         event = service.events().insert(calendarId=calendar_id, body=event).execute()
+
+        start_date_time = datetime.datetime.fromisoformat(start_time)
+        end_date_time = datetime.datetime.fromisoformat(end_time)
+
+        email_sender = 'petsitting417@gmail.com'
+        email_password = "ilhjwhdyxlxpmdfw"
+        email_receiver = email
+        email_subject = 'Pet Care Service Scheduled.'
+
+        if(recurring):
+            email_body = 'You have successfully scheduled a recurring ' + type_of_booking + ' for ' + ' and '.join(pets) + ' at ' + user_address + ' starting at ' + start_date_time.strftime("%Y %B %d %I:%M %p") + ' and ending at ' + end_date_time.strftime("%Y %B %d %I:%M %p.")
+        else:
+            email_body = 'You have successfully scheduled a ' + type_of_booking + ' for ' + ' and '.join(pets) + ' at ' + user_address + ' starting at ' + start_date_time.strftime("%Y %B %d %I:%M %p") + ' and ending at ' + end_date_time.strftime("%Y %B %d %I:%M %p.")
+
+        em = EmailMessage()
+        em['from'] = email_sender
+        em['to'] = email_receiver
+        em['subject'] = email_subject
+        em.set_content(email_body)
+
+        context = ssl.create_default_context
+        with smtplib.SMTP_SSL('smtp.gmail.com',465) as smtp:
+            smtp.login(email_sender, email_password)
+            smtp.sendmail(email_sender, email_receiver, em.as_string())
+
         return jsonify({"msg": "Booking created successfully.", "status": "ok"}), 200
     
     except HttpError as error:
@@ -540,6 +590,7 @@ def get_pet_names():
 @api.route('/cancel/pet-check-in-or-meeting-or-dog-walk', methods=['POST', 'OPTIONS'])
 @jwt_required()
 def cancel_pet_check_in_or_meeting_or_dog_walk():
+    email = get_jwt_identity()
     req = request.get_json()
     recurring = req['recurring']
     SCOPES = ['https://www.googleapis.com/auth/calendar']
@@ -559,8 +610,42 @@ def cancel_pet_check_in_or_meeting_or_dog_walk():
             events = service.events().instances(calendarId=calendar_id, eventId=req['id']).execute()
             recurring_id = events['items'][0]['recurringEventId']
             service.events().delete(calendarId=calendar_id, eventId=recurring_id).execute()
+
+            email_sender = 'petsitting417@gmail.com'
+            email_password = "ilhjwhdyxlxpmdfw"
+            email_receiver = email
+            email_subject = 'Pet Care Service Scheduled.'
+            email_body = 'You have successfully cancelled a recurring booking with Hot Doggity Dog Walkers.'
+                
+
+            em = EmailMessage()
+            em['from'] = email_sender
+            em['to'] = email_receiver
+            em['subject'] = email_subject
+            em.set_content(email_body)
+
+            context = ssl.create_default_context
+            with smtplib.SMTP_SSL('smtp.gmail.com',465) as smtp:
+                smtp.login(email_sender, email_password)
+                smtp.sendmail(email_sender, email_receiver, em.as_string())
+
             return jsonify({"msg": "Events deleted successfully."})
         else:
+            email_sender = 'petsitting417@gmail.com'
+            email_password = "ilhjwhdyxlxpmdfw"
+            email_receiver = email
+            email_subject = 'Pet Care Service Scheduled.'
+            email_body = 'You have successfully cancelled a booking with Hot Doggity Dog Walkers.'
+            em = EmailMessage()
+            em['from'] = email_sender
+            em['to'] = email_receiver
+            em['subject'] = email_subject
+            em.set_content(email_body)
+
+            context = ssl.create_default_context
+            with smtplib.SMTP_SSL('smtp.gmail.com',465) as smtp:
+                smtp.login(email_sender, email_password)
+                smtp.sendmail(email_sender, email_receiver, em.as_string())
             return jsonify({"msg": "Event deleted successfully."})
     except HttpError as error:
         print(error)
@@ -570,6 +655,7 @@ def cancel_pet_check_in_or_meeting_or_dog_walk():
 @api.route('/cancel/pet-sitting', methods=['POST'])
 @jwt_required()
 def cancel_pet_sitting():
+    email = get_jwt_identity()
     req = request.get_json()
     recurring = req['recurring']
     SCOPES = ['https://www.googleapis.com/auth/calendar']
@@ -589,8 +675,42 @@ def cancel_pet_sitting():
             events = service.events().instances(calendarId=calendar_id, eventId=req['id']).execute()
             recurring_id = events['items'][0]['recurringEventId']
             service.events().delete(calendarId=calendar_id, eventId=recurring_id).execute()
+
+            email_sender = 'petsitting417@gmail.com'
+            email_password = "ilhjwhdyxlxpmdfw"
+            email_receiver = email
+            email_subject = 'Pet Care Service Scheduled.'
+            email_body = 'You have successfully cancelled a recurring booking with Hot Doggity Dog Walkers.'
+                
+
+            em = EmailMessage()
+            em['from'] = email_sender
+            em['to'] = email_receiver
+            em['subject'] = email_subject
+            em.set_content(email_body)
+
+            context = ssl.create_default_context
+            with smtplib.SMTP_SSL('smtp.gmail.com',465) as smtp:
+                smtp.login(email_sender, email_password)
+                smtp.sendmail(email_sender, email_receiver, em.as_string())
+
             return jsonify({"msg": "Events deleted successfully."})
         else:
+            email_sender = 'petsitting417@gmail.com'
+            email_password = "ilhjwhdyxlxpmdfw"
+            email_receiver = email
+            email_subject = 'Pet Care Service Scheduled.'
+            email_body = 'You have successfully cancelled a booking with Hot Doggity Dog Walkers.'
+            em = EmailMessage()
+            em['from'] = email_sender
+            em['to'] = email_receiver
+            em['subject'] = email_subject
+            em.set_content(email_body)
+
+            context = ssl.create_default_context
+            with smtplib.SMTP_SSL('smtp.gmail.com',465) as smtp:
+                smtp.login(email_sender, email_password)
+                smtp.sendmail(email_sender, email_receiver, em.as_string())
             return jsonify({"msg": "Event deleted successfully."})
     except HttpError as error:
         print(error)
