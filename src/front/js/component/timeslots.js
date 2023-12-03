@@ -125,15 +125,18 @@ export const Timeslots = (props) => {
 				const evntDTEnd = new Date(dateTimeEnd)
 				if ((evntDTStart >= newSchedStart && evntDTStart < newSchedEnd) || (evntDTEnd > newSchedStart && evntDTEnd <= newSchedEnd)) {
 					invalidBookingOverlap.current = true
+					// I know this isn't best practice, but if I make this a state the component doesn't update immediately.
 					setRerender(!rerender)
 				}
 			})
 			if (newSchedStart >= newSchedEnd) {
 				invalidBookingEndBfrStart.current = true
+				// I know this isn't best practice, but if I make this a state the component doesn't update immediately.
 				setRerender(!rerender)
 			}
 			if (newSchedEnd == null || newSchedStart == null || newSchedStart.getTime() == NaN || newSchedEnd.getTime() == NaN) {
 				invalidBookingDate.current = true
+				// I know this isn't best practice, but if I make this a state the component doesn't update immediately.
 				setRerender(!rerender)
 			}
 		}
@@ -519,10 +522,11 @@ export const Timeslots = (props) => {
 							<h5 className="modal-title" id="modalLabel1">{`Schedule a ${typeOfScheduleStr}`}</h5>
 							<button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={() => {
 								firstTimeslotClicked.current = false
-								setRerender(!rerender)
 								setTimeout(invalidBookingOverlap.current = false, 2000)
 								setTimeout(invalidBookingEndBfrStart.current = false, 2000)
 								setTimeout(invalidBookingDate.current = false, 2000)
+								// I know this isn't best practice, but if I make these states the component doesn't update immediately.
+								setRerender(!rerender)
 							}}></button>
 						</div>
 						<div className="modal-body">
@@ -599,12 +603,14 @@ export const Timeslots = (props) => {
 													firstTimeslotClicked.current = false
 													invalidBookingEndBfrStart.current = false
 													invalidBookingDate.current = false
+													// I know this isn't best practice, but if I make these states the component doesn't update immediately.
 													setRerender(!rerender)
 												}}>Cancel</button>
 												<button type="submit" className="btn btn-primary" data-bs-dismiss="modal" onClick={() => {
 													firstTimeslotClicked.current = false
 													invalidBookingOverlap.current = false
 													invalidBookingDate.current = false
+													// I know this isn't best practice, but if I make these states the component doesn't update immediately.
 													setRerender(!rerender)
 												}}>Submit</button>
 											</div>
@@ -655,12 +661,14 @@ export const Timeslots = (props) => {
 								invalidBookingOverlap.current = false
 								invalidBookingDate.current = false
 								setRerender(!rerender)
+								// I know this isn't best practice, but if I make these states the component doesn't update immediately.
 							}}><p>Cancel {`(reselect start time/date)`}</p></button>
 							<button type="submit" className="btn btn-danger" data-bs-dismiss="modal" onClick={() => {
 								firstTimeslotClicked.current = true
 								invalidBookingOverlap.current = false
 								invalidBookingDate.current = false
 								setRerender(!rerender)
+								// I know this isn't best practice, but if I make these states the component doesn't update immediately.
 							}}>Continue</button>
 						</div>
 					</div>
