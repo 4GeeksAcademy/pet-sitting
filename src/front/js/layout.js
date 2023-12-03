@@ -15,7 +15,7 @@ import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
 import { ForgottenPassword } from "./pages/forgottenPassword";
 import { SignupUser } from "./pages/SignupUser";
-import { AboutMe } from "./pages/AboutMe";
+import {AboutMe} from "./pages/AboutMe";
 //create your first component
 const Layout = () => {
     //the basename is used when your project is published in a subdirectory and not in the root of the domain

@@ -25,6 +25,8 @@ CORS(app)
 
 app.url_map.strict_slashes = False
 
+CORS(app)
+
 app.config["JWT-SECRET_KEY"]=os.environ.get("JWT-SECRET_KEY")
 jwt=JWTManager(app)
 # database condiguration
