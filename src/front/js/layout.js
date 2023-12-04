@@ -6,6 +6,7 @@ import { BackendURL } from "./component/backendURL";
 import { Home } from "./pages/home";
 import { Demo } from "./pages/demo";
 import { Single } from "./pages/single";
+import { Schedule } from './pages/schedule.js'
 import { Insurance } from "./pages/insurance";
 import { Services } from "./pages/services"
 import injectContext from "./store/appContext";
@@ -21,8 +22,7 @@ const Layout = () => {
     //the basename is used when your project is published in a subdirectory and not in the root of the domain
     // you can set the basename on the .env file located at the root of this project, E.g: BASENAME=/react-hello-webapp/
     const basename = process.env.BASENAME || "";
-
-    if (!process.env.BACKEND_URL || process.env.BACKEND_URL == "") return <BackendURL />;
+    // if (!process.env.BACKEND_URL || process.env.BACKEND_URL == "") return <BackendURL />;
 
     return (
         <div>
@@ -32,19 +32,13 @@ const Layout = () => {
                     <Routes>
                         <Route element={<Home />} path="/" />
                         <Route element={<AboutMe />} path="/aboutMe" />
-                        <Route element={<Demo />} path="/demo" />
-                        <Route element={<Account />} path="/account" />
-
-                        <Route element={<SignupUser />} path="/signupUser" />
-                        <Route element={<Single />} path="/single/:theid" />
-
                         <Route element={<ForgottenPassword />} path="/forgotten-password" />
-
-                        <Route element={<Insurance />} path="/insurance" />
-
-
+                        <Route element={<Schedule />} path="/schedule/:typeOfSchedule" />
+                        <Route element={<SignupUser />} path="/signupUser" />
                         <Route element={<Services />} path="/services" />
-
+                        <Route element={<ForgottenPassword />} path="/forgotten-password" />
+                        <Route element={<Insurance />} path="/insurance" />
+                        <Route element={<Services />} path="/services" />
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
                     <Footer />

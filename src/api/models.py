@@ -14,6 +14,13 @@ class User(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(500), unique=False, nullable=False)
+    first_name = db.Column(db.String(80), unique=False, nullable=False)
+    last_name = db.Column(db.String(80), unique=False, nullable=False)
+    address = db.Column(db.String(80), unique=False, nullable=False)
+    phone_number = db.Column(db.String(80), unique=False, nullable=False)
+    pets = db.relationship('Pet', backref='user')
+    last_services_used = db.relationship('Last_Service_Used', backref='user')
 
 
 
@@ -29,10 +36,6 @@ class User(db.Model):
   
     pets = db.relationship('Pet', backref='user')
     last_services_used = db.relationship('Last_Service_Used', backref='user')
-
-
- 
-
 
     def __repr__(self):
         return f'<User {self.email}>'
@@ -53,7 +56,6 @@ class User(db.Model):
             # do not serialize the password, its a security breach
         }
 
-
 class Pet(db.Model):
     __tablename__ = 'pet'
 
@@ -64,7 +66,6 @@ class Pet(db.Model):
     age = db.Column(db.Integer, unique=False, nullable=False)
     description = db.Column(db.Text, unique=False, nullable=True)
     detailed_care_info = db.Column(db.Text, unique=False, nullable=True)
-
 
     def __repr__(self):
         return '<Pet %r>' % self.id
