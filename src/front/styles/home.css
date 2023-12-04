@@ -185,6 +185,10 @@ body{
     display: block;
     margin-bottom: 10px; /* Add space between labels and inputs */
   }
+
+label {
+  color: #54665a
+}
   
 
 

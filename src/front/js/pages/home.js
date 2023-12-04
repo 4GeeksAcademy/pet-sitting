@@ -12,26 +12,26 @@ export const Home = () => {
 
   const handleLogin = async () => {
     try {
-    
+
       if (!email || !password) {
         console.error("Please enter both email and password.");
         return;
       }
-  
-    
+
+
       const loginSuccess = await actions.login(email, password);
-  
-   
+
+
       if (loginSuccess) {
         console.log("Login successful");
-       
+
       } else {
         console.error("Login failed. Please check your credentials.");
-     
+
       }
     } catch (error) {
       console.error("An error occurred during login:", error);
-     
+
     }
   };
 
@@ -61,7 +61,7 @@ export const Home = () => {
           </div>
 
           <div className="center processBox">
-            <h1>Hi, already a part of the family? Welcome back!</h1>
+            <h1 style={{ color: '#54665a' }}>Hi, already a part of the family? Welcome back!</h1>
 
             <button
               type="button"
@@ -131,11 +131,11 @@ export const Home = () => {
                           type="button"
                           onClick={() => handleLogin()}
                           className="btn btn-primary signupButton"
+                          data-bs-toggle="modal"
+                          data-bs-target="#exampleModal"
                         >
                           Submit
                         </button>
-<<<<<<< HEAD
-
                         <Link to="/signupUser" className="btn btn-secondary ms-2">
                             Sign Up
                         </Link>
@@ -143,12 +143,7 @@ export const Home = () => {
                         <Link to="/forgotten-password" className="forgotPasswordLink ms-2">
                             Forgot Password?
                         </Link>
-=======
                       </div>
-                      <Link to="/forgot-password" className="forgotPasswordLink ms-2">
-              Forgot Password?
-            </Link>
->>>>>>> 18dcec07105a3a1ae4a1765f2105588976eaf8b0
                     </div>
                   </div>
 
