@@ -13,13 +13,9 @@ import injectContext from "./store/appContext";
 import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
 import { ForgottenPassword } from "./pages/forgottenPassword";
-<<<<<<< HEAD
-import {SignupUser} from "./pages/SignupUser";
-
-=======
+import { ResetPassword } from "./pages/resetPassword";
 import { SignupUser } from "./pages/SignupUser";
 import {AboutMe} from "./pages/AboutMe";
->>>>>>> 18dcec07105a3a1ae4a1765f2105588976eaf8b0
 //create your first component
 const Layout = () => {
     //the basename is used when your project is published in a subdirectory and not in the root of the domain
@@ -42,7 +38,7 @@ const Layout = () => {
                         <Route element={<Single />} path="/single/:theid" />
 
                         <Route element={<ForgottenPassword />} path="/forgotten-password" />
-
+                        <Route element={<ResetPassword />} path="/reset-password" />
                         <Route element={<Insurance/>} path="/insurance" />
 
 

@@ -5,17 +5,19 @@ from flask_cors import CORS  # Add this import
 from werkzeug.security import generate_password_hash, check_password_hash
 from api.models import db, User
 from api.utils import APIException
-
+from datetime import datetime, timedelta
 from email.message import EmailMessage
 import ssl
 import smtplib
 import logging
 import random
 import os
+import jwt
 
 # Create the Blueprint
 api = Blueprint('api', __name__)
 CORS(api)  
+JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', 'Shelfshare')
 
 @api.route('/protected', methods=['GET'])
 @jwt_required()
@@ -25,12 +27,6 @@ def protected():
         return jsonify(message=f'Hello, {current_user}!')
     except Exception as e:
         return jsonify(message="Missing Authorization Header or Invalid Token"), 401
-
-
-
-
-
-
 
 
 @api.route('/signup', methods=['POST'])
@@ -151,42 +147,81 @@ def logout():
 def send_code ():
     body = request.get_json();
     email = body["email"]
+    expiration_time = datetime.utcnow() + timedelta(hours=1)
+    payload = {
+        'email': email,
+        'exp': expiration_time
+    }
+    token = jwt.encode(payload, JWT_SECRET_KEY, algorithm='HS256')
+    FRONTEND_URL= os.getenv('FRONTEND_URL')
+    EMAIL_SENDER= os.getenv('EMAIL_USERNAME')
+    EMAIL_PASSWORD= os.getenv('EMAIL_PASSWORD')
+    URL_TOKEN = f"{FRONTEND_URL}reset-password?token={token}"
+
     if email is None:
         return jsonify("No email was provided"),400
     user = User.query.filter_by(email=email).first()
     print(user)
     if user is None:
         return jsonify({"message":"User doesn't exist"}), 404
-    else :
-        new_password = generatePassword()
-        new_hashed_password = generate_password_hash(new_password)
-        user.password = new_hashed_password 
-        db.session.commit()
-        email_sender = 'petsitting417@gmail.com'
-        email_password = "ilhjwhdyxlxpmdfw"
+    else:
+        # new_password = generatePassword()
+        # new_hashed_password = generate_password_hash(new_password)
+        # user.password = new_hashed_password 
+        # db.session.commit()
         email_receiver = email
         email_subject = "Reset your password"
-        email_body = "We have sent you this temporary password so that you can recover your account. Smile with us Hot Doggity Dog Walkers! New Password: "+new_password
+        email_body = f" Hello, you requested a password reset. If you did not request this, please ignore this email.\n\n We have sent you this link to reset your password.\n\n Smile with us, Hot Doggity Dog Walkers! "
+        email_body +=f'Link: {URL_TOKEN}\n\n'
+        email_body += f"This token is valid for 1 hour. After expiration, you will need to request another password reset.\n\n"
+        email_body += f'Sincerely,\nShelfShare'
 
         em = EmailMessage()
-        em['from'] = email_sender
+        em['from'] = EMAIL_SENDER
         em['to'] = email_receiver
         em['subject'] = email_subject
         em.set_content(email_body)
 
         context = ssl.create_default_context
-        with smtplib.SMTP_SSL('smtp.gmail.com',465) as smtp:
-            smtp.login(email_sender, email_password)
-            smtp.sendmail(email_sender, email_receiver, em.as_string())
-        return "Ok",200
+        with smtplib.SMTP(os.getenv('EMAIL_SERVER'),os.getenv('MAIL_PORT'))as smtp:
+            smtp.login(EMAIL_SENDER, EMAIL_PASSWORD)
+            smtp.sendmail(EMAIL_SENDER, email_receiver, em.as_string())
+            print("SMTP Login Successful")
+        return "Ok, Password reset link sent to email.",200
 
-def generatePassword():
-    pass_len = 12
-    characters = "abcdefghilklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789!@#$%^&*+=?"
-    password = ""
-    for index in range (pass_len):
-        password = password+random.choice(characters)
-    return password
+
+# def generatePassword():
+#     pass_len = 12
+#     characters = "abcdefghilklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789!@#$%^&*+=?"
+#     password = ""
+#     for index in range (pass_len):
+#         password = password+random.choice(characters)
+#     return password
+
+@api.route('/reset-password', methods=['POST'])
+def reset_password():
+    data = request.get_json()
+    token = data.get('token')
+    new_password = data.get('new_password')
+
+    try:
+        payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=['HS256'])
+        email = payload.get('email')
+        user = User.query.filter_by(email=email).first()
+        if user:
+            user.password = generate_password_hash(new_password)
+            db.session.commit()
+            return jsonify({'message': 'Password reset successful.'}), 200
+        else:
+            return jsonify({'error': 'User not found.'}), 404
+
+    except jwt.ExpiredSignatureError:
+        return jsonify({'error': 'Expired token.'}), 401
+    except jwt.InvalidTokenError:
+        return jsonify({'error': 'Invalid token.'}), 401
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 
 @api.route('/update-password', methods=['PUT'])
 @jwt_required()

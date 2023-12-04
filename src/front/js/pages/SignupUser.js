@@ -110,47 +110,6 @@ export const SignupUser = () => {
             <label htmlFor="sonfrinmPassword">Confirm Password</label>
             <input
               type="password"
-<<<<<<< HEAD
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-            />
-          
-          
-            <label htmlFor="first_name">First Name</label>
-            <input
-              type="text"
-              id="first_name"
-              name="first_name"
-              value={formData.first_name}
-              onChange={handleChange}
-              required
-            />
-
-           <label htmlFor="last_name">Last Name</label>
-            <input
-              type="last_name"
-              id="last_name"
-              name="last_name"
-              value={formData.last_name}
-              onChange={handleChange}
-              required
-            />
-         
-            <label htmlFor="phoneNumber">Phone Number</label>
-            <input
-              type="tel"
-              id="phoneNumber"
-              name="phoneNumber"
-              value={formData.phone_number}
-              onChange={handleChange}
-              required
-            />
-          
-          <div className="signupSubmitButton" >
-=======
               className="form-control"
               id="confirmPassword"
               value={confirmPassword}
@@ -158,7 +117,6 @@ export const SignupUser = () => {
             />
 
 
->>>>>>> 18dcec07105a3a1ae4a1765f2105588976eaf8b0
 
             <div className="signupSubmitButton">
               <button type="submit" onClick={() => handleSubmit()} className=" btn btn-primary signupButton">

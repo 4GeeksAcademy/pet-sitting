@@ -134,7 +134,6 @@ export const Home = () => {
                         >
                           Submit
                         </button>
-<<<<<<< HEAD
 
                         <Link to="/signupUser" className="btn btn-secondary ms-2">
                             Sign Up
@@ -143,15 +142,9 @@ export const Home = () => {
                         <Link to="/forgotten-password" className="forgotPasswordLink ms-2">
                             Forgot Password?
                         </Link>
-=======
-                      </div>
-                      <Link to="/forgot-password" className="forgotPasswordLink ms-2">
-              Forgot Password?
-            </Link>
->>>>>>> 18dcec07105a3a1ae4a1765f2105588976eaf8b0
                     </div>
                   </div>
-
+                  </div>
 
                   <div className="modal-footer">
                     <button
@@ -224,7 +217,6 @@ export const Home = () => {
       <br>
       </br>
 
-
       <div id="carouselExampleFade" className="carousel slide carousel-fade" >
         <div className=" carouselView carousel-inner">
           <div className="carousel-item active">
@@ -275,7 +267,6 @@ export const Home = () => {
     </div>
   );
 };
-
 
 
 
