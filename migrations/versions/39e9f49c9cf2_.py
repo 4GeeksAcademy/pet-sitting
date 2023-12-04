@@ -1,20 +1,8 @@
 """empty message
 
-<<<<<<<< HEAD:migrations/versions/9a4a6a4aca9c_.py
-Revision ID: 9a4a6a4aca9c
+Revision ID: 39e9f49c9cf2
 Revises: 
-Create Date: 2023-12-01 02:06:05.621959
-========
-<<<<<<<< HEAD:migrations/versions/e5fa24c72861_.py
-Revision ID: e5fa24c72861
-Revises: 
-Create Date: 2023-11-28 19:23:00.244317
-========
-Revision ID: 61ad0906d7ae
-Revises: 
-Create Date: 2023-11-22 17:23:59.960164
->>>>>>>> 18dcec07105a3a1ae4a1765f2105588976eaf8b0:migrations/versions/61ad0906d7ae_.py
->>>>>>>> 64f71fe3d1dc24517be2e585f9df014ec1e110e3:migrations/versions/e5fa24c72861_.py
+Create Date: 2023-12-04 17:26:22.039397
 
 """
 from alembic import op
@@ -22,15 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-<<<<<<<< HEAD:migrations/versions/9a4a6a4aca9c_.py
-revision = '9a4a6a4aca9c'
-========
-<<<<<<<< HEAD:migrations/versions/e5fa24c72861_.py
-revision = 'e5fa24c72861'
-========
-revision = '61ad0906d7ae'
->>>>>>>> 18dcec07105a3a1ae4a1765f2105588976eaf8b0:migrations/versions/61ad0906d7ae_.py
->>>>>>>> 64f71fe3d1dc24517be2e585f9df014ec1e110e3:migrations/versions/e5fa24c72861_.py
+revision = '39e9f49c9cf2'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -41,26 +21,14 @@ def upgrade():
     op.create_table('user',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('email', sa.String(length=120), nullable=False),
-<<<<<<<< HEAD:migrations/versions/e5fa24c72861_.py
-    sa.Column('password', sa.String(length=256), nullable=False),
-    sa.Column('first_name', sa.String(length=80), nullable=False),
-    sa.Column('last_name', sa.String(length=80), nullable=False),
-    sa.Column('address', sa.String(length=80), nullable=False),
-    sa.Column('phone_number', sa.Integer(), nullable=False),
-    sa.Column('recovery_code', sa.Integer(), nullable=True),
-========
     sa.Column('password', sa.String(length=500), nullable=False),
     sa.Column('first_name', sa.String(length=500), nullable=True),
     sa.Column('last_name', sa.String(length=80), nullable=True),
-<<<<<<<< HEAD:migrations/versions/9a4a6a4aca9c_.py
     sa.Column('phone_number', sa.String(length=80), nullable=True),
     sa.Column('address', sa.String(length=80), nullable=True),
     sa.Column('city', sa.String(length=80), nullable=True),
     sa.Column('state', sa.String(length=80), nullable=True),
     sa.Column('zip', sa.String(length=80), nullable=True),
-========
->>>>>>>> 18dcec07105a3a1ae4a1765f2105588976eaf8b0:migrations/versions/61ad0906d7ae_.py
->>>>>>>> 64f71fe3d1dc24517be2e585f9df014ec1e110e3:migrations/versions/e5fa24c72861_.py
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email')
     )
@@ -86,7 +54,7 @@ def upgrade():
     op.create_table('pet',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
-    sa.Column('pet_name', sa.String(length=80), nullable=False),
+    sa.Column('name', sa.String(length=80), nullable=False),
     sa.Column('breed', sa.String(length=120), nullable=False),
     sa.Column('age', sa.Integer(), nullable=False),
     sa.Column('description', sa.Text(), nullable=True),
