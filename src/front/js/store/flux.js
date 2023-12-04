@@ -132,6 +132,12 @@ const getState = ({ getStore, getActions, setStore }) => {
                     throw new Error(`Error: ${error.message}`);
                 }
             },
+            logout: async () => {
+                sessionStorage.removeItem("token")
+                setStore({token:null})
+
+
+            }
         },
     };
 }

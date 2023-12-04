@@ -60,11 +60,7 @@ export const SignupUser = () => {
     <div className="signupPage urlBackgroundSignup">
 
    
-      <img
-        src="https://t4.ftcdn.net/jpg/06/10/13/27/240_F_610132710_9M0fM6ggD6Z38yfNdPWQ9w3j6uCOZ54y.jpg"
-        alt="Banner Image"
-        className="bannerImage"
-      />
+      
 
       <div className="signupPage">
         <div className="beigeBox">
@@ -125,6 +121,11 @@ export const SignupUser = () => {
             </div>
           </div>
         </div>
+        <img
+        src="https://cdn.pixabay.com/photo/2018/07/13/10/20/kittens-3535404_1280.jpg"
+        alt="Banner Image"
+        className="bannerImage"
+      />
       </div>
     </div>
   );

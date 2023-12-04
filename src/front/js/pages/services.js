@@ -16,6 +16,9 @@ export const Services = () => {
     }
   }, [])
   return (
+    <div>
+       {localStorage.getItem("token") ? (
+    
     <div className="container-fluid mx-auto services">
       <div className="mx-auto" id="cards" onMouseMove={(e) => {
         for (const card of document.getElementsByClassName("card")) {
@@ -107,10 +110,16 @@ export const Services = () => {
                 </div>
               </div>
             </Link>
+            </div>
+            </div>
           </div>
         </div>
-      </div>
+      ) : (
+        <div>
+          <p>You are not authorized to view this page. Please log in.</p>
+        </div>
+      )}
     </div>
-  )
-
-}
+  );
+};
+  

@@ -25,9 +25,9 @@ export const Home = () => {
       if (loginSuccess) {
         console.log('Login successful');
         setShowModal(false); // Close the login modal
+        navigate("/");
 
-        // Navigate to "/services" after a successful login
-        navigate("/services");
+
       } else {
         console.error('Login failed. Please check your credentials.');
       }
@@ -35,11 +35,27 @@ export const Home = () => {
       console.error('An error occurred during login:', error);
     }
   };
+  let greeting;
 
+  if (sessionStorage.getItem("token")) {
+    greeting = (
+      <>
+        <h1>welcome back!</h1>
+
+      </>
+    );
+  } else {
+    greeting = (
+
+      <h1>Hi, already a part of the family? Welcome back!</h1>
+    )
+  }
 
 
   return (
     <div className="container-fluid homePage">
+
+
       <div className="row homePageText">
         <p>
           Having a dedicated pet caregiver provides priceless peace of mind,
@@ -51,6 +67,9 @@ export const Home = () => {
           a fulfilling life in your absence.
         </p>
       </div>
+
+
+
 
       <div className="row homePageMiddleRow ">
         <div className="container d-flex">
@@ -64,17 +83,21 @@ export const Home = () => {
           </div>
 
           <div className="center processBox">
-            <h1>Hi, already a part of the family? Welcome back!</h1>
+
+            
+            {greeting}
+            {!sessionStorage.getItem("token") && (
+              <button
+                type="button"
+                className="btn btn-secondary loginButton"
+                data-bs-toggle="modal"
+                data-bs-target="#exampleModal"
+              >
+                Log in
+              </button>
+            )}
 
 
-            <button
-              type="button"
-              className="btn btn-secondary loginButton"
-              data-bs-toggle="modal"
-              data-bs-target="#exampleModal"
-            >
-              Log in
-            </button>
 
             <div
               className="modal fade"
@@ -82,12 +105,20 @@ export const Home = () => {
               tabIndex="-1"
               aria-labelledby="exampleModalLabel"
               aria-hidden="true"
+              style={{ display: showModal ? 'block' : 'none' }}
+              onClick={() => setShowModal(false)}
             >
               <div className="modal-dialog">
                 <div className="modal-content">
                   <div className="modal-header">
-
-
+                    {/* Close button (x) to close the modal */}
+                    <button
+                      type="button"
+                      className="btn-close"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                      onClick={() => setShowModal(false)}
+                    ></button>
                   </div>
                   <div className="modal-body">
                     <div>
@@ -123,20 +154,6 @@ export const Home = () => {
                           onChange={(e) => setPassword(e.target.value)}
                         />
                       </div>
-                      <div>
-
-                        <button
-                          type="button"
-                          className="btn btn-secondary loginButton"
-                          data-bs-toggle="modal"
-                          data-bs-target="#exampleModal"
-                          onClick={handleLogin} >
-                          Log in
-                        </button>
-                      </div>
-                      <Link to="/forgotten-password" className="forgotPasswordLink ms-2">
-                        Forgot Password?
-                      </Link>
 
                       <div
                         className={`modal fade ${showModal ? 'show' : ''}`}
@@ -151,14 +168,21 @@ export const Home = () => {
                   </div>
 
 
-                  <div className="modal-footer">
+                  <div className="modal-footer d-flex justify-content-center align-items-center">
                     <button
                       type="button"
-                      className="btn btn-secondary"
-                      data-bs-dismiss="modal"
-                    >
-                      Close
+                      className="btn btn-secondary loginButton"
+                      data-bs-toggle="modal"
+                      data-bs-target="#exampleModal"
+                      onClick={handleLogin} >
+                      submit
                     </button>
+
+                    <Link to="/forgotten-password" className="forgotPasswordLink ms-2">
+                      Forgot Password?
+                    </Link>
+
+
                   </div>
                 </div>
               </div>

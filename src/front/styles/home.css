@@ -6,13 +6,30 @@
     on that page only (the ones not reused in other pages).
 */
 
+/* nav bar */
+/* .navbar-brand {
+  
+  align-items: center;
+}
 
+.logoImg {
+  height: 80px;
+  width: 80px;
+  margin-right: 50px; 
+}
+
+.navbar-title {
+  margin: 0; /* Remove default margin for the title */
+  /* display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center; */
 
 /* this is the Aboutme view */
 
 .aboutMeImage{
 
-  padding: 20px;
+  padding: 5px;
 }
 .aboutMeText{
   padding: 50px;
@@ -145,13 +162,13 @@ body{
 
   /* this is the signupUser page */
 
-  /* Add this class to style the banner image */
 
 
   .bannerImage {
     width: 100%;
-    height: 650px; /* Adjust the height according to your design */
+    height: 550px; 
     object-fit: cover;
+
   }
   
   .signupPage {

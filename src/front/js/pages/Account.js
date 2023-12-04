@@ -48,17 +48,25 @@ export const Account = () => {
     e.preventDefault();
 
     const resp = await actions.updateAccount(userData, pets);
-
-    // try {
-    //   const resp = await actions.updateAccount(userData, pets);
-    //   console.log(resp);
-    //   setModalMessage("Update successful!");
-    //   setShowModal(true);
-    // } catch (error) {
-    //   setModalMessage("Update unsuccessful. Please try again.");
-    //   setShowModal(true);
-    // }
+    if (resp.success) {
+      setSubmissionModalMessage("Update successful!");
+      setShowSubmissionModal(true);
+    } else {
+      setSubmissionModalMessage("Update unsuccessful. Please try again.");
+      setShowSubmissionModal(true);
+    }
   };
+
+  // try {
+  //   const resp = await actions.updateAccount(userData, pets);
+  //   console.log(resp);
+  //   setModalMessage("Update successful!");
+  //   setShowModal(true);
+  // } catch (error) {
+  //   setModalMessage("Update unsuccessful. Please try again.");
+  //   setShowModal(true);
+  // }
+
 
   // const handlePetPictureChange = (e) => {
   //   const file = e.target.files[0];
@@ -127,84 +135,109 @@ export const Account = () => {
 
   return (
     <div>
-      <div className="account_form">
-        <h2>Client information</h2>
-        <div className="form-group">
-          <div>
-            <label htmlFor="first_name">First Name</label>
-            <input
-              type="text"
-              id="first_name"
-              name="first_name"
-              value={userData.first_name}
-              onChange={handleUserChange}
-            />
+      {store.token ? ( // Check if the user has a token
+        <div className="account_form">
+          <h2>Client information</h2>
+          <div className="form-group">
+            <div>
+              <label htmlFor="first_name">First Name</label>
+              <input
+                type="text"
+                id="first_name"
+                name="first_name"
+                value={userData.first_name}
+                onChange={handleUserChange}
+              />
+            </div>
+            <div>
+              <label htmlFor="last_name">Last Name</label>
+              <input
+                type="text"
+                id="last_name"
+                name="last_name"
+                value={userData.last_name}
+                onChange={handleUserChange}
+              />
+            </div>
+            <div>
+              <label htmlFor="address">Address *</label>
+              <input
+                type="text"
+                id="address"
+                name="address"
+                value={userData.address}
+                onChange={handleUserChange}
+              />
+            </div>
+            <div>
+              <label htmlFor="city">City *</label>
+              <input
+                type="text"
+                id="city"
+                name="city"
+                value={userData.city}
+                onChange={handleUserChange}
+              />
+            </div>
+            <div>
+              <label htmlFor="state">State *</label>
+              <input
+                type="text"
+                id="state"
+                name="state"
+                value={userData.state}
+                onChange={handleUserChange}
+              />
+            </div>
+            <div>
+              <label htmlFor="zip">Zip *</label>
+              <input
+                type="text"
+                id="zip"
+                name="zip"
+                value={userData.zip}
+                onChange={handleUserChange}
+              />
+            </div>
+            <div>
+              <label htmlFor="phone_number">Phone number *</label>
+              <input
+                type="text"
+                id="phone_number"
+                name="phone_number"
+                value={userData.phone_number}
+                onChange={handleUserChange}
+              />
+            </div>
+            {/* ... (other user information inputs) */}
           </div>
-          <div>
-            <label htmlFor="last_name">Last Name</label>
-            <input
-              type="text"
-              id="last_name"
-              name="last_name"
-              value={userData.last_name}
-              onChange={handleUserChange}
-            />
-          </div>
-          <div>
-            <label htmlFor="address">Address *</label>
-            <input
-              type="text"
-              id="address"
-              name="address"
-              value={userData.address}
-              onChange={handleUserChange}
-            />
-          </div>
-          <div>
-            <label htmlFor="city">City *</label>
-            <input
-              type="text"
-              id="city"
-              name="city"
-              value={userData.city}
-              onChange={handleUserChange}
-            />
-          </div>
-          <div>
-            <label htmlFor="state">State *</label>
-            <input
-              type="text"
-              id="state"
-              name="state"
-              value={userData.state}
-              onChange={handleUserChange}
-            />
-          </div>
-          <div>
-            <label htmlFor="zip">Zip *</label>
-            <input
-              type="text"
-              id="zip"
-              name="zip"
-              value={userData.zip}
-              onChange={handleUserChange}
-            />
-          </div>
-          {/* ... (other user information inputs) */}
-        </div>
 
-        <div className="pet_form">
-          <h2>Pet information</h2>
-          {pets.map((pet, idx) => <PetForm petFormData={pet} idx={idx} key={idx} handlePetChange={updatePetByIdx} />)}
-          < button type="button" onClick={addPet} >
-            Add Pet
-          </button>
-          <button type="button" onClick={handleSubmit}>
-            Submit
-          </button>
+
+
+          {submissionModalMessage && (
+            <div>
+              {submissionModalMessage}
+            </div>
+          )}
+
+
+          <div className="pet_form">
+            <h2>Pet information</h2>
+            {pets.map((pet, idx) => <PetForm petFormData={pet} idx={idx} key={idx} handlePetChange={updatePetByIdx} />)}
+            <button type="button" onClick={addPet}>
+              Add Pet
+            </button>
+            <button type="button" onClick={handleSubmit}>
+              Submit
+            </button>
+          </div>
         </div>
-      </div>
-    </div >
+      ) : (
+        <div>
+          <p>You are not authorized to view this page. Please log in.</p>
+        </div>
+      )}
+    </div>
   );
 };
 
