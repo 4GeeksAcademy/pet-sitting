@@ -49,10 +49,10 @@ export const Account = () => {
 
     const resp = await actions.updateAccount(userData, pets);
     if (resp.success) {
-      setSubmissionModalMessage("Update successful!");
+      setSubmissionModalMessage("Update unsuccessful!");
       setShowSubmissionModal(true);
     } else {
-      setSubmissionModalMessage("Update unsuccessful. Please try again.");
+      setSubmissionModalMessage("update successful");
       setShowSubmissionModal(true);
     }
   };
@@ -135,7 +135,7 @@ export const Account = () => {
 
   return (
     <div>
-      {store.token ? ( // Check if the user has a token
+     {sessionStorage.getItem("token") ? ( // Check if the user has a token
         <div className="account_form">
           <h2>Client information</h2>
           <div className="form-group">
@@ -209,7 +209,7 @@ export const Account = () => {
                 onChange={handleUserChange}
               />
             </div>
-            {/* ... (other user information inputs) */}
+           
           </div>
 
 

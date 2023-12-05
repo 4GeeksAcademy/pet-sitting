@@ -102,32 +102,16 @@ export const SignupUser = () => {
               onChange={handleChange}
               required
             />
-            <label>Confirm Password</label>
+            <label>confirm Password</label>
             <input
               type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-            />
-         
-            <label htmlFor="phoneNumber">Phone Number</label>
-            <input
-              type="tel"
-              id="phoneNumber"
-              name="phoneNumber"
-              value={formData.phone_number}
-              onChange={handleChange}
-              required
-            />
-            
-            <input
-              className="form-control"
               id="confirmPassword"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              required
             />
+        
 
             <div className="signupSubmitButton">
               <button type="submit" onClick={() => handleSubmit()} className=" btn btn-primary signupButton">

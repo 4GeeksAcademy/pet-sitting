@@ -17,22 +17,15 @@ class User(db.Model):
     password = db.Column(db.String(500), unique=False, nullable=False)
     first_name = db.Column(db.String(80), unique=False, nullable=False)
     last_name = db.Column(db.String(80), unique=False, nullable=False)
-    address = db.Column(db.String(80), unique=False, nullable=False)
-    phone_number = db.Column(db.String(80), unique=False, nullable=False)
+    address = db.Column(db.String(80), unique=False, nullable=True)
+    phone_number = db.Column(db.String(80), unique=False, nullable=True)
     pets = db.relationship('Pet', backref='user')
     last_services_used = db.relationship('Last_Service_Used', backref='user')
 
 
 
 
-    password = db.Column(db.String(500), unique=False, nullable=False)
-    first_name = db.Column(db.String(500), unique=False, nullable=True)
-    last_name = db.Column(db.String(80), unique=False, nullable=True)
-    phone_number=db.Column(db.String(80), unique=False, nullable=True)
-    address=db.Column(db.String(80), unique=False, nullable=True)
-    city=db.Column(db.String(80), unique=False, nullable=True)
-    state=db.Column(db.String(80), unique=False, nullable=True)
-    zip=db.Column(db.String(80), unique=False, nullable=True)
+
   
     pets = db.relationship('Pet', backref='user')
     last_services_used = db.relationship('Last_Service_Used', backref='user')

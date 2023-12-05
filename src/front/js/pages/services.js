@@ -5,6 +5,7 @@ import dogwalkingpic from '/workspaces/pet-sitting/src/front/img/dogwalkingpic.j
 import petcheckinpic from '/workspaces/pet-sitting/src/front/img/petcheckinpic.jpg'
 import meetandgreet from '/workspaces/pet-sitting/src/front/img/meetandgreet.jpg'
 import petsittingpic from '/workspaces/pet-sitting/src/front/img/petsittingpic.jpg'
+import { Context } from "../store/appContext";
 
 export const Services = () => {
   const { store, actions } = useContext(Context);
@@ -18,7 +19,7 @@ export const Services = () => {
 
   return (
     <div>
-      {localStorage.getItem("token") ? (
+      {sessionStorage.getItem("token") ? (
         <div className="container-fluid mx-auto services">
           <div className="mx-auto" id="cards" onMouseMove={(e) => {
             for (const card of document.getElementsByClassName("card")) {

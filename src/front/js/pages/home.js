@@ -57,7 +57,7 @@ export const Home = () => {
 
 
       <div className="row homePageText">
-        <p>
+        <h4>
           Having a dedicated pet caregiver provides priceless peace of mind,
           ensuring your furry friend gets the attention and care they need. As a
           committed caregiver, I address both basic needs and understand their
@@ -65,7 +65,7 @@ export const Home = () => {
           health and happiness, fostering both interaction and exercise. This
           bond positively impacts their mental and physical well-being, ensuring
           a fulfilling life in your absence.
-        </p>
+        </h4>
       </div>
 
 
@@ -205,7 +205,7 @@ export const Home = () => {
       <br>
       </br>
 
-      <div className="row servicesText">
+      <h4 className="row servicesText">
 
 
         <ul>
@@ -242,12 +242,12 @@ export const Home = () => {
 
           At Hot Doggity Dog Walkers, we're dedicated to creating a personalized, stress-free experience for both you and your pet. Our goal is to ensure your furry companion stays happy and healthy while you're away.
         </ul>
-      </div>
+      </h4>
       <br>
       </br>
 
 
-      <div id="carouselExampleFade" className="carousel slide carousel-fade" >
+      {/* <div id="carouselExampleFade" className="carousel slide carousel-fade" >
         <div className=" carouselView carousel-inner">
           <div className="carousel-item active">
             <img src="https://cdn.pixabay.com/photo/2019/12/30/05/30/cockatiel-4728876_1280.jpg" className="d-block w-100" alt="" />
@@ -293,7 +293,7 @@ export const Home = () => {
             <span className="visually-hidden">Next</span>
           </button>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
