@@ -33,7 +33,7 @@ const injectContext = PassedComponent => {
 			const currYear = newDate.getFullYear()
 			const currMonth = newDate.getMonth()
 			const curr_Date = newDate.getDate()
-			state.actions.getMessage(); // <---- calling this function from the flux.js actions
+			state.actions.getPayPalToken()
 		}, []);
 		
 

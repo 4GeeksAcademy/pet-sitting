@@ -1,28 +1,18 @@
+const axios = require("axios")
+const base64 = require('base-64');
+
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
 			backendURL: process.env.BACKEND_URL,
 			token: null,
-			message: null,
-			demo: [
-				{
-					title: "FIRST",
-					background: "white",
-					initial: "white"
-				},
-				{
-					title: "SECOND",
-					background: "white",
-					initial: "white"
-				}
-			],
 			timeSlotsStartingDay: {
 				"date": (new Date).getDate(),
 				"month": (new Date).getMonth(),
 				"year": (new Date).getFullYear()
 			},
 			activeScheduleTab: "nav-timeslots",
-			typeOfSchedule: 'dog-walk'
+			payPalToken: null
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
@@ -65,18 +55,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 			setTimeslotsStartingDay: (obj) => {
 				setStore({ timeSlotsStartingDay: obj })
 			},
-			getMessage: async () => {
-				try {
-					// fetching data from the backend
-					const resp = await fetch(getStore().backendURL + "api/hello")
-					const data = await resp.json()
-					setStore({ message: data.message })
-					// don't forget to return something, that is how the async resolves
-					return data;
-				} catch (error) {
-					console.log("Error loading message from backend", error)
-				}
-			},
 			signup: async (formData) => {
 				try {
 					let response = await fetch(process.env.BACKEND_URL + "api/signup", {
@@ -106,6 +84,29 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			changeActiveScheduleTab: (payload) => {
 				setStore({ activeScheduleTab: payload })
+			},
+			getPayPalToken: async () => {
+				try {
+					const client_id = process.env.PAYPAL_CLIENT_ID
+					const client_secret = process.env.PAYPAL_CLIENT_SECRET
+
+					const response = await axios.post('https://api-m.sandbox.paypal.com/v1/oauth2/token',
+						new URLSearchParams({
+							'grant_type': 'client_credentials'
+						}),
+						{
+							headers:
+							{
+								'Content-Type': 'application/x-www-form-urlencoded',
+								'Authorization': 'Basic ' + base64.encode(client_id + ":" + client_secret)
+							}
+						})
+					console.log(response.data.access_token)
+					setStore({ payPalToken: response.data.access_token });
+
+				} catch (error) {
+					console.log(Promise.reject(error));
+				}
 			}
 		}
 	}

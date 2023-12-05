@@ -716,7 +716,6 @@ def cancel_pet_sitting():
         print(error)
         return jsonify({"msg": "An error occurred."}), 404
     
-
 @api.before_request 
 def before_request(): 
     headers = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' } 

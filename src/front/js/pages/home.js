@@ -4,6 +4,7 @@ import "../../styles/home.css";
 import { Link } from "react-router-dom";
 import { AboutMe } from "./AboutMe";
 import { SignupUser } from "./SignupUser";
+import PayPal from '../../paypal_client/app'
 
 export const Home = () => {
   const { store, actions } = useContext(Context);
@@ -37,6 +38,9 @@ export const Home = () => {
 
   return (
     <div className="container-fluid homePage">
+      <div>
+        <PayPal recurring={false} />
+      </div>
       <div className="row homePageText">
         <p>
           Having a dedicated pet caregiver provides priceless peace of mind,
@@ -137,11 +141,11 @@ export const Home = () => {
                           Submit
                         </button>
                         <Link to="/signupUser" className="btn btn-secondary ms-2">
-                            Sign Up
+                          Sign Up
                         </Link>
 
                         <Link to="/forgotten-password" className="forgotPasswordLink ms-2">
-                            Forgot Password?
+                          Forgot Password?
                         </Link>
                       </div>
                     </div>
