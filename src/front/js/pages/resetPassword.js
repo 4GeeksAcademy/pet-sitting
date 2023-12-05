@@ -34,7 +34,8 @@ export const ResetPassword = () => {
         setConfirmPassword('');
         setToken('');
         setError('');
-        navigate("/login");
+        alert ("Your password updated successfully");
+        navigate("/");
       })
       .catch(error => {
         console.log("Erro", error);

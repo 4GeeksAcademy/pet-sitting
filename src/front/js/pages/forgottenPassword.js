@@ -7,7 +7,7 @@ export const ForgottenPassword = () => {
     const handleResetPassword = async () => {
         console.log(email)
         let options = {
-            method: "PUT",
+            method: "POST",
             mode: "cors",
             headers: {
                 "Content-Type": "application/json",

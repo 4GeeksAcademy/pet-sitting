@@ -76,9 +76,9 @@ def serve_any_other_file(path):
     response.cache_control.max_age = 0  # avoid cache memory
     return response
 
-@app.route('/reset-password/<token>')
-def reset_password_route(token):
-    return send_from_directory(static_file_dir, 'index.html')
+# @app.route('/reset-password/<token>')
+# def reset_password_route(token):
+#     return send_from_directory(static_file_dir, 'index.html')
 
 
 
@@ -107,40 +107,10 @@ def reset_password_route(token):
 #         return jsonify({'error': 'Invalid or expired token'})
 
 
-@app.route('/api/reset-password', methods=['POST'])
-def reset_password():
-    # Your reset password logic here
-    return jsonify({"message": "Password reset successful"}), 200
-
-@app.route('/reset-password', methods=['POST'])
-def reset_password():
-    token = request.json.get('token')
-    new_password = request.json.get('new_password')
-
-    try:
-        # Decodificar o token JWT para obter o email do usuário
-        payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=['HS256'])
-        email = payload.get('email')
-
-        # Validar se o token não expirou e se o email é válido
-        # (Você pode adicionar mais validações conforme necessário)
-
-        # Encontrar o usuário pelo email
-        user = User.query.filter_by(email=email).first()
-        if user:
-            # Atualizar a senha do usuário
-            user.password = generate_password_hash(new_password)
-            db.session.commit()
-            return jsonify({'message': 'Password reset successful.'}), 200
-        else:
-            return jsonify({'error': 'Usuário não encontrado.'}), 404
-
-    except jwt.ExpiredSignatureError:
-        return jsonify({'error': 'Token expirado.'}), 401
-    except jwt.InvalidTokenError:
-        return jsonify({'error': 'Token inválido.'}), 401
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+# @app.route('/api/reset-password', methods=['POST'])
+# def reset_password():
+#     # Your reset password logic here
+#     return jsonify({"message": "Password reset successful"}), 200
     
 
     
