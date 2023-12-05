@@ -48,8 +48,8 @@ export const ForgottenPassword = () => {
                 <div className="Card mx-auto " style={{ width: "18rem" }}>
                     <div className="card-body">
                         <h5 className="card-title">Success!</h5>
-                        <p className="card-text">You'll receive an email shortly with a new password</p>
-                        <Link to="/"><a href="#" className="btn btn-primary">Go to the login page</a></Link>
+                        <p className="card-text">You'll receive an email shortly with a link</p>
+                        <Link to="/"><a href="#" className="btn btn-primary">Go to the home page</a></Link>
                     </div>
                 </div>
                 </div>

@@ -13,11 +13,13 @@ import logging
 import random
 import os
 import jwt
+import secrets
 
 # Create the Blueprint
 api = Blueprint('api', __name__)
-CORS(api)  
-JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', 'Shelfshare')
+ 
+JWT_SECRET_KEY = secrets.token_hex(32)
+secure_token = secrets.token_urlsafe(16)
 
 @api.route('/protected', methods=['GET'])
 @jwt_required()
@@ -153,11 +155,10 @@ def send_code ():
         'exp': expiration_time
     }
     token = jwt.encode(payload, JWT_SECRET_KEY, algorithm='HS256')
-    FRONTEND_URL= os.getenv('FRONTEND_URL')
-    EMAIL_SENDER= os.getenv('EMAIL_USERNAME')
-    EMAIL_PASSWORD= os.getenv('EMAIL_PASSWORD')
-    URL_TOKEN = f"{FRONTEND_URL}reset-password?token={token}"
-
+    FRONTEND_URL = os.getenv('FRONTEND_URL')
+    EMAIL_SENDER = os.getenv('EMAIL_SENDER')
+    EMAIL_PASSWORD = os.getenv('EMAIL_PASSWORD')
+    URL_TOKEN = f"{FRONTEND_URL}/reset-password?token={secure_token}"
     if email is None:
         return jsonify("No email was provided"),400
     user = User.query.filter_by(email=email).first()
@@ -165,16 +166,12 @@ def send_code ():
     if user is None:
         return jsonify({"message":"User doesn't exist"}), 404
     else:
-        # new_password = generatePassword()
-        # new_hashed_password = generate_password_hash(new_password)
-        # user.password = new_hashed_password 
-        # db.session.commit()
         email_receiver = email
         email_subject = "Reset your password"
-        email_body = f" Hello, you requested a password reset. If you did not request this, please ignore this email.\n\n We have sent you this link to reset your password.\n\n Smile with us, Hot Doggity Dog Walkers! "
-        email_body +=f'Link: {URL_TOKEN}\n\n'
+        email_body = f" Hello, you requested a password reset. If you did not request this, please ignore this email.\n\n We have sent you this link to reset your password. Smile with us, Hot Doggity Dog Walkers! \n\n"
+        email_body +=f'Click here to reset your password: {URL_TOKEN}\n\n'
         email_body += f"This token is valid for 1 hour. After expiration, you will need to request another password reset.\n\n"
-        email_body += f'Sincerely,\nShelfShare'
+        email_body += f'Sincerely,\n\nPetSitting'
 
         em = EmailMessage()
         em['from'] = EMAIL_SENDER
@@ -182,21 +179,15 @@ def send_code ():
         em['subject'] = email_subject
         em.set_content(email_body)
 
-        context = ssl.create_default_context
-        with smtplib.SMTP(os.getenv('EMAIL_SERVER'),os.getenv('MAIL_PORT'))as smtp:
+        context = ssl.create_default_context()
+        with smtplib.SMTP(os.getenv('EMAIL_SERVER'), 587) as smtp:
+            smtp.set_debuglevel(1)
+            smtp.starttls(context=context)
             smtp.login(EMAIL_SENDER, EMAIL_PASSWORD)
             smtp.sendmail(EMAIL_SENDER, email_receiver, em.as_string())
             print("SMTP Login Successful")
         return "Ok, Password reset link sent to email.",200
 
-
-# def generatePassword():
-#     pass_len = 12
-#     characters = "abcdefghilklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789!@#$%^&*+=?"
-#     password = ""
-#     for index in range (pass_len):
-#         password = password+random.choice(characters)
-#     return password
 
 @api.route('/reset-password', methods=['POST'])
 def reset_password():
@@ -223,19 +214,24 @@ def reset_password():
         return jsonify({'error': str(e)}), 500
 
 
-@api.route('/update-password', methods=['PUT'])
-@jwt_required()
-def update_password():
-    body = request.get_json()
-    old_password = body['old_password']
-    new_password = body['new_password']
-    user_email = get_jwt_identity()
-    user = User.query.filter_by(email=user_email).first()
-    if user and check_password_hash(user.password, old_password):
-        user.password = generate_password_hash(new_password)
-        return jsonify("Password updated successfully")
+# @api.route('/update-password', methods=['PUT'])
+# @jwt_required()
+# def update_password():
+#     body = request.get_json()
+#     old_password = body['old_password']
+#     new_password = body['new_password']
+#     user_email = get_jwt_identity()
+#     user = User.query.filter_by(email=user_email).first()
+#     if user and check_password_hash(user.password, old_password):
+#         user.password = generate_password_hash(new_password)
+#         return jsonify("Password updated successfully")
     
-
+@api.before_request 
+def before_request(): 
+    headers = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' } 
+    print(headers)
+    if request.method == 'OPTIONS' or request.method == 'options': 
+        return jsonify(headers), 200
  
 if __name__ == "__main__":
     api.run()

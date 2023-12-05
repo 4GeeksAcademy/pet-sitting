@@ -1,4 +1,4 @@
-import React, { useContext, useState,useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Context } from "../store/appContext";
 import { useNavigate } from "react-router-dom";
 
@@ -43,52 +43,48 @@ export const ResetPassword = () => {
   };
 
   return (
-    <div className="justify-content-center align-items-center vh-100">
-      <div className="text-center login">
-        <div>
-          <h2>Reset Password</h2>
-        </div>
-        
-        <div className="col-4">
-          <input
-            className="input mb-2 mt-1 form-control m-auto" 
-            type="text"
-            placeholder="Paste the token, that you received by email"
-            value={token}
-            onChange={(event) => setToken(event.target.value)}
-          />
-        </div>
-        <div className="col-4">  
-          <input
-            className="input mb-2 mt-1 form-control"
-            type="password"
-            placeholder="New password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-          />
-        </div>
-        <div className="col-4">  
-          <input
-            className="input mb-2 mt-1 form-control"
-            type="password"
-            placeholder="Confirm new password"
-            value={confirmPassword}
-            onChange={(event) => setConfirmPassword(event.target.value)}
-          />
-        </div>
+    <div className="align-items-center vh-100">
+      <div className="text-center justify-content-center login container">
+
+        <h2>Reset Password</h2>
+
+        <input
+          className="input mb-2 mt-1 form-control m-auto "
+          type="hidden"
+          placeholder="Paste the token, that you received by email"
+          value={token}
+          onChange={(event) => setToken(event.target.value)}
+        />
+
+        <input
+          className="input mb-2 mt-1 form-control"
+          type="password"
+          placeholder="New password"
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+        />
+
+        <input
+          className="input mb-2 mt-1 form-control"
+          type="password"
+          placeholder="Confirm new password"
+          value={confirmPassword}
+          onChange={(event) => setConfirmPassword(event.target.value)}
+        />
+
         <div>
           {error && <div className="error-message">{error}</div>}
         </div>
         <div>
           <button
-            type="button"
+            type="submit"
             className="btn btn-success"
             onClick={handleResetPassword}
           >
             Submit
           </button>
-        </div> 
+        </div>
       </div>
-    </div>  
+    </div>
   );
 };

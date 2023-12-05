@@ -25,9 +25,9 @@ class User(db.Model):
 
 
 
-    password = db.Column(db.String(500), unique=False, nullable=False)
-    first_name = db.Column(db.String(500), unique=False, nullable=True)
-    last_name = db.Column(db.String(80), unique=False, nullable=True)
+    # password = db.Column(db.String(500), unique=False, nullable=False)
+    # first_name = db.Column(db.String(500), unique=False, nullable=True)
+    # last_name = db.Column(db.String(80), unique=False, nullable=True)
   
     pets = db.relationship('Pet', backref='user')
     last_services_used = db.relationship('Last_Service_Used', backref='user')
