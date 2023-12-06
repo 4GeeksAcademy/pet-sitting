@@ -19,64 +19,66 @@ export const Navbar = () => {
 
   return (
     <>
-    <div className="number">
-    (123)456-7891
-    </div>
-    <nav className="navbar navbar-expand-lg bg-body-tertiary">\
-    
-      <div className="container-fluid">
-       
-        <div className="navbar-brand" style={{ textAlign: 'center', color: 'black', textDecoration: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-          <img className="logoImg" src="https://private-user-images.githubusercontent.com/134784015/288147616-1f0d3f25-a656-4faa-a301-092929dc6dc8.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTEiLCJleHAiOjE3MDE3OTc5ODcsIm5iZiI6MTcwMTc5NzY4NywicGF0aCI6Ii8xMzQ3ODQwMTUvMjg4MTQ3NjE2LTFmMGQzZjI1LWE2NTYtNGZhYS1hMzAxLTA5MjkyOWRjNmRjOC5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBSVdOSllBWDRDU1ZFSDUzQSUyRjIwMjMxMjA1JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDIzMTIwNVQxNzM0NDdaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT0wMTcxNTVjMzU5MWZmYjBmOTU3MWY2NTM3MTFhNTYxYTc2MmI0NmMzYzNkYzdiMWE1YmU3N2I0NTI2NDFiYzFmJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZhY3Rvcl9pZD0wJmtleV9pZD0wJnJlcG9faWQ9MCJ9.yoJ2G1qkTkLDlc8xIND6HgkPYjj1qaQNdk8ITCr47CY" alt="Logo" height="200"  />
-        
-        </div>
-          <div className="logoTitle"  style={{ marginBottom: '5px' }}>
-          <h2 className="title">Hot Doggity Dog Walkers</h2>
+      <div className="number">
+        (123)456-7891
+        <br></br>
+        Hotdoggitydogwalker@gmail.com
+      </div>
+      <nav class="navbar navbar-expand-lg bg-body-tertiary">
+
+        <div className="container-fluid ">
+
+          <div className="navbar-brand" style={{ textAlign: 'center', color: 'black', textDecoration: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+            <img className="logoImg" src="https://private-user-images.githubusercontent.com/134784015/288147616-1f0d3f25-a656-4faa-a301-092929dc6dc8.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTEiLCJleHAiOjE3MDE3OTc5ODcsIm5iZiI6MTcwMTc5NzY4NywicGF0aCI6Ii8xMzQ3ODQwMTUvMjg4MTQ3NjE2LTFmMGQzZjI1LWE2NTYtNGZhYS1hMzAxLTA5MjkyOWRjNmRjOC5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBSVdOSllBWDRDU1ZFSDUzQSUyRjIwMjMxMjA1JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDIzMTIwNVQxNzM0NDdaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT0wMTcxNTVjMzU5MWZmYjBmOTU3MWY2NTM3MTFhNTYxYTc2MmI0NmMzYzNkYzdiMWE1YmU3N2I0NTI2NDFiYzFmJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZhY3Rvcl9pZD0wJmtleV9pZD0wJnJlcG9faWQ9MCJ9.yoJ2G1qkTkLDlc8xIND6HgkPYjj1qaQNdk8ITCr47CY" alt="Logo" height="200" />
+
           </div>
-        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-          <span className="navbar-toggler-icon"></span>
-        </button>
-        <div className="collapse navbar-collapse" id="navbarNav">
-          <ul className="navbar-nav ms-auto">
-            {/* Conditionally render based on login status */}
-            {! store.token ?  (
+          <div className="logoTitle" style={{ marginBottom: '5px' }}>
+            <h5 className="title">Hot Doggity Dog Walkers</h5>
+          </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul className="navbar-nav">
+              {/* Conditionally render based on login status */}
+              {!store.token ? (
+                <>
+                  <li className="nav-item">
+                    <Link to="/" className="nav-link active" aria-current="page" style={{ color: 'black' }}>Home</Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link to="/signupUser" className="nav-link active" style={{ color: 'black' }}>Sign up</Link>
+                  </li>
+                </>
+              ) :
+                <>
+                  <li className="nav-item">
+                    <Link to="/" className="nav-link active" aria-current="page" style={{ color: 'black' }}>Home</Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link to="/signupUser" className="nav-link active" style={{ color: 'black' }}>Sign up</Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link to="/account" className="nav-link active" style={{ color: 'black' }}>Account</Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link to="/services" className="nav-link active" style={{ color: 'black' }}>Service</Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link to="/payment" className="nav-link active" style={{ color: 'black' }}>Payment</Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link to="/insurance" className="nav-link active " aria-disabled="true" style={{ color: 'black' }}>Insurance</Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link to="/" className="nav-link active" onClick={handleLogout} aria-disabled="true" style={{ color: 'black' }}>Logout</Link>
+                  </li>
+                </>}
+
               <>
-                <li className="nav-item">
-                  <Link to="/" className="nav-link active" aria-current="page" style={{ color: 'black' }}>Home</Link>
-                </li>
-                <li className="nav-item">
-                  <Link to="/signupUser" className="nav-link" style={{ color: 'black' }}>Sign up</Link>
-                </li>
-              </>
-            ):
-            <>
-            <li className="nav-item">
-              <Link to="/" className="nav-link active" aria-current="page" style={{ color: 'black' }}>Home</Link>
-            </li>
-            <li className="nav-item">
-              <Link to="/signupUser" className="nav-link" style={{ color: 'black' }}>Sign up</Link>
-            </li>
-            <li className="nav-item">
-              <Link to="/account" className="nav-link" style={{ color: 'black' }}>Account</Link>
-            </li>
-            <li className="nav-item">
-              <Link to="/services" className="nav-link" style={{ color: 'black' }}>Service</Link>
-            </li>
-            <li className="nav-item">
-              <Link to="/payment" className="nav-link" style={{ color: 'black' }}>Payment</Link>
-            </li>
-            <li className="nav-item">
-              <Link to="/insurance" className="nav-link " aria-disabled="true" style={{ color: 'black' }}>Insurance</Link>
-            </li>
-            <li className="nav-item">
-              <Link to="/" className="nav-link" onClick={handleLogout} aria-disabled="true" style={{ color: 'black' }}>Logout</Link>
-            </li>
-           </>}
 
-<>
-        
 
-            {/* <li className="nav-item">
+                {/* <li className="nav-item">
               <Link to="/account" className="nav-link" style={{ color: 'black' }}>Account</Link>
             </li>
             <li className="nav-item">
@@ -90,12 +92,12 @@ export const Navbar = () => {
             </li>
             <li className="nav-item">
               <Link to="/" className="nav-link" onClick={handleLogout} aria-disabled="true" style={{ color: 'black' }}>Logout</Link> */}
-            {/* </li> */}
-            </>
-          </ul>
+                {/* </li> */}
+              </>
+            </ul>
+          </div>
         </div>
-      </div>
-    </nav>
+      </nav>
     </>
   );
 };

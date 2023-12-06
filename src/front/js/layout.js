@@ -17,6 +17,7 @@ import { ForgottenPassword } from "./pages/forgottenPassword";
 import { SignupUser } from "./pages/SignupUser";
 import { AboutMe } from "./pages/AboutMe";
 import { Account } from "./pages/Account";
+import { Leave_review } from "./component/Leave_review.js";
 //create your first component
 const Layout = () => {
     //the basename is used when your project is published in a subdirectory and not in the root of the domain
@@ -40,6 +41,7 @@ const Layout = () => {
                         <Route element={<Insurance />} path="/insurance" />
                         <Route element={<Services />} path="/services" />
                         <Route element={<Account />} path="/account" />
+                        <Route element={<Leave_review />} path="/leave_review"/>
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
                     <Footer />

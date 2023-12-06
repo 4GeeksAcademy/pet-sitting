@@ -18,6 +18,8 @@
   margin-right: 50px; 
 }
 .navbar{
+
+  width: 100dvw;
   background-color:#f5f5dc  ;
 }
 .number{
@@ -30,7 +32,9 @@
 
 .title{
   text-align: center;
-  width: 380%;
+
+ 
+  width: 50dvw;
 }
 
 .navbar-title {
@@ -55,6 +59,7 @@
 }
 /* this is the homepage view */
 
+
 .homePageMiddleRow {
  padding: 10px;
   grid-row: 25rm;
@@ -73,8 +78,8 @@
 
 .servicesText{
 
- 
- width: 1100px;
+ padding: 0 5dvw;
+ width: 80dvw;
 }
 /* .aboutMeButton {
 
@@ -125,7 +130,9 @@ body{
 
 
 .homePageText{
-  padding:10px;
+
+  padding:5dvw;
+ width: 80dvw;
 }
 .processBox{
   background-color:  #f2e9d8;

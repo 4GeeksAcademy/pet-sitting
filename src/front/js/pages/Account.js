@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import React, { useContext, useState } from "react";
+import React, { useContext, useState,useEffect } from "react";
 import { Context } from "../store/appContext";
 
 import { PetForm } from "../component/PetForm.js"
@@ -87,6 +87,21 @@ export const Account = () => {
       pet_picture: null,
     });
   };
+
+
+  // useEffect(() => {
+  //   const fetchUserData = async () => {
+  //     try {
+  //       // Fetch user data from your backend API
+  //       const userResponse = await actions.userData(); 
+  //       setUserData(userResponse.data); 
+  //     } catch (error) {
+  //       console.error("Error fetching user data:", error);
+  //     }
+  //   };
+
+  //   fetchUserData();
+  // }, []); 
 
   const openEditModal = (index) => {
     setEditPetIndex(index);
@@ -223,7 +238,7 @@ export const Account = () => {
 
           <div className="pet_form">
             <h2>Pet information</h2>
-            {pets.map((pet, idx) => <PetForm petFormData={pet} idx={idx} key={idx} handlePetChange={updatePetByIdx} />)}
+            <PetForm petFormData={pets}  handlePetChange={updatePetByIdx} />
             <button type="button" onClick={addPet}>
               Add Pet
             </button>

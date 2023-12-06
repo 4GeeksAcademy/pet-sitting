@@ -55,7 +55,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                             token: data.access_token,
                             email: email,
                         });
-                        setIsLoggedIn=true
+                        // setIsLoggedIn=true
                         return true;
                     } else {
                         console.error("Login failed. Please check your credentials.");
@@ -69,36 +69,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             },
 
 
-            // login: async (email, password) => {
-            //     try {
-            //         let options = {
-            //             method: "POST",
-            //             headers: {
-            //                 'Content-Type': 'application/json',
-            //             },
-            //             body: JSON.stringify({ "email": email, "password": password }),
-            //         };
-
-            //         const response = await fetch(process.env.BACKEND_URL + "api/login", options);
-
-            //         if (response.status === 200) {
-            //             const data = await response.json();
-            //             console.log("access token", data.access_token);
-            //             sessionStorage.setItem("token", data.access_token);
-            //             setStore({
-            //                 token: data.access_token,
-            //             });
-            //             return true;
-            //         } else {
-            //             alert("Login failed. Please check your credentials.");
-            //             return false;
-            //         }
-            //     } catch (error) {
-            //         console.error("Login error:", error);
-            //         alert("An error occurred during login.");
-            //         return false;
-            //     }
-            // },
+           
             signup: async (formData) => {
                 try {
                     const token = localStorage.getItem("token");

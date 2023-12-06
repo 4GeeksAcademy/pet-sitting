@@ -57,7 +57,7 @@ export const Home = () => {
 
 
       <div className="row homePageText">
-        <h4>
+        <h4 className="col-auto">
           Having a dedicated pet caregiver provides priceless peace of mind,
           ensuring your furry friend gets the attention and care they need. As a
           committed caregiver, I address both basic needs and understand their
