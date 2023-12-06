@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import { Context } from "../store/appContext";
+import PayPal from './paypal_client/app'
 
 import '../../styles/timeslots.css'
 
@@ -15,6 +16,7 @@ export const Timeslots = (props) => {
 	const [existingEvents, setExistingEvents] = useState([])
 	const [pets, setPets] = useState([])
 	const [rerender, setRerender] = useState(false)
+	const formSubmitEvent = useRef('')
 	const invalidBookingOverlap = useRef(false)
 	const invalidBookingEndBfrStart = useRef(false)
 	// const [invalidBookingEndBfrStart, setInvalidBookingEndBfrStart] = useState(false)
@@ -421,9 +423,8 @@ export const Timeslots = (props) => {
 		setWeekDayDivs(createWeekDayDivs(fixedDatesAndWeekdays, timeSlotLabels))
 	}, [store.timeSlotsStartingDay, store.token, existingEvents, firstTimeslotClicked.current, newScheduleStartStr, newScheduleEndStr, rerender])
 
-	const handleModalSubmit = async (e) => {
-		e.preventDefault()
-		document.body.classList.add('waiting')
+	const scheduleBooking = async () => {
+		const e = formSubmitEvent.current
 		try {
 			const bookPets = pets.map((item, ind) => {
 				if (e.target.elements[`${item}`].checked) {
@@ -474,6 +475,11 @@ export const Timeslots = (props) => {
 		}
 	}
 
+	const handleModalSubmit = async (e) => {
+		e.preventDefault()
+		formSubmitEvent.current = e
+	}
+
 	const handleModalCancel = async (e) => {
 		e.preventDefault()
 		document.body.classList.add('waiting')
@@ -512,6 +518,20 @@ export const Timeslots = (props) => {
 			document.body.classList.remove('waiting')
 		}
 	}
+
+	useEffect(() => {
+		const asyncBookingFunc = async () => {
+			try {
+				document.body.classList.add('waiting')
+				await scheduleBooking()
+				actions.setPaymentSuccessful(false)
+			} catch {
+				alert('An error occurred when attempting to book a service.')
+				document.body.classList.remove('waiting')
+			}
+		}
+	}, [store.paymentSuccessful])
+
 	return (
 		<div className="container d-flex timeslots-container">
 			{weekDayDivs}
@@ -587,16 +607,26 @@ export const Timeslots = (props) => {
 												</div>
 											</div>
 											<div className="form-group row">
-												<div className="form-check">
-													<label className="form-check-label col-sm-2" htmlFor='recurring'>Recurring weekly?</label>
-													<input className="form-check-input col-sm-10" type="checkbox" value="" id='recurring' />
-												</div>
+												{typeOfSchedule !== 'meeting' ?
+													<div className="form-check">
+														<label className="form-check-label col-sm-2" htmlFor='recurring'>Recurring weekly?</label>
+														<input className="form-check-input col-sm-10" type="checkbox" value="" id='recurring' />
+													</div>
+													:
+													''
+												}
 											</div>
 											<div className="form-group row">
-												<label htmlFor="recurringUntil" className="col-sm-2">Recurring until?</label>
-												<div className="col-sm-10">
-													<input type="date" id="recurringUntil" />
-												</div>
+												{typeOfSchedule !== 'meeting' ?
+													<div>
+														<label htmlFor="recurringUntil" className="col-sm-2">Recurring until?</label>
+														<div className="col-sm-10">
+															<input type="date" id="recurringUntil" />
+														</div>
+													</div>
+													:
+													''
+												}
 											</div>
 											<div className="modal-footer">
 												<button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={() => {
@@ -606,7 +636,7 @@ export const Timeslots = (props) => {
 													// I know this isn't best practice, but if I make these states the component doesn't update immediately.
 													setRerender(!rerender)
 												}}>Cancel</button>
-												<button type="submit" className="btn btn-primary" data-bs-dismiss="modal" onClick={() => {
+												<button type="submit" className="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="paymentModal" onClick={() => {
 													firstTimeslotClicked.current = false
 													invalidBookingOverlap.current = false
 													invalidBookingDate.current = false
@@ -670,6 +700,30 @@ export const Timeslots = (props) => {
 								setRerender(!rerender)
 								// I know this isn't best practice, but if I make these states the component doesn't update immediately.
 							}}>Continue</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div className="modal fade" id="paymentModal" tabIndex="-1" aria-labelledby="paymentModal" aria-hidden="true">
+				<div className="modal-dialog">
+					<div className="modal-content">
+						<div className="modal-header">
+							<h5 className="modal-title" id="modalLabel2">Please select a payment method for your booking. Please note that it is not possible to refund the order through this website if you decide to cancel.</h5>
+							<button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div className="modal-body">
+							<PayPal recurring={formSubmitEvent.target.elements.recurring.checked} typeOfSchedule={typeOfSchedule} numDogs={pets.map((item) => {
+								if (e.target.elements[`${item}`].checked) {
+									return (item)
+								} else {
+									return null
+								}
+							}).filter(item => item !== null).length} />
+						</div>
+						<div className="modal-footer">
+							<button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
+								<p>Close Payment {`(Booking will not be successful without payment.)`}</p>
+							</button>
 						</div>
 					</div>
 				</div>

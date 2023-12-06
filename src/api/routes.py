@@ -242,6 +242,7 @@ def handle_get_dog_walk_sched():
                 .execute()
             )
         events = events_result.get("items", [])
+        print(events)
         events = [{'id': event['id'], 'start': event['start'],'end': event['end'],'summary': ' '.join(event['summary'].split(' ')[0:(len(event['summary'].split()) - 2)]), 'owned': True if user_email in event['summary'] else False} for event in events]
         return jsonify({'events': events, 'status': 'ok'}), 200
     except HttpError as Error:
@@ -716,6 +717,7 @@ def cancel_pet_sitting():
         print(error)
         return jsonify({"msg": "An error occurred."}), 404
     
+
 @api.before_request 
 def before_request(): 
     headers = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' } 

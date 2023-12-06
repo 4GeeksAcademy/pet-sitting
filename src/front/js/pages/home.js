@@ -4,7 +4,6 @@ import "../../styles/home.css";
 import { Link } from "react-router-dom";
 import { AboutMe } from "./AboutMe";
 import { SignupUser } from "./SignupUser";
-import PayPal from '../../paypal_client/app'
 
 export const Home = () => {
   const { store, actions } = useContext(Context);
@@ -38,9 +37,6 @@ export const Home = () => {
 
   return (
     <div className="container-fluid homePage">
-      <div>
-        <PayPal recurring={true} typeOfSchedule='dog-walk' numDogs={1}/>
-      </div>
       <div className="row homePageText">
         <p>
           Having a dedicated pet caregiver provides priceless peace of mind,

@@ -9,7 +9,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 				"year": (new Date).getFullYear()
 			},
 			activeScheduleTab: "nav-timeslots",
-			payPalToken: null
+			payPalToken: null,
+			paymentSuccessful: false
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
@@ -82,6 +83,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 			changeActiveScheduleTab: (payload) => {
 				setStore({ activeScheduleTab: payload })
 			},
+			setPaymentSuccessful: (payload) => {
+				setStore({paymentSuccessful: payload})
+			}
 		}
 	}
 }
