@@ -113,7 +113,6 @@ function PayPal(props) {
       method: "POST",
       body: JSON.stringify(payload),
     });
-
     return handleResponse(response);
   };
 
@@ -158,7 +157,6 @@ function PayPal(props) {
         },
       }),
     });
-
     return handleResponse(response);
   };
 
@@ -267,16 +265,17 @@ function PayPal(props) {
             createSubscription={async () => {
               try {
                 try {
-                  data.current = { jsonResponse, httpStatusCode } = await createSubscription();
+                  data.current = await createSubscription();
+                  console.log(data.current)
                 } catch (error) {
                   console.error("Failed to create order:", error);
                 }
                 if (data?.current.jsonResponse.id) {
                   setMessage(`Successful subscription...`);
-                  return data.id;
+                  return data.current.jsonResponse.id;
                 } else {
                   console.error(
-                    { callback: "createSubscription", serverResponse: data },
+                    { callback: "createSubscription", serverResponse: data.current },
                     JSON.stringify(data, null, 2),
                   );
                   // (Optional) The following hides the button container and shows a message about why checkout can't be initiated
@@ -301,7 +300,7 @@ function PayPal(props) {
               */
               if (data.current.jsonResponse.orderID) {
                 setMessage(
-                  `You have successfully subscribed to the plan. Your subscription id is: ${data.subscriptionID}`,
+                  `You have successfully subscribed to the plan. Your subscription id is: ${data.current.jsonResponse.subscriptionID}`,
                 );
               } else {
                 setMessage(
