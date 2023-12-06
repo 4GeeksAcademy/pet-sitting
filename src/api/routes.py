@@ -25,7 +25,7 @@ from google.oauth2 import service_account
 
 # Create the Blueprint
 api = Blueprint('api', __name__)
-CORS(api)  
+CORS(api)
 
 @api.route('/protected', methods=['GET'])
 @jwt_required()
@@ -60,9 +60,6 @@ def signup():
     password = body['password']
     first_name = body['first_name']
     last_name = body['last_name']
-    
-    
-
 
     existing_user = User.query.filter_by(email=email).first()
     if existing_user:
@@ -115,10 +112,6 @@ def get_account():
 
     except Exception as e:
         return jsonify(message=str(e)), 500
-
-
-
-
 
 @api.route('/login', methods=['POST'])
 def login():
@@ -739,7 +732,6 @@ def cancel_pet_sitting():
         print(error)
         return jsonify({"msg": "An error occurred."}), 404
     
-
 @api.before_request 
 def before_request(): 
     headers = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' } 

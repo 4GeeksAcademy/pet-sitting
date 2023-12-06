@@ -16,27 +16,30 @@ const getState = ({ getStore, getActions, setStore }) => {
 		actions: {
 			// Use getActions to call a function within a fuction
 			login: async (email, password) => {
+				const store = getStore();
 				try {
 					let options = {
 						method: "POST",
 						headers: {
 							'Content-Type': 'application/json',
 						},
-						body: JSON.stringify({ "email": email, "password": password }),
+						body: JSON.stringify({ email, password }),
 					};
-
-					const response = await fetch(process.env.BACKEND_URL + "api/login", options);
-
+					const response = await fetch(process.env.BACKEND_URL + "/api/login", options);
+					console.log('Login response:', response);
 					if (response.status === 200) {
 						const data = await response.json();
 						console.log("access token", data.access_token);
 						sessionStorage.setItem("token", data.access_token);
+						sessionStorage.setItem("email", email);
 						setStore({
 							token: data.access_token,
+							email: email,
 						});
+						setIsLoggedIn = true
 						return true;
 					} else {
-						alert("Login failed. Please check your credentials.");
+						console.error("Login failed. Please check your credentials.");
 						return false;
 					}
 				} catch (error) {
@@ -85,7 +88,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				setStore({ activeScheduleTab: payload })
 			},
 			setPaymentSuccessful: (payload) => {
-				setStore({paymentSuccessful: payload})
+				setStore({ paymentSuccessful: payload })
 			}
 		}
 	};

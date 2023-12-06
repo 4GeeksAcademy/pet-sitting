@@ -525,15 +525,20 @@ export const Timeslots = (props) => {
 
 	useEffect(() => {
 		const asyncBookingFunc = async () => {
-			try {
-				document.body.classList.add('waiting')
-				await scheduleBooking()
-				actions.setPaymentSuccessful(false)
-			} catch {
-				alert('An error occurred when attempting to book a service.')
-				document.body.classList.remove('waiting')
+			if (store.paymentSuccessful === true) {
+				try {
+					document.body.classList.add('waiting')
+					await scheduleBooking()
+					actions.setPaymentSuccessful(false)
+				} catch {
+					alert('An error occurred when attempting to book a service.')
+					document.body.classList.remove('waiting')
+				}
+			} else {
+				alert('An error occurred while attempting to pay for the booking.')
 			}
 		}
+		asyncBookingFunc()
 	}, [store.paymentSuccessful])
 
 	return (
