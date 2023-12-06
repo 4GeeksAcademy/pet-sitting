@@ -106,9 +106,3 @@ class Number_Of_Services_Used(db.Model):
             "checkins": self.checkins,
             "pet_sittings": self.pet_sittings
         }
-
- 
- 
-
-        
-
