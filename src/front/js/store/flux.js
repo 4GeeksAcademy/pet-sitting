@@ -3,12 +3,26 @@ const getState = ({ getStore, getActions, setStore }) => {
 		store: {
 			backendURL: process.env.BACKEND_URL,
 			token: null,
+			message: null,
+			demo: [
+				{
+					title: "FIRST",
+					background: "white",
+					initial: "white"
+				},
+				{
+					title: "SECOND",
+					background: "white",
+					initial: "white"
+				}
+			],
 			timeSlotsStartingDay: {
 				"date": (new Date).getDate(),
 				"month": (new Date).getMonth(),
 				"year": (new Date).getFullYear()
 			},
 			activeScheduleTab: "nav-timeslots",
+			typeOfSchedule: 'dog-walk'
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
