@@ -155,16 +155,16 @@ def get_user():
 def logout():
     return jsonify(message="Logged out successfully"), 200
 
-@api.route('/forgotten-password', methods=["PUT"])
+@api.route('/forgotten-password', methods=['POST'])
 def send_code ():
     body = request.get_json();
     email = body["email"]
+
     if email is None:
-        return jsonify("No email was provided"),400
+        return "No email was provided",400
     user = User.query.filter_by(email=email).first()
-    print(user)
     if user is None:
-        return jsonify({"message":"User doesn't exist"}), 404
+        return "User doesn't exist", 404
     else :
         new_password = generatePassword()
         new_hashed_password = generate_password_hash(new_password)
@@ -172,7 +172,7 @@ def send_code ():
         db.session.commit()
         email_sender = 'petsitting417@gmail.com'
         email_password = "ilhjwhdyxlxpmdfw"
-        email_receiver = email
+        email_receiver = 'wivodo2070@eachart.com'
         email_subject = "Reset your password"
         email_body = "We have sent you this temporary password so that you can recover your account. Smile with us Hot Doggity Dog Walkers! New Password: "+new_password
 
@@ -242,8 +242,12 @@ def handle_get_dog_walk_sched():
                 .execute()
             )
         events = events_result.get("items", [])
-        print(events)
-        events = [{'id': event['id'], 'start': event['start'],'end': event['end'],'summary': ' '.join(event['summary'].split(' ')[0:(len(event['summary'].split()) - 2)]), 'owned': True if user_email in event['summary'] else False} for event in events]
+
+        recurring = False
+        if(len(events) > 0):
+            if(events[0]['recurringEventId']):
+                recurring = True
+        events = [{'id': event['id'], 'start': event['start'],'end': event['end'],'summary': ' '.join(event['summary'].split(' ')[0:(len(event['summary'].split()) - 2)]), 'owned': True if user_email in event['summary'] else False, 'recurring': recurring} for event in events]
         return jsonify({'events': events, 'status': 'ok'}), 200
     except HttpError as Error:
         print(Error)
@@ -278,7 +282,13 @@ def handle_meeting_sched():
                 .execute()
             )
         events = events_result.get("items", [])
-        events = [{'id': event['id'], 'start': event['start'],'end': event['end'],'summary': ' '.join(event['summary'].split(' ')[0:(len(event['summary'].split()) - 2)]), 'owned': True if user_email in event['summary'] else False} for event in events]
+
+        recurring = False
+
+        if(len(events) > 0):
+            if(events[0]['recurringEventId']):
+                recurring = True
+        events = [{'id': event['id'], 'start': event['start'],'end': event['end'],'summary': ' '.join(event['summary'].split(' ')[0:(len(event['summary'].split()) - 2)]), 'owned': True if user_email in event['summary'] else False, 'recurring': recurring} for event in events]
         return jsonify({'events': events, 'status': 'ok'}), 200
     except:
         return jsonify({'msg': 'Could not access the calendar'}), 404
@@ -313,7 +323,13 @@ def handle_get_pet_check_in_sched():
                 .execute()
             )
         events = events_result.get("items", [])
-        events = [{'id': event['id'], 'start': event['start'],'end': event['end'],'summary': ' '.join(event['summary'].split(' ')[0:(len(event['summary'].split()) - 2)]), 'owned': True if user_email in event['summary'] else False} for event in events]
+
+        recurring = False
+
+        if(len(events) > 0):
+            if(events[0]['recurringEventId']):
+                recurring = True
+        events = [{'id': event['id'], 'start': event['start'],'end': event['end'],'summary': ' '.join(event['summary'].split(' ')[0:(len(event['summary'].split()) - 2)]), 'owned': True if user_email in event['summary'] else False, 'recurring': recurring} for event in events]
         return jsonify({'events': events, 'status': 'ok'}), 200
     except:
         return jsonify({'msg': 'Could not access the calendar'}), 404
@@ -347,7 +363,13 @@ def handle_get_pet_sitting_sched():
                 .execute()
             )
         events = events_result.get("items", [])
-        events = [{'id': event['id'], 'start': event['start'],'end': event['end'],'summary': ' '.join(event['summary'].split(' ')[0:(len(event['summary'].split()) - 2)]), 'owned': True if user_email in event['summary'] else False} for event in events]
+
+        recurring = False
+
+        if(len(events) > 0):
+            if(events[0]['recurringEventId']):
+                recurring = True
+        events = [{'id': event['id'], 'start': event['start'],'end': event['end'],'summary': ' '.join(event['summary'].split(' ')[0:(len(event['summary'].split()) - 2)]), 'owned': True if user_email in event['summary'] else False, 'recurring': recurring} for event in events]
         return jsonify({'events': events, 'status': 'ok'}), 200
     except:
         return jsonify({'msg': 'Could not access the calendar'}), 404

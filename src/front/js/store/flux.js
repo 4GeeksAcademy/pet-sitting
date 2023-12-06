@@ -10,7 +10,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			activeScheduleTab: "nav-timeslots",
 			payPalToken: null,
-			paymentSuccessful: false
+			paymentSuccessful: false,
+			activeScheduleTab: "nav-timeslots",
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
@@ -87,7 +88,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				setStore({paymentSuccessful: payload})
 			}
 		}
-	}
+	};
 }
 
 export default getState;

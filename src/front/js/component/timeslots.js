@@ -15,8 +15,9 @@ export const Timeslots = (props) => {
 	const [newScheduleEndStr, setNewScheduleEndStr] = useState('')
 	const [existingEvents, setExistingEvents] = useState([])
 	const [pets, setPets] = useState([])
+	const [recurring, setRecurring] = useState(false)
 	const [rerender, setRerender] = useState(false)
-	const formSubmitEvent = useRef('')
+	const currentRecurring = useRef(false)
 	const invalidBookingOverlap = useRef(false)
 	const invalidBookingEndBfrStart = useRef(false)
 	// const [invalidBookingEndBfrStart, setInvalidBookingEndBfrStart] = useState(false)
@@ -67,6 +68,7 @@ export const Timeslots = (props) => {
 			if (e.target.parentNode.getAttribute('data-start')) {
 				setNewScheduleStartStr(e.target.parentNode.getAttribute('data-start'))
 				setNewScheduleEndStr(e.target.parentNode.getAttribute('data-end'))
+				setRecurring(e.target.parentNode.getAttribute('data-recurring'))
 			} else {
 				const time = e.target.getInnerHTML()
 				const dateStr = e.target.parentNode.getAttribute('data-date')
@@ -187,6 +189,7 @@ export const Timeslots = (props) => {
 							timeSlotLabels.map((timeLabel, ind) => {
 								booked.current = false
 								owned.current = false
+								currentRecurring.current = false
 								existingEvents.map((evnt) => {
 									const dateTimeStart = evnt.start.dateTime
 									const dateTimeEnd = evnt.end.dateTime
@@ -205,6 +208,7 @@ export const Timeslots = (props) => {
 											dtStart.current = dateTimeStart
 											dtEnd.current = dateTimeEnd
 											eventId.current = evnt.id
+											currentRecurring.current = evnt.recurring
 										}
 									}
 								})
@@ -216,7 +220,7 @@ export const Timeslots = (props) => {
 									)
 								} else if (booked.current === true && owned.current === true) {
 									return (
-										<div className={`timeslot text-center booked-by-user`} data-id={eventId.current} data-start={dtStart.current} data-end={dtEnd.current} data-year={yearStr} data-date={newDate} data-month={monthStr} data-bs-toggle="modal" data-bs-target="#cancelSchedule" onClick={(e) => handleTimeslotClick(e)} key={ind}>
+										<div className={`timeslot text-center booked-by-user`} data-recurring={currentRecurring.current} data-id={eventId.current} data-start={dtStart.current} data-end={dtEnd.current} data-year={yearStr} data-date={newDate} data-month={monthStr} data-bs-toggle="modal" data-bs-target="#cancelSchedule" onClick={(e) => handleTimeslotClick(e)} key={ind}>
 											{timeLabel}
 										</div>
 									)
@@ -606,28 +610,24 @@ export const Timeslots = (props) => {
 													<textarea readOnly id="endTime" value={newScheduleEndStr} />
 												</div>
 											</div>
-											<div className="form-group row">
-												{typeOfSchedule !== 'meeting' ?
-													<div className="form-check">
-														<label className="form-check-label col-sm-2" htmlFor='recurring'>Recurring weekly?</label>
-														<input className="form-check-input col-sm-10" type="checkbox" value="" id='recurring' />
+											{typeOfSchedule !== 'pet-sitting' ?
+												<div>
+													<div className="form-group row">
+														<div className="form-check">
+															<label className="form-check-label col-sm-2" htmlFor='recurring'>Recurring weekly?</label>
+															<input className="form-check-input col-sm-10" type="checkbox" value="" id='recurring' />
+														</div>
 													</div>
-													:
-													''
-												}
-											</div>
-											<div className="form-group row">
-												{typeOfSchedule !== 'meeting' ?
-													<div>
+													<div className="form-group row">
 														<label htmlFor="recurringUntil" className="col-sm-2">Recurring until?</label>
 														<div className="col-sm-10">
 															<input type="date" id="recurringUntil" />
 														</div>
 													</div>
-													:
-													''
-												}
-											</div>
+												</div>
+												:
+												''
+											}
 											<div className="modal-footer">
 												<button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={() => {
 													firstTimeslotClicked.current = false
@@ -661,10 +661,14 @@ export const Timeslots = (props) => {
 							<form onSubmit={(e) => { handleModalCancel(e) }}>
 								<p>{`Cancel booking starting on ${newScheduleStartStr.substring(0, 10)} from ${parseInt(newScheduleStartStr.substring(11, 13)) <= 12 ? newScheduleStartStr.substring(11, 16) : String(parseInt(newScheduleStartStr.substring(11, 13) - 12) + newScheduleStartStr.substring(13, 16))} to ${parseInt(newScheduleEndStr.substring(11, 13)) <= 12 ? newScheduleEndStr.substring(11, 16) : String(parseInt(newScheduleEndStr.substring(11, 13) - 12) + newScheduleEndStr.substring(13, 16))} on ${newScheduleEndStr.substring(0, 10)}?`}</p>
 								<div className="form-group row">
-									<div className="form-check">
-										<label className="form-check-label col-sm-2" htmlFor='recurring'>Cancel recurring events at this time?</label>
-										<input className="form-check-input col-sm-10" type="checkbox" value="" id='recurringCancel' />
-									</div>
+									{recurring ?
+										<div className="form-check">
+											<label className="form-check-label col-sm-2" htmlFor='recurring'>Cancel recurring events at this time.</label>
+											<input className="form-check-input col-sm-10" type="checkbox" value="" id='recurringCancel' checked readonly />
+										</div>
+										:
+										''
+									}
 								</div>
 								<div className="modal-footer">
 									<button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Wait, go back!</button>
