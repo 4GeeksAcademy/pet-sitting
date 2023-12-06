@@ -34,7 +34,7 @@ const injectContext = PassedComponent => {
 			const currMonth = newDate.getMonth()
 			const curr_Date = newDate.getDate()
 		}, []);
-		
+
 
 		// The initial value for the context is not null anymore, but the current state of this component,
 		// the context will now have a getStore, getActions and setStore functions available, because they were declared

@@ -2,7 +2,6 @@ from flask import Flask, request, jsonify, Blueprint
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
-from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
 from api.models import db, User, Pet
 from api.utils import APIException
@@ -731,9 +730,10 @@ def cancel_pet_sitting():
     except HttpError as error:
         print(error)
         return jsonify({"msg": "An error occurred."}), 404
-    
+
 @api.before_request 
 def before_request(): 
+    print('api endpoint')
     headers = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' } 
     print(headers)
     if request.method == 'OPTIONS' or request.method == 'options': 

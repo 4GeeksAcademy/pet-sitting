@@ -12,6 +12,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			payPalToken: null,
 			paymentSuccessful: false,
 			activeScheduleTab: "nav-timeslots",
+			typeOfSchedule: 'dog-walk'
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
