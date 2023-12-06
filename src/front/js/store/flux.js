@@ -106,9 +106,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			changeActiveScheduleTab: (payload) => {
 				setStore({ activeScheduleTab: payload })
-			}
+			},
 		}
-	}
+	};
 }
 
 export default getState;
