@@ -591,24 +591,18 @@ export const Timeslots = (props) => {
 													<textarea readOnly id="endTime" value={newScheduleEndStr} />
 												</div>
 											</div>
-											{typeOfSchedule !== 'pet-sitting' ?
-												<div>
-													<div className="form-group row">
-														<div className="form-check">
-															<label className="form-check-label col-sm-2" htmlFor='recurring'>Recurring weekly?</label>
-															<input className="form-check-input col-sm-10" type="checkbox" value="" id='recurring' />
-														</div>
-													</div>
-													<div className="form-group row">
-														<label htmlFor="recurringUntil" className="col-sm-2">Recurring until?</label>
-														<div className="col-sm-10">
-															<input type="date" id="recurringUntil" />
-														</div>
-													</div>
+											<div className="form-group row">
+												<div className="form-check">
+													<label className="form-check-label col-sm-2" htmlFor='recurring'>Recurring weekly?</label>
+													<input className="form-check-input col-sm-10" type="checkbox" value="" id='recurring' />
 												</div>
-												:
-												''
-											}
+											</div>
+											<div className="form-group row">
+												<label htmlFor="recurringUntil" className="col-sm-2">Recurring until?</label>
+												<div className="col-sm-10">
+													<input type="date" id="recurringUntil" />
+												</div>
+											</div>
 											<div className="modal-footer">
 												<button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={() => {
 													firstTimeslotClicked.current = false
