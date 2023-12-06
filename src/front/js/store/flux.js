@@ -1,6 +1,3 @@
-const axios = require("axios")
-const base64 = require('base-64');
-
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
@@ -85,29 +82,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 			changeActiveScheduleTab: (payload) => {
 				setStore({ activeScheduleTab: payload })
 			},
-			getPayPalToken: async () => {
-				try {
-					const client_id = process.env.PAYPAL_CLIENT_ID
-					const client_secret = process.env.PAYPAL_CLIENT_SECRET
-
-					const response = await axios.post('https://api-m.sandbox.paypal.com/v1/oauth2/token',
-						new URLSearchParams({
-							'grant_type': 'client_credentials'
-						}),
-						{
-							headers:
-							{
-								'Content-Type': 'application/x-www-form-urlencoded',
-								'Authorization': 'Basic ' + base64.encode(client_id + ":" + client_secret)
-							}
-						})
-					console.log(response.data.access_token)
-					setStore({ payPalToken: response.data.access_token });
-
-				} catch (error) {
-					console.log(Promise.reject(error));
-				}
-			}
 		}
 	}
 }

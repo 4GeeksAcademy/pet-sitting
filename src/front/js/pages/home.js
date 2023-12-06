@@ -39,7 +39,7 @@ export const Home = () => {
   return (
     <div className="container-fluid homePage">
       <div>
-        <PayPal recurring={false} />
+        <PayPal recurring={true} typeOfSchedule='dog-walk' numDogs={1}/>
       </div>
       <div className="row homePageText">
         <p>

@@ -33,7 +33,6 @@ const injectContext = PassedComponent => {
 			const currYear = newDate.getFullYear()
 			const currMonth = newDate.getMonth()
 			const curr_Date = newDate.getDate()
-			state.actions.getPayPalToken()
 		}, []);
 		
 
