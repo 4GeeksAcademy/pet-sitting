@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, Blueprint
+from flask import Flask, request, jsonify, Blueprint, url_for, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from flask_cors import CORS  # Add this import
@@ -16,8 +16,9 @@ import jwt
 import secrets
 
 # Create the Blueprint
-api = Blueprint('api', __name__)
- 
+api = Blueprint('api', __name__, template_folder='templates')
+api_blueprint = Blueprint('api', __name__, template_folder='templates')
+
 JWT_SECRET_KEY = secrets.token_hex(32)
 # secure_token = secrets.token_urlsafe(16)
 
@@ -159,6 +160,8 @@ def send_code ():
     EMAIL_SENDER = os.getenv('EMAIL_SENDER')
     EMAIL_PASSWORD = os.getenv('EMAIL_PASSWORD')
     URL_TOKEN = f"{FRONTEND_URL}/reset-password?token={token}"
+    # URL_TOKEN = url_for('api.reset_password', token=token, _external=True)
+    
     if email is None:
         return jsonify("No email was provided"),400
     user = User.query.filter_by(email=email).first()
@@ -168,16 +171,22 @@ def send_code ():
     else:
         email_receiver = email
         email_subject = "Reset your password"
-        email_body = f"Hello, you requested a password reset. If you did not request this, please ignore this email.\n\n We have sent you this link to reset your password.\n\n Smile with us, Hot Doggity Dog Walkers! "
-        email_body +=f"Click here to reset your password: {URL_TOKEN}\n\n"
-        email_body += f"This token is valid for 1 hour. After expiration, you will need to request another password reset.\n\n"
-        email_body += f"Sincerely,\n\nPetSiting"
+        email_body = f"<!DOCTYPE html><html><body>"
+        email_body += f"Hello, you requested a password reset. If you did not request this, please ignore this email.<br /><br /> We have sent you this link to reset your password.<br /><br /> Smile with us, Hot Doggity Dog Walkers! "
+        email_body +=f"Click here to reset your password: <a href=\"{URL_TOKEN}\">LINK</a><br/><br/>"
+        email_body += f"This token is valid for 1 hour. After expiration, you will need to request another password reset.<br /><br />"
+        email_body += f"Sincerely,<br /><br />PetSiting"
+        email_body += f"</body></html>"
+        # email_body = render_template('email_template.html', URL_TOKEN=URL_TOKEN)
 
         em = EmailMessage()
         em['from'] = EMAIL_SENDER
         em['to'] = email_receiver
         em['subject'] = email_subject
-        em.set_content(email_body)
+        # em.set_type('text/html')
+        # em.add_header('Content-Type','text/html')
+        em.set_content(email_body, subtype='html')
+        # em.set_payload(email_body)
 
         context = ssl.create_default_context()
         with smtplib.SMTP(os.getenv('EMAIL_SERVER'), 587) as smtp:
@@ -185,8 +194,8 @@ def send_code ():
             smtp.starttls(context=context)
             smtp.login(EMAIL_SENDER, EMAIL_PASSWORD)
             smtp.sendmail(EMAIL_SENDER, email_receiver, em.as_string())
-            print("SMTP Login Successful")
         return "Ok, Password reset link sent to email.",200
+
 
 
 @api.route('/reset-password', methods=['POST'])
@@ -194,7 +203,6 @@ def reset_password():
     data = request.get_json()
     token = data.get('token')
     new_password = data.get('new_password')
-
     try:
         payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=['HS256'])
         email = payload.get('email')
@@ -214,17 +222,18 @@ def reset_password():
         return jsonify({'error': str(e)}), 500
 
 
-@api.route('/update-password', methods=['PUT'])
-@jwt_required()
-def update_password():
-    body = request.get_json()
-    old_password = body['old_password']
-    new_password = body['new_password']
-    user_email = get_jwt_identity()
-    user = User.query.filter_by(email=user_email).first()
-    if user and check_password_hash(user.password, old_password):
-        user.password = generate_password_hash(new_password)
-        return jsonify("Password updated successfully")
+
+# @api.route('/update-password', methods=['PUT'])
+# @jwt_required()
+# def update_password():
+#     body = request.get_json()
+#     old_password = body['old_password']
+#     new_password = body['new_password']
+#     user_email = get_jwt_identity()
+#     user = User.query.filter_by(email=user_email).first()
+#     if user and check_password_hash(user.password, old_password):
+#         user.password = generate_password_hash(new_password)
+#         return jsonify("Password updated successfully")
     
 
  
