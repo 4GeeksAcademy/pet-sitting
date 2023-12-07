@@ -718,7 +718,7 @@ export const Timeslots = (props) => {
 						</div>
 						<div className="modal-body">
 							<form onSubmit={(e) => { handleModalCancel(e) }}>
-								<p>{`Cancel booking starting on ${newScheduleStartStr.substring(0, 10)} from ${parseInt(newScheduleStartStr.substring(11, 13)) <= 12 ? newScheduleStartStr.substring(11, 16) : String(parseInt(newScheduleStartStr.substring(11, 13) - 12) + newScheduleStartStr.substring(13, 16))} to ${parseInt(newScheduleEndStr.substring(11, 13)) <= 12 ? newScheduleEndStr.substring(11, 16) : String(parseInt(newScheduleEndStr.substring(11, 13) - 12) + newScheduleEndStr.substring(13, 16))} on ${newScheduleEndStr.substring(0, 10)}?`}</p>
+								<p>{`Cancel service starting on ${newScheduleStartStr.substring(0, 10)} from ${parseInt(newScheduleStartStr.substring(11, 13)) <= 12 ? newScheduleStartStr.substring(11, 16) : String(parseInt(newScheduleStartStr.substring(11, 13) - 12) + newScheduleStartStr.substring(13, 16))} to ${parseInt(newScheduleEndStr.substring(11, 13)) <= 12 ? newScheduleEndStr.substring(11, 16) : String(parseInt(newScheduleEndStr.substring(11, 13) - 12) + newScheduleEndStr.substring(13, 16))} on ${newScheduleEndStr.substring(0, 10)}?`}</p>
 								<div className="form-group row">
 									{recurring ?
 										<div className="form-check">
