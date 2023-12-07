@@ -42,7 +42,7 @@ SCOPES = ["https://www.googleapis.com/auth/calendar.events"]
 
 api = Blueprint('api', __name__)
 
-@api.route('/signup', methods=['POST'])
+@api.route('/signup', methods=['POST', 'OPTIONS'])
 def signup():
     body = request.get_json()
     if (
@@ -76,7 +76,7 @@ def signup():
 
 
     db.session.commit()
-    return jsonify(message="Successfully created user and pet"), 200
+    return jsonify(message="Successfully created user."), 200
 
 @api.route('/accountPage', methods=['GET'])
 @jwt_required()
@@ -112,7 +112,7 @@ def get_account():
     except Exception as e:
         return jsonify(message=str(e)), 500
 
-@api.route('/login', methods=['POST'])
+@api.route('/login', methods=['POST', 'OPTIONS'])
 def login():
     body = request.get_json()
     if "email" not in body or "password" not in body:
@@ -147,7 +147,7 @@ def get_user():
 def logout():
     return jsonify(message="Logged out successfully"), 200
 
-@api.route('/forgotten-password', methods=['POST'])
+@api.route('/forgotten-password', methods=['POST', 'OPTIONS'])
 def send_code ():
     body = request.get_json();
     email = body["email"]
@@ -205,7 +205,7 @@ def update_password():
 if __name__ == "__main__":
     api.run()
     
-@api.route('/get-dog-walk', methods=['POST'])
+@api.route('/get-dog-walk', methods=['POST', 'OPTIONS'])
 @jwt_required()
 def handle_get_dog_walk_sched():
     user_email = get_jwt_identity()
@@ -234,18 +234,13 @@ def handle_get_dog_walk_sched():
                 .execute()
             )
         events = events_result.get("items", [])
-
-        recurring = False
-        if(len(events) > 0):
-            if(events[0]['recurringEventId']):
-                recurring = True
-        events = [{'id': event['id'], 'start': event['start'],'end': event['end'],'summary': ' '.join(event['summary'].split(' ')[0:(len(event['summary'].split()) - 2)]), 'owned': True if user_email in event['summary'] else False, 'recurring': recurring} for event in events]
+        events = [{'id': event['id'], 'start': event['start'],'end': event['end'],'summary': ' '.join(event['summary'].split(' ')[0:(len(event['summary'].split()) - 2)]), 'owned': True if user_email in event['summary'] else False, 'recurring': True if 'recurringEventId' in event else False} for event in events]
         return jsonify({'events': events, 'status': 'ok'}), 200
     except HttpError as Error:
         print(Error)
         return jsonify({'msg': 'Could not access the calendar'}), 404
 
-@api.route('/get-meeting', methods=['POST'])
+@api.route('/get-meeting', methods=['POST', 'OPTIONS'])
 @jwt_required()
 def handle_meeting_sched():
     user_email = get_jwt_identity()
@@ -275,18 +270,13 @@ def handle_meeting_sched():
             )
         events = events_result.get("items", [])
 
-        recurring = False
-
-        if(len(events) > 0):
-            if(events[0]['recurringEventId']):
-                recurring = True
-        events = [{'id': event['id'], 'start': event['start'],'end': event['end'],'summary': ' '.join(event['summary'].split(' ')[0:(len(event['summary'].split()) - 2)]), 'owned': True if user_email in event['summary'] else False, 'recurring': recurring} for event in events]
+        events = [{'id': event['id'], 'start': event['start'],'end': event['end'],'summary': ' '.join(event['summary'].split(' ')[0:(len(event['summary'].split()) - 2)]), 'owned': True if user_email in event['summary'] else False, 'recurring': True if 'recurringEventId' in event else False} for event in events]
         return jsonify({'events': events, 'status': 'ok'}), 200
     except:
         return jsonify({'msg': 'Could not access the calendar'}), 404
 
 
-@api.route('/get-pet-check-in', methods=['POST'])
+@api.route('/get-pet-check-in', methods=['POST', 'OPTIONS'])
 @jwt_required()
 def handle_get_pet_check_in_sched():
     user_email = get_jwt_identity()
@@ -316,18 +306,13 @@ def handle_get_pet_check_in_sched():
             )
         events = events_result.get("items", [])
 
-        recurring = False
-
-        if(len(events) > 0):
-            if(events[0]['recurringEventId']):
-                recurring = True
-        events = [{'id': event['id'], 'start': event['start'],'end': event['end'],'summary': ' '.join(event['summary'].split(' ')[0:(len(event['summary'].split()) - 2)]), 'owned': True if user_email in event['summary'] else False, 'recurring': recurring} for event in events]
+        events = [{'id': event['id'], 'start': event['start'],'end': event['end'],'summary': ' '.join(event['summary'].split(' ')[0:(len(event['summary'].split()) - 2)]), 'owned': True if user_email in event['summary'] else False, 'recurring': True if 'recurringEventId' in event else False} for event in events]
         return jsonify({'events': events, 'status': 'ok'}), 200
     except:
         return jsonify({'msg': 'Could not access the calendar'}), 404
 
 
-@api.route('/get-pet-sitting', methods=['POST'])
+@api.route('/get-pet-sitting', methods=['POST', 'OPTIONS'])
 @jwt_required()
 def handle_get_pet_sitting_sched():
     user_email = get_jwt_identity()
@@ -356,22 +341,16 @@ def handle_get_pet_sitting_sched():
             )
         events = events_result.get("items", [])
 
-        recurring = False
-
-        if(len(events) > 0):
-            if(events[0]['recurringEventId']):
-                recurring = True
-        events = [{'id': event['id'], 'start': event['start'],'end': event['end'],'summary': ' '.join(event['summary'].split(' ')[0:(len(event['summary'].split()) - 2)]), 'owned': True if user_email in event['summary'] else False, 'recurring': recurring} for event in events]
+        events = [{'id': event['id'], 'start': event['start'],'end': event['end'],'summary': ' '.join(event['summary'].split(' ')[0:(len(event['summary'].split()) - 2)]), 'owned': True if user_email in event['summary'] else False, 'recurring': True if 'recurringEventId' in event else False} for event in events]
         return jsonify({'events': events, 'status': 'ok'}), 200
     except:
         return jsonify({'msg': 'Could not access the calendar'}), 404
 
-@api.route('/schedule-walk-or-check-in-or-meet-and-greet', methods=['POST'])
+@api.route('/schedule-walk-or-check-in-or-meet-and-greet', methods=['POST', 'OPTIONS'])
 @jwt_required()
 def handle_schedule_walk_or_check_in_or_meet_and_greet():
     email = get_jwt_identity()
     user = User.query.filter_by(email=email).first()
-    user_address = user.serialize()["address"]
 
     req = request.get_json()
 
@@ -392,6 +371,7 @@ def handle_schedule_walk_or_check_in_or_meet_and_greet():
         end_time = req["endTime"]
         recurring = req["recurring"]
         recurring_until = req["recurringUntil"]
+        user_address = req["address"]
 
         if recurring and recurring_until:
             event = {
@@ -453,6 +433,8 @@ def handle_schedule_walk_or_check_in_or_meet_and_greet():
         email_password = "ilhjwhdyxlxpmdfw"
         email_receiver = email
         email_subject = 'Pet Care Service Scheduled.'
+        if user_address is None:
+            user_address = ''
         if(recurring):
             email_body = 'You have successfully scheduled a recurring ' + type_of_booking + ' for ' + ' and '.join(pets) + ' at ' + user_address + ' starting at ' + start_date_time.strftime("%Y %B %d %I:%M %p") + ' and ending at ' + end_date_time.strftime("%Y %B %d %I:%M %p.")
         else:
@@ -476,7 +458,7 @@ def handle_schedule_walk_or_check_in_or_meet_and_greet():
         return jsonify({"msg": "An error occurred."}), 404
 
 
-@api.route('/schedule-pet-sitting', methods=['POST'])
+@api.route('/schedule-pet-sitting', methods=['POST', 'OPTIONS'])
 @jwt_required()
 def handle_schedule_pet_sitting():
     email = get_jwt_identity()
@@ -597,7 +579,7 @@ def get_pet_names():
         pet_names = [pet["name"] for pet in pets]
         if len(pet_names) == 0:
             pet_names = ["N/A"]
-        return jsonify({"pets": pet_names, "status": "ok"})
+        return jsonify({"pets": pet_names, "status": "ok"}), 200
     except HttpError as error:
         print(error)
         return jsonify({"msg": "An error occurred."}), 404
@@ -667,7 +649,7 @@ def cancel_pet_check_in_or_meeting_or_dog_walk():
         return jsonify({"msg": "An error occurred."}), 404
 
 
-@api.route('/cancel/pet-sitting', methods=['POST'])
+@api.route('/cancel/pet-sitting', methods=['POST', 'OPTIONS'])
 @jwt_required()
 def cancel_pet_sitting():
     email = get_jwt_identity()
@@ -731,9 +713,21 @@ def cancel_pet_sitting():
         print(error)
         return jsonify({"msg": "An error occurred."}), 404
 
+@api.route('/get-address', methods=['GET'])
+@jwt_required()
+def get_address():
+    email = get_jwt_identity()
+    user = User.query.filter_by(email=email).first()
+    try: 
+        address = user.serialize()["address"]
+        if address is not None:
+            return jsonify({"address": address, "status": "ok"}), 200
+    except HttpError as error:
+        print(error)
+        return jsonify({"msg": "An error occurred. Have you set an address?"}), 404
+
 @api.before_request 
 def before_request(): 
-    print('api endpoint')
     headers = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' } 
     print(headers)
     if request.method == 'OPTIONS' or request.method == 'options': 

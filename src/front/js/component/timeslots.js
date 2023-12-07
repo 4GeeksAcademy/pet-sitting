@@ -5,6 +5,7 @@ import { Context } from "../store/appContext";
 import PayPal from './paypal_client/app'
 
 import '../../styles/timeslots.css'
+import { CMapCompressionType } from "pdfjs-dist";
 
 export const Timeslots = (props) => {
 	const { store, actions } = useContext(Context);
@@ -16,7 +17,10 @@ export const Timeslots = (props) => {
 	const [existingEvents, setExistingEvents] = useState([])
 	const [pets, setPets] = useState([])
 	const [recurring, setRecurring] = useState(false)
+	const [address, setAddress] = useState('')
 	const [rerender, setRerender] = useState(false)
+	const numPets = useRef(0)
+	const formSubmitEvent = useRef('')
 	const currentRecurring = useRef(false)
 	const invalidBookingOverlap = useRef(false)
 	const invalidBookingEndBfrStart = useRef(false)
@@ -68,7 +72,9 @@ export const Timeslots = (props) => {
 			if (e.target.parentNode.getAttribute('data-start')) {
 				setNewScheduleStartStr(e.target.parentNode.getAttribute('data-start'))
 				setNewScheduleEndStr(e.target.parentNode.getAttribute('data-end'))
-				setRecurring(e.target.parentNode.getAttribute('data-recurring'))
+				if (e.target.parentNode.getAttribute('data-recurring') == 'true') {
+					setRecurring(true)
+				}
 			} else {
 				const time = e.target.getInnerHTML()
 				const dateStr = e.target.parentNode.getAttribute('data-date')
@@ -191,6 +197,7 @@ export const Timeslots = (props) => {
 								owned.current = false
 								currentRecurring.current = false
 								existingEvents.map((evnt) => {
+									console.log(evnt.recurring)
 									const dateTimeStart = evnt.start.dateTime
 									const dateTimeEnd = evnt.end.dateTime
 									let timeHr = timeLabel.props['data-time'][1] === ':' ? parseInt(timeLabel.props['data-time'][0]) : parseInt(timeLabel.props['data-time'][0] + timeLabel.props['data-time'][1])
@@ -293,7 +300,6 @@ export const Timeslots = (props) => {
 		else {
 			return []
 		}
-
 	}
 
 	const getScheduleData = async () => {
@@ -333,7 +339,6 @@ export const Timeslots = (props) => {
 		const schedStartReq = formatAPIReqStr("09:00:00-07:00", store.timeSlotsStartingDay.date, String(parseInt(store.timeSlotsStartingDay.month) + 1), store.timeSlotsStartingDay.year)
 		const schedEndReq = formatAPIReqStr("17:00:00-07:00", nextDate, String(parseInt(nextMonth) + 1), nextYear)
 		try {
-			console.log(schedStartReq, schedEndReq)
 			if (store.token !== null) {
 				const response = await fetch(process.env.BACKEND_URL + `api/get-${typeOfSchedule}`, {
 					method: "POST",
@@ -359,8 +364,29 @@ export const Timeslots = (props) => {
 		}
 	}
 
+	const getAddress = async () => {
+		if (store.token !== null) {
+			try {
+				const response = await fetch(process.env.BACKEND_URL + 'api/get-address', {
+					method: "GET",
+					headers: {
+						"Authorization": 'Bearer ' + store.token
+					},
+				}
+				)
+				return await response.json()
+			}
+			catch (error) {
+				console.log("An error occurred:", error)
+			}
+		}
+		else {
+			return []
+		}
+	}
+
 	useEffect(() => {
-		const asyncFunc1 = async () => {
+		const asyncFuncGetPets = async () => {
 			const petsResp = await getPets()
 			const tempPets = await petsResp.pets
 			if (tempPets !== undefined) {
@@ -370,8 +396,8 @@ export const Timeslots = (props) => {
 				navigate('/')
 			}
 		}
-		asyncFunc1()
-		const asyncFunc2 = async () => {
+		asyncFuncGetPets()
+		const asyncFuncGetSchedule = async () => {
 			if (recentlyFetched.current === false)
 				document.body.classList.add('waiting')
 			try {
@@ -380,7 +406,6 @@ export const Timeslots = (props) => {
 				const events = await resp.events
 				if (events !== undefined) {
 					setExistingEvents(await events)
-					console.log(events)
 					document.body.classList.remove('waiting')
 				}
 			}
@@ -392,7 +417,18 @@ export const Timeslots = (props) => {
 				recentlyFetched.current = false
 			}, 2000)
 		}
-		asyncFunc2()
+		asyncFuncGetSchedule()
+		const asyncFuncGetAddress = async () => {
+			const addressResp = await getAddress()
+			const tempAddress = await addressResp.address
+			if (tempAddress !== undefined) {
+				setAddress(tempAddress)
+			} else {
+				alert('An error occurred while accessing your address. Please try again. If you have not added an address, please add one on the account page.')
+				navigate('/')
+			}
+		}
+		asyncFuncGetAddress()
 	}, [])
 
 	useEffect(() => {
@@ -405,7 +441,6 @@ export const Timeslots = (props) => {
 					const events = await resp.events
 					if (events !== undefined) {
 						setExistingEvents(await events)
-						console.log(events)
 					}
 				}
 				catch (error) {
@@ -454,7 +489,8 @@ export const Timeslots = (props) => {
 					"details": e.target.elements.details.value,
 					"recurring": e.target.elements.recurring.checked,
 					"recurringUntil": e.target.elements.recurringUntil.value,
-					"pets": bookPets
+					"pets": bookPets,
+					"address": e.target.elements.address.value
 				})
 			})
 			if (resp.ok) {
@@ -481,7 +517,16 @@ export const Timeslots = (props) => {
 
 	const handleModalSubmit = async (e) => {
 		e.preventDefault()
+		e.persist()
 		formSubmitEvent.current = e
+		setRerender(!rerender)
+		numPets.current = pets.map((item) => {
+			if (e.target.elements[`${item}`].checked) {
+				return (item)
+			} else {
+				return null
+			}
+		}).filter(item => item !== null).length
 	}
 
 	const handleModalCancel = async (e) => {
@@ -498,7 +543,7 @@ export const Timeslots = (props) => {
 				},
 				body: JSON.stringify({
 					"id": idOfEventToCancel,
-					"recurring": e.target.elements.recurringCancel.checked
+					"recurring": e.target.elements.recurringCancel ? true : false
 				})
 			})
 			if (resp.ok) {
@@ -534,8 +579,6 @@ export const Timeslots = (props) => {
 					alert('An error occurred when attempting to book a service.')
 					document.body.classList.remove('waiting')
 				}
-			} else {
-				alert('An error occurred while attempting to pay for the booking.')
 			}
 		}
 		asyncBookingFunc()
@@ -584,16 +627,21 @@ export const Timeslots = (props) => {
 											<div className="form-group row">
 												<label htmlFor="staticType" className="col-sm-2 col-form-label">Pet(s):</label>
 												<div className="col-sm-10">
-													{pets.map((petName) => {
-														return (
-															<div className="form-check">
-																<input className="form-check-input" type="checkbox" value="" id={petName} />
-																<label className="form-check-label" htmlFor={petName} name="chkboxLabel">
-																	{petName}
-																</label>
-															</div>
-														)
-													})
+													{pets.length > 0 ?
+														pets.map((petName) => {
+															return (
+																<div className="form-check">
+																	<input className="form-check-input" type="checkbox" value="" id={petName} />
+																	<label className="form-check-label" htmlFor={petName} name="chkboxLabel">
+																		{petName}
+																	</label>
+																</div>
+															)
+														})
+														:
+														<p>
+															Please add some pets on the account page!
+														</p>
 													}
 												</div>
 											</div>
@@ -616,6 +664,18 @@ export const Timeslots = (props) => {
 												</div>
 											</div>
 											<div className="form-group row">
+												<label htmlFor="location" className="col-sm-3 col-form-label">Location</label>
+												{address !== '' ?
+													<div className="col-sm-9">
+														<textarea id="address" value={address} />
+													</div>
+													:
+													<p>
+														Please add an address on the account page!
+													</p>
+												}
+											</div>
+											<div className="form-group row">
 												<div className="form-check">
 													<label className="form-check-label col-sm-2" htmlFor='recurring'>Recurring weekly?</label>
 													<input className="form-check-input col-sm-10" type="checkbox" value="" id='recurring' />
@@ -635,7 +695,7 @@ export const Timeslots = (props) => {
 													// I know this isn't best practice, but if I make these states the component doesn't update immediately.
 													setRerender(!rerender)
 												}}>Cancel</button>
-												<button type="submit" className="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="paymentModal" onClick={() => {
+												<button type="submit" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#paymentModal" onClick={() => {
 													firstTimeslotClicked.current = false
 													invalidBookingOverlap.current = false
 													invalidBookingDate.current = false
@@ -715,13 +775,11 @@ export const Timeslots = (props) => {
 							<button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 						</div>
 						<div className="modal-body">
-							<PayPal recurring={formSubmitEvent.target.elements.recurring.checked} typeOfSchedule={typeOfSchedule} numDogs={pets.map((item) => {
-								if (e.target.elements[`${item}`].checked) {
-									return (item)
-								} else {
-									return null
-								}
-							}).filter(item => item !== null).length} />
+							{formSubmitEvent.current.target != null ?
+								<PayPal recurring={formSubmitEvent.current.target.elements.recurring.checked} typeOfSchedule={typeOfSchedule} numPets={numPets.current} />
+								:
+								'Form submission event failed. Please try again.'
+							}
 						</div>
 						<div className="modal-footer">
 							<button type="button" className="btn btn-secondary" data-bs-dismiss="modal">

@@ -26,7 +26,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						},
 						body: JSON.stringify({ email, password }),
 					};
-					const response = await fetch(process.env.BACKEND_URL + "/api/login", options);
+					const response = await fetch(process.env.BACKEND_URL + "api/login", options);
 					console.log('Login response:', response);
 					if (response.status === 200) {
 						const data = await response.json();
@@ -37,7 +37,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 							token: data.access_token,
 							email: email,
 						});
-						setIsLoggedIn = true
 						return true;
 					} else {
 						console.error("Login failed. Please check your credentials.");
