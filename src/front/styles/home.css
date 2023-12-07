@@ -7,22 +7,21 @@
 */
 
 /* nav bar */
-.navbar-brand {
-  background-color:#f5f5dc  ;
-  align-items: center;
-}
 
-.logoImg {
+
+.logoImg-Desk {
   height: 100px;
   width:100px;
   margin-right: 50px; 
-}
-.navbar{
 
+ 
+}
+.navbar-Desk{
+height: 200px;
   width: 100dvw;
   background-color:#f5f5dc  ;
-}
-.number{
+} 
+.number-Desk{
   background-color: #313d49;
   color: white;
   text-align-last: center;
@@ -30,20 +29,40 @@
   width: 100%;
 }
 
-.title{
+.navItem-Desk{
+  margin-left: 85%;
+
+
+} 
+/* this is my footer */
+
+.footerScrollBar{
+width: 100dvw;
+height: auto;
+overflow-x: scroll;
+
+
+}
+
+
+.allCardItems{
+
+  flex-wrap: nowrap;
+  overflow-x: scroll;
+  scroll-behavior: smooth;
+  padding-bottom: 1rem;
+}
+/* .logoTitle-Desk{
   text-align: center;
+padding-top: 5%;
+
 
  
-  width: 50dvw;
-}
+  margin-left: 760px;
+} */ */
 
-.navbar-title {
-  margin: 0; 
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center; 
-}
+
+
 /* this is the Aboutme view */
 
 .aboutMeImage{
@@ -74,13 +93,9 @@
   color:  #f5f5dc ;
   background-color: #54665a;
 }
-/* steps text */
 
-.servicesText{
 
- padding: 0 5dvw;
- width: 80dvw;
-}
+
 /* .aboutMeButton {
 
   
@@ -130,9 +145,9 @@ body{
 
 
 .homePageText{
+text-align: center;
+  padding:5%;
 
-  padding:5dvw;
- width: 80dvw;
 }
 .processBox{
   background-color:  #f2e9d8;
