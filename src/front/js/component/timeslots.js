@@ -18,6 +18,7 @@ export const Timeslots = (props) => {
 	const [pets, setPets] = useState([])
 	const [recurring, setRecurring] = useState(false)
 	const [address, setAddress] = useState('')
+	const numDays = useRef(0)
 	const [rerender, setRerender] = useState(false)
 	const numPets = useRef(0)
 	const formSubmitEvent = useRef('')
@@ -462,7 +463,7 @@ export const Timeslots = (props) => {
 		setWeekDayDivs(createWeekDayDivs(fixedDatesAndWeekdays, timeSlotLabels))
 	}, [store.timeSlotsStartingDay, store.token, existingEvents, firstTimeslotClicked.current, newScheduleStartStr, newScheduleEndStr, rerender])
 
-	const scheduleBooking = async () => {
+	const scheduleService = async () => {
 		const e = formSubmitEvent.current
 		try {
 			const bookPets = pets.map((item, ind) => {
@@ -527,6 +528,24 @@ export const Timeslots = (props) => {
 				return null
 			}
 		}).filter(item => item !== null).length
+
+		if (typeOfSchedule === 'pet-sitting') {
+			let date1 = new Date(newScheduleStartStr);
+			let date2 = new Date(newScheduleEndStr);
+
+			// To calculate the time difference of two dates
+			let differenceInTime = date2.getTime() - date1.getTime();
+
+			// To calculate the no. of days between two dates
+			let differenceInDays =
+				Math.ceil(differenceInTime / (1000 * 3600 * 24));
+			numDays.current = differenceInDays
+			if (numDays.current <= 0) {
+				numDays.current = 1
+			}
+			console.log(numDays.current)
+			setRerender(!rerender)
+		}
 	}
 
 	const handleModalCancel = async (e) => {
@@ -573,7 +592,7 @@ export const Timeslots = (props) => {
 			if (store.paymentSuccessful === true) {
 				try {
 					document.body.classList.add('waiting')
-					await scheduleBooking()
+					await scheduleService()
 					actions.setPaymentSuccessful(false)
 				} catch {
 					alert('An error occurred when attempting to book a service.')
@@ -776,7 +795,10 @@ export const Timeslots = (props) => {
 						</div>
 						<div className="modal-body">
 							{formSubmitEvent.current.target != null ?
-								<PayPal recurring={formSubmitEvent.current.target.elements.recurring.checked} typeOfSchedule={typeOfSchedule} numPets={numPets.current} />
+								typeOfSchedule !== 'pet-sitting' ?
+									<PayPal recurring={formSubmitEvent.current.target.elements.recurring.checked} typeOfSchedule={typeOfSchedule} numPets={numPets.current} />
+									:
+									<PayPal recurring={formSubmitEvent.current.target.elements.recurring.checked} typeOfSchedule={typeOfSchedule} numPets={numPets.current} numDays={numDays.current} />
 								:
 								'Form submission event failed. Please try again.'
 							}
