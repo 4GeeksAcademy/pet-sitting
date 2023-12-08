@@ -36,6 +36,12 @@ function PayPal(props) {
       intent: "subscription",
     };
   }
+
+  useEffect(() => {
+    if (props.discount === true) {
+      setTimeout(actions.setPaymentSuccessful(true), 3000)
+    }
+  }, [props.discount])
   const [message, setMessage] = useState("");
   const prodId = typeOfSchedule === 'dog-walk' ? "PROD-6X908310GG7759818" : typeOfSchedule === 'pet-check-in' ? 'PROD-9UR7609145820762V' : 'PROD-5D1599235M7091343'
 
@@ -88,7 +94,7 @@ function PayPal(props) {
     const accessToken = payPalToken.current
     console.log(accessToken)
     const url = `${base}/v2/checkout/orders`;
-    const value = typeOfSchedule === 'dog-walk' ? String(20 * props.numPets) + '.00' : typeOfSchedule === 'pet-check-in' ? String(16 * props.numPets) + '.00' : typeOfSchedule === 'meeting' ? '0.00' : String(props.numDays * 50) + '.00'
+    const value = props.discount && typeOfSchedule === 'pet-sitting' ? String((props.numDays * 50) - 50) + '.00' : typeOfSchedule === 'dog-walk' ? String(20 * props.numPets) + '.00' : typeOfSchedule === 'pet-check-in' ? String(16 * props.numPets) + '.00' : typeOfSchedule === 'meeting' ? '0.00' : String(props.numDays * 50) + '.00'
     const payload = {
       intent: "CAPTURE",
       purchase_units: [
@@ -161,105 +167,117 @@ function PayPal(props) {
     return handleResponse(response);
   };
 
-  console.log(props.numDays)
-
   if (!props.recurring) {
     let key = 123456789
     if (props.numDays) {
       key = props.numPets + Number(props.recurring) * 1000 + props.numDays * 33
+      if (props.discount) {
+        key = props.numPets + Number(props.recurring) * 1000 + props.numDays * 33 + 987654321
+      }
     } else {
       key = props.numPets + Number(props.recurring) * 1000
+      if (props.discount) {
+        key = props.numPets + Number(props.recurring) * 1000 + 987654321
+      }
     }
     return (
       <div className="App" key={key}>
-        <PayPalScriptProvider options={initialOptions}>
-          <PayPalButtons
-            style={{
-              shape: "pill",
-              layout: "vertical",
-            }}
-            createOrder={async () => {
-              try {
-                console.log(props.numPets)
-                const cart = JSON.stringify({
-                  cart: [
-                    {
-                      id: prodId,
-                      quantity: props.numPets,
-                    },
-                  ],
-                })
-
+        {!props.discount || props.discount && props.numDays > 1 ?
+          <PayPalScriptProvider options={initialOptions}>
+            <PayPalButtons
+              style={{
+                shape: "pill",
+                layout: "vertical",
+              }}
+              createOrder={async () => {
                 try {
-                  // use the cart information passed from the front-end to calculate the order amount detals
-                  orderData.current = await createOrder(cart);
-                  console.log(orderData.current.jsonResponse)
+                  const cart = JSON.stringify({
+                    cart: [
+                      {
+                        id: prodId,
+                        quantity: props.numPets,
+                      },
+                    ],
+                  })
+
+                  try {
+                    // use the cart information passed from the front-end to calculate the order amount detals
+                    orderData.current = await createOrder(cart);
+                    console.log(orderData.current.jsonResponse)
+                  } catch (error) {
+                    console.error("Failed to create order:", error);
+                  }
+                  if (orderData.current.jsonResponse.id) {
+                    return orderData.current.jsonResponse.id;
+                  } else {
+                    const errorDetail = orderData?.current.jsonResponse.details?.[0];
+                    const errorMessage = errorDetail
+                      ? `${errorDetail.issue} ${errorDetail.description} (${orderData.debug_id})`
+                      : JSON.stringify(orderData.current.jsonResponse);
+
+                    throw new Error(errorMessage);
+                  }
                 } catch (error) {
-                  console.error("Failed to create order:", error);
+                  console.error(error);
+                  setMessage(`Could not initiate PayPal Checkout...${error}`);
                 }
-                if (orderData.current.jsonResponse.id) {
-                  return orderData.current.jsonResponse.id;
-                } else {
+              }}
+              onApprove={async (data, approveActions) => {
+                try {
+                  try {
+                    const orderID = data.orderID;
+                    orderData.current = await captureOrder(orderID);
+                  } catch (error) {
+                    console.error("Failed to create order:", error);
+                  }
+                  // Three cases to handle:
+                  //   (1) Recoverable INSTRUMENT_DECLINED -> call actions.restart()
+                  //   (2) Other non-recoverable errors -> Show a failure message
+                  //   (3) Successful transaction -> Show confirmation or thank you message
+
                   const errorDetail = orderData?.current.jsonResponse.details?.[0];
-                  const errorMessage = errorDetail
-                    ? `${errorDetail.issue} ${errorDetail.description} (${orderData.debug_id})`
-                    : JSON.stringify(orderData.current.jsonResponse);
 
-                  throw new Error(errorMessage);
-                }
-              } catch (error) {
-                console.error(error);
-                setMessage(`Could not initiate PayPal Checkout...${error}`);
-              }
-            }}
-            onApprove={async (data, approveActions) => {
-              try {
-                try {
-                  const orderID = data.orderID;
-                  orderData.current = await captureOrder(orderID);
+                  if (errorDetail?.issue === "INSTRUMENT_DECLINED") {
+                    // (1) Recoverable INSTRUMENT_DECLINED -> call actions.restart()
+                    // recoverable state, per https://developer.paypal.com/docs/checkout/standard/customize/handle-funding-failures/
+                    return approveActions.restart();
+                  } else if (errorDetail) {
+                    // (2) Other non-recoverable errors -> Show a failure message
+                    setMessage(`Payment failed. Error: ${errorDetail.description}`)
+                    throw new Error(
+                      `${errorDetail.description} (${orderData.debug_id})`,
+                    );
+                  } else {
+                    // (3) Successful transaction -> Show confirmation or thank you message
+                    // Or go to another URL:  actions.redirect('thank_you.html');
+                    const transaction = orderData.current.jsonResponse.purchase_units[0].payments.captures[0];
+                    setMessage(
+                      `Transaction ${transaction.status}: ${transaction.id}. See console for all available details.`,
+                    );
+                    if (typeOfSchedule === 'pet-sitting' && props.discount) {
+                      setMessage(`Transaction ${transaction.status}: ${transaction.id}. You received 1 free day of pet sitting since you've booked ten with us before! See console for all available details.`)
+                    }
+                    actions.setPaymentSuccessful(true)
+                    console.log(
+                      "Capture result",
+                      orderData,
+                      JSON.stringify(orderData, null, 2),
+                    );
+                  }
                 } catch (error) {
-                  console.error("Failed to create order:", error);
-                }
-                // Three cases to handle:
-                //   (1) Recoverable INSTRUMENT_DECLINED -> call actions.restart()
-                //   (2) Other non-recoverable errors -> Show a failure message
-                //   (3) Successful transaction -> Show confirmation or thank you message
-
-                const errorDetail = orderData?.current.jsonResponse.details?.[0];
-
-                if (errorDetail?.issue === "INSTRUMENT_DECLINED") {
-                  // (1) Recoverable INSTRUMENT_DECLINED -> call actions.restart()
-                  // recoverable state, per https://developer.paypal.com/docs/checkout/standard/customize/handle-funding-failures/
-                  return approveActions.restart();
-                } else if (errorDetail) {
-                  // (2) Other non-recoverable errors -> Show a failure message
-                  setMessage(`Payment failed. Error: ${errorDetail.description}`)
-                  throw new Error(
-                    `${errorDetail.description} (${orderData.debug_id})`,
-                  );
-                } else {
-                  // (3) Successful transaction -> Show confirmation or thank you message
-                  // Or go to another URL:  actions.redirect('thank_you.html');
-                  const transaction = orderData.current.jsonResponse.purchase_units[0].payments.captures[0];
+                  console.error(error);
                   setMessage(
-                    `Transaction ${transaction.status}: ${transaction.id}. See console for all available details`,
-                  );
-                  actions.setPaymentSuccessful(true)
-                  console.log(
-                    "Capture result",
-                    orderData,
-                    JSON.stringify(orderData, null, 2),
+                    `Sorry, your transaction could not be processed...${error}`,
                   );
                 }
-              } catch (error) {
-                console.error(error);
-                setMessage(
-                  `Sorry, your transaction could not be processed...${error}`,
-                );
-              }
-            }}
-          />
-        </PayPalScriptProvider>
+              }}
+            />
+          </PayPalScriptProvider>
+          :
+          <div>
+            You've booked ten of this type of service in a row! Have a free one on us.
+          </div>
+        }
         <Message content={message} />
       </div>
     );
