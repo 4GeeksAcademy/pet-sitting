@@ -256,14 +256,11 @@
 //   );
 // };
 
-import { useNavigate } from "react-router-dom";
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import { Context } from "../store/appContext";
-import { PetForm } from "../component/PetForm.js"
+import { PetForm } from "../component/PetForm";
 
 export const Account = () => {
-
-
   const { store, actions } = useContext(Context);
   const [userData, setUserData] = useState({
     first_name: "",
@@ -274,10 +271,7 @@ export const Account = () => {
   });
   const [pets, setPets] = useState([]);
   const [submissionModalMessage, setSubmissionModalMessage] = useState("");
-  const [editPetIndex, setEditPetIndex] = useState(null);
-  const [showEditModal, setShowEditModal] = useState(false); // Add this state for the edit modal
-  const [showAddPetModal, setShowAddPetModal] = useState(false); // Add this state for the add pet modal
-  const navigate = useNavigate();
+  const [showAddPetModal, setShowAddPetModal] = useState(false);
 
   const handleUserChange = (e) => {
     const { name, value } = e.target;
@@ -305,73 +299,27 @@ export const Account = () => {
     }
   };
 
-  // const deletePet = (index) => {
-  //   const updatedPets = [...pets];
-  //   updatedPets.splice(index, 1);
-  //   setPets(updatedPets);
-  // };
-
-  // const openEditModal = (index) => {
-  //   setEditPetIndex(index);
-  //   setShowEditModal(true);
-  // };
-
-  // const closeEditModal = () => {
-  //   setEditPetIndex(null);
-  //   setShowEditModal(false);
-  // };
-
-  const openAddPetModal = () => {
-    setShowAddPetModal(true);
+  const handleAddPet = async (petData) => {
+    try {
+      // backend to add the new pet
+      const response = await actions.addPet(petData);
+      if (response.success) {
+        setPets([...pets, response.data]);
+        // Close the modal
+        setShowAddPetModal(false);
+      } else {
+        console.error("Failed to add pet:", response.error);
+      }
+    } catch (error) {
+      console.error("Error adding pet:", error);
+    }
   };
-
-  const closeAddPetModal = () => {
-    setShowAddPetModal(false);
-  };
-  
-
-  // try {
-  //   const resp = await actions.updateAccount(userData, pets);
-  //   console.log(resp);
-  //   setModalMessage("Update successful!");
-  //   setShowModal(true);
-  // } catch (error) {
-  //   setModalMessage("Update unsuccessful. Please try again.");
-  //   setShowModal(true);
-  // }
-
-
-  // const handlePetPictureChange = (e) => {
-  //   const file = e.target.files[0];
-  //   setPetFormData({
-  //     ...petFormData,
-  //     pet_picture: file,
-  //   });
-  // };
-
- 
-
-
-  // useEffect(() => {
-  //   const fetchUserData = async () => {
-  //     try {
-  //       // Fetch user data from your backend API
-  //       const userResponse = await actions.userData(); 
-  //       setUserData(userResponse.data); 
-  //     } catch (error) {
-  //       console.error("Error fetching user data:", error);
-  //     }
-  //   };
-
-  //   fetchUserData();
-  // }, []); 
-
 
 
 
   return (
     <div>
-      {sessionStorage.getItem("token") ? ( // Check if the user has a token
+      {sessionStorage.getItem("token") ? ( // user has a token ?
         <div className="account_form">
           <h2>Client information</h2>
           <div className="form-group">
@@ -494,12 +442,39 @@ export const Account = () => {
               </tbody>
             </table>
 
-          
-            <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPetModal">
-  Add Pet
-</button>
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={() => setShowAddPetModal(true)}
+            >
+              Add Pet
+            </button>
  <PetForm pets={pets} setPets={setPets}/>
- 
+ {/* Add Pet Modal */}
+ {showAddPetModal && (
+              <div className="modal fade" id="addPetModal" tabIndex="-1" role="dialog">
+                <div className="modal-dialog" role="document">
+                  <div className="modal-content">
+                    <div className="modal-header">
+                      <h5 className="modal-title">Add Pet</h5>
+                      <button
+                        type="button"
+                        className="close"
+                        data-dismiss="modal"
+                        aria-label="Close"
+                        onClick={() => setShowAddPetModal(false)}
+                      >
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div className="modal-body">
+                      {/* PetForm component for adding a new pet */}
+                      <PetForm onSubmit={handleAddPet} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       ) : (
@@ -510,7 +485,9 @@ export const Account = () => {
     </div>
   );
 };
-
+ 
+ 
+       
 
 
 

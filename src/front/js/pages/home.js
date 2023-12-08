@@ -107,7 +107,7 @@ export const Home = () => {
                         <input
                           type="email"
                           className="form-control"
-                          id="exampleInputEmail1"
+                          id="Email"
                           aria-describedby="emailHelp"
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
@@ -145,6 +145,7 @@ export const Home = () => {
                     <button
                       type="button"
                       className="btn btn-secondary loginButton"
+                      data-bs-dismiss="modal" 
                       data-bs-toggle="modal"
                       data-bs-target="#exampleModal"
                       onClick={handleLogin}

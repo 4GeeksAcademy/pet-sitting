@@ -75,10 +75,10 @@ export const Navbar = () => {
                     <Link to="/payment" className="nav-link " style={{ color: 'black' }}>Payment</Link>
                   </li>
                   <li className="nav-item">
-                    <Link to="/insurance" className="nav-link  " aria-disabled="true" style={{ color: 'black' }}>Insurance</Link>
+                    <Link to="/insurance" className="nav-link  "  style={{ color: 'black' }}>Insurance</Link>
                   </li>
                   <li className="nav-item">
-                    <Link to="/" className="nav-link " onClick={handleLogout} aria-disabled="true" style={{ color: 'black' }}>Logout</Link>
+                    <Link to="/" className="nav-link " onClick={handleLogout}  style={{ color: 'black' }}>Logout</Link>
                   </li>
                 </>}
 
