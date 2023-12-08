@@ -1,62 +1,94 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-
+import React, { useState, useContext } from "react";
+import { Context } from "../store/appContext";
+import { Link, useNavigate } from "react-router-dom";
+import dogwalklogo from '../../img/dogwalklogo.png'
 export const Navbar = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(null);
-
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-    window.location.href = "/";
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // Set the initial state to false
+  const navigate = useNavigate();
+  const { store, actions } = useContext(Context);
+  const handleLogout = async () => {
+    try {
+      await actions.logout();
+      setIsLoggedIn(false); // Set isLoggedIn to false on logout
+      navigate("/");
+    } catch (error) {
+      console.error('An error occurred during logout:', error);
+    }
   };
-
   return (
     <>
-      <div style={{ backgroundColor: 'black', color: 'white', padding: '10px', textAlign: 'center' }}>(123)456-7891</div>
-      <nav className="navbar navbar-light" style={{ backgroundColor: '#f2e9d8', color: '#54665a' }}>
-        <Link to="/" className="navbar-brand">
-          <img className="logoImg" src="https://t4.ftcdn.net/jpg/01/26/17/71/240_F_126177158_X32G1wOL21G4Cu2Yp8CQ2CrvWq9aEy0c.jpg" alt="Logo" height="30" />
-        </Link>
-        <h1 className="navbar-title">Hot Doggity Dog Walkers</h1>
-        <div className="dropdown">
-          <button
-            className="btn btn-secondary dropdown-toggle"
-            type="button"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-list" viewBox="0 0 16 16">
-              <path fillRule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z" />
-            </svg>
-          </button>
-          <ul className="dropdown-menu">
-            <li>
-              <a className="dropdown-item" href="#">
-                Profile
-              </a>
+      <div className="number-Desk">
+        (123)456-7891
+        <br></br>
+        Hotdoggitydogwalker@gmail.com
+      </div>
+      <nav className="navbar-Desk navbar-expand-sm bg-body-tertiary">
+        <div className="d-flex justify-content-center text-center ">
+          <div className="logoTitle-Desk d-flex justify-content-start" >
+            <h2 className="title-Desk">Hot Doggity Dog Walkers</h2>
+          </div>
+        </div>
+        <a className="justify-content-start">
+          <img className="logoImg-Desk custom-logo" src={dogwalklogo} />
+        </a>
+        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span className="navbar-toggler-icon"></span>
+        </button>
+        <div className="navItem-Desk collapse navbar-collapse" id="navbarNav d-md-flex">
+          <ul className="navbar-nav  d-flex justify-content-center text-center ">
+            {!store.token ? (
+              <>
+                <li className="nav-item">
+                  <Link to="/" className="nav-link " aria-current="page" style={{ color: 'black' }}>Home</Link>
+                </li>
+                <li className="nav-item">
+                  <Link to="/signupUser" className="nav-link " style={{ color: 'black' }}>Sign up</Link>
+                </li>
+              </>
+            ) :
+              <>
+                <li className="nav-item">
+                  <Link to="/" className="nav-link e" aria-current="page" style={{ color: 'black' }}>Home</Link>
+                </li>
+                <li className="nav-item">
+                  <Link to="/signupUser" className="nav-link" style={{ color: 'black' }}>Sign up</Link>
+                </li>
+                <li className="nav-item">
+                  <Link to="/account" className="nav-link " style={{ color: 'black' }}>Account</Link>
+                </li>
+                <li className="nav-item">
+                  <Link to="/services" className="nav-link " style={{ color: 'black' }}>Services</Link>
+                </li>
+                <li className="nav-item">
+                  <Link to="/payment" className="nav-link " style={{ color: 'black' }}>Payment</Link>
+                </li>
+                <li className="nav-item">
+                  <Link to="/insurance" className="nav-link  " aria-disabled="true" style={{ color: 'black' }}>Insurance</Link>
+                </li>
+                <li className="nav-item">
+                  <Link to="/" className="nav-link " onClick={handleLogout} aria-disabled="true" style={{ color: 'black' }}>Logout</Link>
+                </li>
+              </>}
+            <>
+              {/* <li className="nav-item">
+              <Link to="/account" className="nav-link" style={{ color: 'black' }}>Account</Link>
             </li>
-            <li>
-              <Link to="/services">
-                Services
-              </Link>
+            <li className="nav-item">
+              <Link to="/services" className="nav-link" style={{ color: 'black' }}>Service</Link>
             </li>
-            <li>
-              <a className="dropdown-item" href="#">
-                Insurance
-              </a>
+            <li className="nav-item">
+              <Link to="/payment" className="nav-link" style={{ color: 'black' }}>Payment</Link>
             </li>
-            <li>
-              <a className="dropdown-item" href="#">
-                Payments
-              </a>
+            <li className="nav-item">
+              <Link to="/insurance" className="nav-link " aria-disabled="true" style={{ color: 'black' }}>Insurance</Link>
             </li>
-            <li>
-              <a className="dropdown-item" href="#" onClick={handleLogout}>
-                Log out
-              </a>
-            </li>
+            <li className="nav-item">
+              <Link to="/" className="nav-link" onClick={handleLogout} aria-disabled="true" style={{ color: 'black' }}>Logout</Link> */}
+              {/* </li> */}
+            </>
           </ul>
         </div>
-      </nav>
+      </nav >
     </>
   );
 };

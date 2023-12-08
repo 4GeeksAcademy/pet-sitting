@@ -26,7 +26,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                         },
                         body: JSON.stringify({ email, password }),
                     };
-                    const response = await fetch(process.env.BACKEND_URL + "/api/login", options);
+                    const response = await fetch(process.env.BACKEND_URL + "api/login", options);
                     console.log('Login response:', response);
                     if (response.status === 200) {
                         const data = await response.json();
@@ -52,7 +52,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             signup: async (formData) => {
                 try {
                     const token = localStorage.getItem("token");
-                    const response = await fetch(process.env.BACKEND_URL + "/api/signup", {
+                    const response = await fetch(process.env.BACKEND_URL + "api/signup", {
                         method: "POST",
                         headers: {
                             'Content-Type': 'application/json',
@@ -78,7 +78,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     const token = sessionStorage.getItem("token");
                     const email = sessionStorage.getItem("email");
                     console.log({ ...userData, email: email });
-                    const response = await fetch(`${process.env.BACKEND_URL}/api/account`, {
+                    const response = await fetch(`${process.env.BACKEND_URL}api/account`, {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
