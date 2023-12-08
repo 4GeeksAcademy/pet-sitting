@@ -78,7 +78,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     const token = sessionStorage.getItem("token");
                     const email = sessionStorage.getItem("email");
                     console.log({ ...userData, email: email });
-                    const response = await fetch(${ process.env.BACKEND_URL } / api / account, {
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/account`, {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
@@ -99,9 +99,6 @@ const getState = ({ getStore, getActions, setStore }) => {
             },
             setAccessToken: (savedToken) => {
                 setStore({ token: savedToken })
-            },
-            exampleFunction: () => {
-                getActions().changeColor(0, "green");
             },
             setTimeslotsStartingDay: (obj) => {
                 setStore({ timeSlotsStartingDay: obj })
