@@ -1,20 +1,8 @@
 """empty message
 
-<<<<<<< HEAD:migrations/versions/171983851788_.py
-Revision ID: 171983851788
+Revision ID: cd7a4605129a
 Revises: 
-Create Date: 2023-11-26 23:00:36.999526
-=======
-<<<<<<<< HEAD:migrations/versions/e5fa24c72861_.py
-Revision ID: e5fa24c72861
-Revises: 
-Create Date: 2023-11-28 19:23:00.244317
-========
-Revision ID: 61ad0906d7ae
-Revises: 
-Create Date: 2023-11-22 17:23:59.960164
->>>>>>>> 18dcec07105a3a1ae4a1765f2105588976eaf8b0:migrations/versions/61ad0906d7ae_.py
->>>>>>> 23cbafa89344f2a5b91e0ba972e1cc0309648807:migrations/versions/61ad0906d7ae_.py
+Create Date: 2023-12-06 05:19:28.364490
 
 """
 from alembic import op
@@ -22,15 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-<<<<<<< HEAD:migrations/versions/171983851788_.py
-revision = '171983851788'
-=======
-<<<<<<<< HEAD:migrations/versions/e5fa24c72861_.py
-revision = 'e5fa24c72861'
-========
-revision = '61ad0906d7ae'
->>>>>>>> 18dcec07105a3a1ae4a1765f2105588976eaf8b0:migrations/versions/61ad0906d7ae_.py
->>>>>>> 23cbafa89344f2a5b91e0ba972e1cc0309648807:migrations/versions/61ad0906d7ae_.py
+revision = 'cd7a4605129a'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -41,23 +21,11 @@ def upgrade():
     op.create_table('user',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('email', sa.String(length=120), nullable=False),
-<<<<<<<< HEAD:migrations/versions/e5fa24c72861_.py
-    sa.Column('password', sa.String(length=256), nullable=False),
-    sa.Column('first_name', sa.String(length=80), nullable=False),
-    sa.Column('last_name', sa.String(length=80), nullable=False),
-    sa.Column('address', sa.String(length=80), nullable=False),
-    sa.Column('phone_number', sa.Integer(), nullable=False),
-    sa.Column('recovery_code', sa.Integer(), nullable=True),
-========
     sa.Column('password', sa.String(length=500), nullable=False),
     sa.Column('first_name', sa.String(length=500), nullable=True),
     sa.Column('last_name', sa.String(length=80), nullable=True),
-<<<<<<< HEAD:migrations/versions/171983851788_.py
     sa.Column('address', sa.String(length=80), nullable=True),
     sa.Column('phone_number', sa.Integer(), nullable=True),
-=======
->>>>>>>> 18dcec07105a3a1ae4a1765f2105588976eaf8b0:migrations/versions/61ad0906d7ae_.py
->>>>>>> 23cbafa89344f2a5b91e0ba972e1cc0309648807:migrations/versions/61ad0906d7ae_.py
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email')
     )

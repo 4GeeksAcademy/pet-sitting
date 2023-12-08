@@ -110,6 +110,7 @@ export const SignupUser = () => {
             <input
               type="password"
 
+
               id="password"
               name="password"
               value={formData.password}
@@ -128,12 +129,12 @@ export const SignupUser = () => {
             />
             
             <input
+
               className="form-control"
               id="confirmPassword"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
-
             <div className="signupSubmitButton">
               <button type="submit" onClick={() => handleSubmit()} className=" btn btn-primary signupButton">
                 Submit

@@ -18,10 +18,11 @@ class User(db.Model):
 
 
     password = db.Column(db.String(500), unique=False, nullable=False)
-    first_name = db.Column(db.String(80), unique=False, nullable=False)
-    last_name = db.Column(db.String(80), unique=False, nullable=False)
-    address = db.Column(db.String(80), unique=False, nullable=False)
-    phone_number = db.Column(db.String(80), unique=False, nullable=False)
+
+    first_name = db.Column(db.String(500), unique=False, nullable=True)
+    last_name = db.Column(db.String(80), unique=False, nullable=True)
+    address = db.Column(db.String(80), unique=False, nullable=True)
+    phone_number = db.Column(db.Integer, unique=False, nullable=True)
     pets = db.relationship('Pet', backref='user')
     last_services_used = db.relationship('Last_Service_Used', backref='user')
 
@@ -31,8 +32,10 @@ class User(db.Model):
     # first_name = db.Column(db.String(500), unique=False, nullable=True)
     # last_name = db.Column(db.String(80), unique=False, nullable=True)
   
+
     pets = db.relationship('Pet', backref='user')
     last_services_used = db.relationship('Last_Service_Used', backref='user')
+    number_of_services_used = db.relationship('Number_Of_Services_Used', backref='user')
 
 
  
@@ -106,7 +109,6 @@ class Number_Of_Services_Used(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    user = db.relationship('User')
     walks = db.Column(db.Integer, nullable=False)
     checkins = db.Column(db.Integer, nullable=False)
     pet_sittings = db.Column(db.Integer, nullable=False)
@@ -122,9 +124,3 @@ class Number_Of_Services_Used(db.Model):
             "checkins": self.checkins,
             "pet_sittings": self.pet_sittings
         }
-
- 
- 
-
-        
-

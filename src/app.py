@@ -16,15 +16,14 @@ from flask_cors import CORS
 
 # from models import Person
 
-
 ENV = "development" if os.getenv("FLASK_DEBUG") == "1" else "production"
 static_file_dir = os.path.join(os.path.dirname(
     os.path.realpath(__file__)), '../public/')
 app = Flask(__name__)
-
 CORS(app)
 
 app.url_map.strict_slashes = False
+
 
 app.url_map.strict_slashes = False
 app.config["JWT_SECRET_KEY"] = os.environ.get('JWT_SECRET_KEY')
@@ -55,13 +54,11 @@ app.register_blueprint(api, url_prefix='/api')
 
 # Handle/serialize errors like a JSON object
 
-
 @app.errorhandler(APIException)
 def handle_invalid_usage(error):
     return jsonify(error.to_dict()), error.status_code
 
 # generate sitemap with all your endpoints
-
 
 @app.route('/')
 def sitemap():

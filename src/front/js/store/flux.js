@@ -4,51 +4,43 @@ const getState = ({ getStore, getActions, setStore }) => {
 		store: {
 			backendURL: process.env.BACKEND_URL,
 			token: null,
-			message: null,
-			demo: [
-				{
-					title: "FIRST",
-					background: "white",
-					initial: "white"
-				},
-				{
-					title: "SECOND",
-					background: "white",
-					initial: "white"
-				}
-			],
 			timeSlotsStartingDay: {
 				"date": (new Date).getDate(),
 				"month": (new Date).getMonth(),
 				"year": (new Date).getFullYear()
 			},
 			activeScheduleTab: "nav-timeslots",
+			payPalToken: null,
+			paymentSuccessful: false,
+			activeScheduleTab: "nav-timeslots",
 			typeOfSchedule: 'dog-walk'
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
 			login: async (email, password) => {
+				const store = getStore();
 				try {
 					let options = {
 						method: "POST",
 						headers: {
 							'Content-Type': 'application/json',
 						},
-						body: JSON.stringify({ "email": email, "password": password }),
+						body: JSON.stringify({ email, password }),
 					};
-
 					const response = await fetch(process.env.BACKEND_URL + "api/login", options);
-
+					console.log('Login response:', response);
 					if (response.status === 200) {
 						const data = await response.json();
 						console.log("access token", data.access_token);
 						sessionStorage.setItem("token", data.access_token);
+						sessionStorage.setItem("email", email);
 						setStore({
 							token: data.access_token,
+							email: email,
 						});
 						return true;
 					} else {
-						alert("Login failed. Please check your credentials.");
+						console.error("Login failed. Please check your credentials.");
 						return false;
 					}
 				} catch (error) {
@@ -65,18 +57,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			setTimeslotsStartingDay: (obj) => {
 				setStore({ timeSlotsStartingDay: obj })
-			},
-			getMessage: async () => {
-				try {
-					// fetching data from the backend
-					const resp = await fetch(getStore().backendURL + "api/hello")
-					const data = await resp.json()
-					setStore({ message: data.message })
-					// don't forget to return something, that is how the async resolves
-					return data;
-				} catch (error) {
-					console.log("Error loading message from backend", error)
-				}
 			},
 			signup: async (formData) => {
 				try {
@@ -182,9 +162,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			changeActiveScheduleTab: (payload) => {
 				setStore({ activeScheduleTab: payload })
+			},
+			setPaymentSuccessful: (payload) => {
+				setStore({ paymentSuccessful: payload })
 			}
 		}
-	}
+	};
 }
 
 
