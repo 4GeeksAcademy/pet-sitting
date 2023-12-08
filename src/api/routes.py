@@ -1,18 +1,20 @@
-from flask import Flask, request, jsonify, Blueprint
+from flask import Flask, request, jsonify, Blueprint, url_for, render_template
+
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
-from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
-from api.models import db, User,Pet
+from api.models import db, User, Pet, Number_Of_Services_Used
 from api.utils import APIException
-
+from datetime import datetime, timedelta
 from email.message import EmailMessage
 import ssl
 import smtplib
 import logging
 import random
 import os
+import jwt
+import secrets
 
 import datetime
 import os.path
@@ -23,9 +25,16 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from google.oauth2 import service_account
 
-# Create the Blueprint
+
 api = Blueprint('api', __name__)
-CORS(api)  
+CORS(api)
+
+# api = Blueprint('api', __name__, template_folder='templates')
+# api_blueprint = Blueprint('api', __name__, template_folder='templates')
+
+# JWT_SECRET_KEY = secrets.token_hex(32)
+# # secure_token = secrets.token_urlsafe(16)
+
 
 @api.route('/protected', methods=['GET'])
 @jwt_required()
@@ -38,12 +47,13 @@ def protected():
 
 # Create the Blueprint
 
+
 # If modifying these scopes, delete the file token.json.
 SCOPES = ["https://www.googleapis.com/auth/calendar.events"]
 
 api = Blueprint('api', __name__)
 
-@api.route('/signup', methods=['POST'])
+@api.route('/signup', methods=['POST', 'OPTIONS'])
 def signup():
     body = request.get_json()
     if (
@@ -60,9 +70,6 @@ def signup():
     password = body['password']
     first_name = body['first_name']
     last_name = body['last_name']
-    
-    
-
 
     existing_user = User.query.filter_by(email=email).first()
     if existing_user:
@@ -80,7 +87,7 @@ def signup():
 
 
     db.session.commit()
-    return jsonify(message="Successfully created user and pet"), 200
+    return jsonify(message="Successfully created user."), 200
 
 @api.route('/account', methods=['POST'])
 @jwt_required()
@@ -269,65 +276,104 @@ def get_user():
 def logout():
     return jsonify(message="Logged out successfully"), 200
 
-@api.route('/forgotten-password', methods=["PUT"])
+
+@api.route('/forgotten-password', methods=["POST"])
 def send_code ():
     body = request.get_json();
     email = body["email"]
+    expiration_time = datetime.utcnow() + timedelta(hours=1)
+    payload = {
+        'email': email,
+        'exp': expiration_time
+    }
+    token = jwt.encode(payload, JWT_SECRET_KEY, algorithm='HS256')
+    FRONTEND_URL = os.getenv('FRONTEND_URL')
+    EMAIL_SENDER = os.getenv('EMAIL_SENDER')
+    EMAIL_PASSWORD = os.getenv('EMAIL_PASSWORD')
+    URL_TOKEN = f"{FRONTEND_URL}/reset-password?token={token}"
+    # URL_TOKEN = url_for('api.reset_password', token=token, _external=True)
+    
+
     if email is None:
-        return jsonify("No email was provided"),400
+        return "No email was provided",400
     user = User.query.filter_by(email=email).first()
-    print(user)
     if user is None:
+
         return jsonify({"message":"User doesn't exist"}), 404
-    else :
-        new_password = generatePassword()
-        new_hashed_password = generate_password_hash(new_password)
-        user.password = new_hashed_password 
-        db.session.commit()
-        email_sender = 'petsitting417@gmail.com'
-        email_password = "ilhjwhdyxlxpmdfw"
+    else:
         email_receiver = email
         email_subject = "Reset your password"
-        email_body = "We have sent you this temporary password so that you can recover your account. Smile with us Hot Doggity Dog Walkers! New Password: "+new_password
+        email_body = f"<!DOCTYPE html><html><body>"
+        email_body += f"Hello, you requested a password reset. If you did not request this, please ignore this email.<br /><br /> We have sent you this link to reset your password.<br /><br /> Smile with us, Hot Doggity Dog Walkers! "
+        email_body +=f"Click here to reset your password: <a href=\"{URL_TOKEN}\">LINK</a><br/><br/>"
+        email_body += f"This token is valid for 1 hour. After expiration, you will need to request another password reset.<br /><br />"
+        email_body += f"Sincerely,<br /><br />PetSiting"
+        email_body += f"</body></html>"
+        # email_body = render_template('email_template.html', URL_TOKEN=URL_TOKEN)
 
         em = EmailMessage()
-        em['from'] = email_sender
+        em['from'] = EMAIL_SENDER
         em['to'] = email_receiver
         em['subject'] = email_subject
-        em.set_content(email_body)
+        # em.set_type('text/html')
+        # em.add_header('Content-Type','text/html')
+        em.set_content(email_body, subtype='html')
+        # em.set_payload(email_body)
 
-        context = ssl.create_default_context
-        with smtplib.SMTP_SSL('smtp.gmail.com',465) as smtp:
-            smtp.login(email_sender, email_password)
-            smtp.sendmail(email_sender, email_receiver, em.as_string())
-        return "Ok",200
+        context = ssl.create_default_context()
+        with smtplib.SMTP(os.getenv('EMAIL_SERVER'), 587) as smtp:
+            smtp.set_debuglevel(1)
+            smtp.starttls(context=context)
+            smtp.login(EMAIL_SENDER, EMAIL_PASSWORD)
+            smtp.sendmail(EMAIL_SENDER, email_receiver, em.as_string())
+        return "Ok, Password reset link sent to email.",200
 
-def generatePassword():
-    pass_len = 12
-    characters = "abcdefghilklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789!@#$%^&*+=?"
-    password = ""
-    for index in range (pass_len):
-        password = password+random.choice(characters)
-    return password
 
-@api.route('/update-password', methods=['PUT'])
-@jwt_required()
-def update_password():
-    body = request.get_json()
-    old_password = body['old_password']
-    new_password = body['new_password']
-    user_email = get_jwt_identity()
-    user = User.query.filter_by(email=user_email).first()
-    if user and check_password_hash(user.password, old_password):
-        user.password = generate_password_hash(new_password)
-        return jsonify("Password updated successfully")
+
+@api.route('/reset-password', methods=['POST'])
+def reset_password():
+    data = request.get_json()
+    token = data.get('token')
+    new_password = data.get('new_password')
+    try:
+        payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=['HS256'])
+        email = payload.get('email')
+        user = User.query.filter_by(email=email).first()
+        if user:
+            user.password = generate_password_hash(new_password)
+            db.session.commit()
+            return jsonify({'message': 'Password reset successful.'}), 200
+        else:
+            return jsonify({'error': 'User not found.'}), 404
+
+    except jwt.ExpiredSignatureError:
+        return jsonify({'error': 'Expired token.'}), 401
+    except jwt.InvalidTokenError:
+        return jsonify({'error': 'Invalid token.'}), 401
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+
+# @api.route('/update-password', methods=['PUT'])
+# @jwt_required()
+# def update_password():
+#     body = request.get_json()
+#     old_password = body['old_password']
+#     new_password = body['new_password']
+#     user_email = get_jwt_identity()
+#     user = User.query.filter_by(email=user_email).first()
+#     if user and check_password_hash(user.password, old_password):
+#         user.password = generate_password_hash(new_password)
+#         return jsonify("Password updated successfully")
     
 
  
 if __name__ == "__main__":
     api.run()
     
-@api.route('/get-dog-walk', methods=['POST'])
+@api.route('/get-dog-walk', methods=['POST', 'OPTIONS'])
+# @api.route('/get-dog-walk', methods=['POST'])
 @jwt_required()
 def handle_get_dog_walk_sched():
     user_email = get_jwt_identity()
@@ -356,13 +402,13 @@ def handle_get_dog_walk_sched():
                 .execute()
             )
         events = events_result.get("items", [])
-        events = [{'id': event['id'], 'start': event['start'],'end': event['end'],'summary': ' '.join(event['summary'].split(' ')[0:(len(event['summary'].split()) - 2)]), 'owned': True if user_email in event['summary'] else False} for event in events]
+        events = [{'id': event['id'], 'start': event['start'],'end': event['end'],'summary': ' '.join(event['summary'].split(' ')[0:(len(event['summary'].split()) - 2)]), 'owned': True if user_email in event['summary'] else False, 'recurring': True if 'recurringEventId' in event else False} for event in events]
         return jsonify({'events': events, 'status': 'ok'}), 200
     except HttpError as Error:
         print(Error)
         return jsonify({'msg': 'Could not access the calendar'}), 404
 
-@api.route('/get-meeting', methods=['POST'])
+@api.route('/get-meeting', methods=['POST', 'OPTIONS'])
 @jwt_required()
 def handle_meeting_sched():
     user_email = get_jwt_identity()
@@ -391,13 +437,14 @@ def handle_meeting_sched():
                 .execute()
             )
         events = events_result.get("items", [])
-        events = [{'id': event['id'], 'start': event['start'],'end': event['end'],'summary': ' '.join(event['summary'].split(' ')[0:(len(event['summary'].split()) - 2)]), 'owned': True if user_email in event['summary'] else False} for event in events]
+
+        events = [{'id': event['id'], 'start': event['start'],'end': event['end'],'summary': ' '.join(event['summary'].split(' ')[0:(len(event['summary'].split()) - 2)]), 'owned': True if user_email in event['summary'] else False, 'recurring': True if 'recurringEventId' in event else False} for event in events]
         return jsonify({'events': events, 'status': 'ok'}), 200
     except:
         return jsonify({'msg': 'Could not access the calendar'}), 404
 
 
-@api.route('/get-pet-check-in', methods=['POST'])
+@api.route('/get-pet-check-in', methods=['POST', 'OPTIONS'])
 @jwt_required()
 def handle_get_pet_check_in_sched():
     user_email = get_jwt_identity()
@@ -426,13 +473,14 @@ def handle_get_pet_check_in_sched():
                 .execute()
             )
         events = events_result.get("items", [])
-        events = [{'id': event['id'], 'start': event['start'],'end': event['end'],'summary': ' '.join(event['summary'].split(' ')[0:(len(event['summary'].split()) - 2)]), 'owned': True if user_email in event['summary'] else False} for event in events]
+
+        events = [{'id': event['id'], 'start': event['start'],'end': event['end'],'summary': ' '.join(event['summary'].split(' ')[0:(len(event['summary'].split()) - 2)]), 'owned': True if user_email in event['summary'] else False, 'recurring': True if 'recurringEventId' in event else False} for event in events]
         return jsonify({'events': events, 'status': 'ok'}), 200
     except:
         return jsonify({'msg': 'Could not access the calendar'}), 404
 
 
-@api.route('/get-pet-sitting', methods=['POST'])
+@api.route('/get-pet-sitting', methods=['POST', 'OPTIONS'])
 @jwt_required()
 def handle_get_pet_sitting_sched():
     user_email = get_jwt_identity()
@@ -460,17 +508,18 @@ def handle_get_pet_sitting_sched():
                 .execute()
             )
         events = events_result.get("items", [])
-        events = [{'id': event['id'], 'start': event['start'],'end': event['end'],'summary': ' '.join(event['summary'].split(' ')[0:(len(event['summary'].split()) - 2)]), 'owned': True if user_email in event['summary'] else False} for event in events]
+
+        events = [{'id': event['id'], 'start': event['start'],'end': event['end'],'summary': ' '.join(event['summary'].split(' ')[0:(len(event['summary'].split()) - 2)]), 'owned': True if user_email in event['summary'] else False, 'recurring': True if 'recurringEventId' in event else False} for event in events]
         return jsonify({'events': events, 'status': 'ok'}), 200
     except:
         return jsonify({'msg': 'Could not access the calendar'}), 404
 
-@api.route('/schedule-walk-or-check-in-or-meet-and-greet', methods=['POST'])
+@api.route('/schedule-walk-or-check-in-or-meet-and-greet', methods=['POST', 'OPTIONS'])
 @jwt_required()
 def handle_schedule_walk_or_check_in_or_meet_and_greet():
     email = get_jwt_identity()
     user = User.query.filter_by(email=email).first()
-    user_address = user.serialize()["address"]
+    user_id = user.serialize()["id"]
 
     req = request.get_json()
 
@@ -491,6 +540,34 @@ def handle_schedule_walk_or_check_in_or_meet_and_greet():
         end_time = req["endTime"]
         recurring = req["recurring"]
         recurring_until = req["recurringUntil"]
+        user_address = req["address"]
+        number_of_services_used = None
+        if Number_Of_Services_Used.query.filter_by(user_id=user_id).first() is not None:
+            number_of_services_used = Number_Of_Services_Used.query.filter_by(user_id=user_id).first()
+        
+        if type_of_booking == 'Dog Walk':
+            if number_of_services_used is None:
+                new_num_services = Number_Of_Services_Used(user_id=user_id, walks=1, check_ins=0, pet_sittings=0)
+                db.session.add(new_num_services)
+                db.session.commit()
+            elif number_of_services_used.walks == 10:
+                number_of_services_used.walks = 0
+                db.session.commit()
+            else:
+                number_of_services_used.walks = number_of_services_used.walks + 1
+                db.session.commit()
+
+        if type_of_booking == 'Pet Check In':
+            if number_of_services_used is None:
+                new_num_services = Number_Of_Services_Used(user_id=user_id, walks=0, check_ins=1, pet_sittings=0)
+                db.session.add(new_num_services)
+                db.session.commit()
+            elif number_of_services_used.check_ins == 10:
+                number_of_services_used.check_ins  = 0
+                db.session.commit()
+            else:
+                number_of_services_used.check_ins  = number_of_services_used.check_ins  + 1
+                db.session.commit()
 
         if recurring and recurring_until:
             event = {
@@ -552,6 +629,8 @@ def handle_schedule_walk_or_check_in_or_meet_and_greet():
         email_password = "ilhjwhdyxlxpmdfw"
         email_receiver = email
         email_subject = 'Pet Care Service Scheduled.'
+        if user_address is None:
+            user_address = ''
         if(recurring):
             email_body = 'You have successfully scheduled a recurring ' + type_of_booking + ' for ' + ' and '.join(pets) + ' at ' + user_address + ' starting at ' + start_date_time.strftime("%Y %B %d %I:%M %p") + ' and ending at ' + end_date_time.strftime("%Y %B %d %I:%M %p.")
         else:
@@ -575,12 +654,12 @@ def handle_schedule_walk_or_check_in_or_meet_and_greet():
         return jsonify({"msg": "An error occurred."}), 404
 
 
-@api.route('/schedule-pet-sitting', methods=['POST'])
+@api.route('/schedule-pet-sitting', methods=['POST', 'OPTIONS'])
 @jwt_required()
 def handle_schedule_pet_sitting():
     email = get_jwt_identity()
     user = User.query.filter_by(email=email).first()
-    user_address = user.serialize()["address"]
+    user_id = user.serialize()["id"]
     [print(user_address)]
 
     req = request.get_json()
@@ -603,6 +682,22 @@ def handle_schedule_pet_sitting():
         end_time = req["endTime"]
         recurring = req["recurring"]
         recurring_until = req["recurringUntil"]
+        user_address = req["address"]
+        number_of_services_used = None
+        if Number_Of_Services_Used.query.filter_by(user_id=user_id).first() is not None:
+            number_of_services_used = Number_Of_Services_Used.query.filter_by(user_id=user_id).first()
+        
+        if type_of_booking == 'Pet Sitting':
+            if number_of_services_used is None:
+                new_num_services = Number_Of_Services_Used(user_id=user_id, walks=0, check_ins=0, pet_sittings=1)
+                db.session.add(new_num_services)
+                db.session.commit()
+            elif number_of_services_used.pet_sittings == 10:
+                number_of_services_used.pet_sittings = 0
+                db.session.commit()
+            else:
+                number_of_services_used.pet_sittings = number_of_services_used.pet_sittings + 1
+                db.session.commit()
 
         if recurring and recurring_until:
             event = {
@@ -696,7 +791,7 @@ def get_pet_names():
         pet_names = [pet["name"] for pet in pets]
         if len(pet_names) == 0:
             pet_names = ["N/A"]
-        return jsonify({"pets": pet_names, "status": "ok"})
+        return jsonify({"pets": pet_names, "status": "ok"}), 200
     except HttpError as error:
         print(error)
         return jsonify({"msg": "An error occurred."}), 404
@@ -766,7 +861,7 @@ def cancel_pet_check_in_or_meeting_or_dog_walk():
         return jsonify({"msg": "An error occurred."}), 404
 
 
-@api.route('/cancel/pet-sitting', methods=['POST'])
+@api.route('/cancel/pet-sitting', methods=['POST', 'OPTIONS'])
 @jwt_required()
 def cancel_pet_sitting():
     email = get_jwt_identity()
@@ -829,7 +924,19 @@ def cancel_pet_sitting():
     except HttpError as error:
         print(error)
         return jsonify({"msg": "An error occurred."}), 404
-    
+
+@api.route('/get-address', methods=['GET'])
+@jwt_required()
+def get_address():
+    email = get_jwt_identity()
+    user = User.query.filter_by(email=email).first()
+    try: 
+        address = user.serialize()["address"]
+        if address is not None:
+            return jsonify({"address": address, "status": "ok"}), 200
+    except HttpError as error:
+        print(error)
+        return jsonify({"msg": "An error occurred. Have you set an address?"}), 404
 
 @api.before_request 
 def before_request(): 
@@ -837,3 +944,39 @@ def before_request():
     print(headers)
     if request.method == 'OPTIONS' or request.method == 'options': 
         return jsonify(headers), 200
+
+@api.route('/get-discount', methods=['POST', 'OPTIONS'])
+@jwt_required()
+def get_discount():
+    email = get_jwt_identity()
+    user = User.query.filter_by(email=email).first()
+    user_id = user.serialize()["id"]
+    number_of_services_used = False
+    if Number_Of_Services_Used.query.filter_by(user_id=user_id).first() is not None:
+        number_of_services_used = Number_Of_Services_Used.query.filter_by(user_id=user_id).first()
+        print(number_of_services_used)
+    req = request.get_json()
+    type_of_schedule = req['type']
+    try: 
+        if number_of_services_used:
+            num_services = number_of_services_used.serialize()
+            if num_services is not None:
+                if num_services[type_of_schedule]== 10:
+                    return jsonify({"discount": True, "status": "ok"}), 200
+                else:
+                    return jsonify({"discount": False, "status": "ok"}), 200
+            else:
+                return jsonify({"discount": False, "status": "ok"}), 200
+        else:
+            return jsonify({"discount": False, "status": "ok"}), 200
+        
+    except HttpError as error:
+        print(error)
+        return jsonify({"msg": "An error occurred."}), 404
+
+@api.before_request 
+def before_request(): 
+    headers = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' } 
+    if request.method == 'OPTIONS' or request.method == 'options': 
+        return jsonify(headers), 200
+

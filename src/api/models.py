@@ -14,21 +14,32 @@ class User(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(256), unique=False, nullable=False)
+
+
     password = db.Column(db.String(500), unique=False, nullable=False)
-    first_name = db.Column(db.String(80), unique=False, nullable=False)
-    last_name = db.Column(db.String(80), unique=False, nullable=False)
+
+    first_name = db.Column(db.String(500), unique=False, nullable=True)
+    last_name = db.Column(db.String(80), unique=False, nullable=True)
     address = db.Column(db.String(80), unique=False, nullable=True)
-    phone_number = db.Column(db.String(80), unique=False, nullable=True)
+    phone_number = db.Column(db.Integer, unique=False, nullable=True)
     pets = db.relationship('Pet', backref='user')
     last_services_used = db.relationship('Last_Service_Used', backref='user')
 
 
 
-
-
+    # password = db.Column(db.String(500), unique=False, nullable=False)
+    # first_name = db.Column(db.String(500), unique=False, nullable=True)
+    # last_name = db.Column(db.String(80), unique=False, nullable=True)
   
+
     pets = db.relationship('Pet', backref='user')
     last_services_used = db.relationship('Last_Service_Used', backref='user')
+    number_of_services_used = db.relationship('Number_Of_Services_Used', backref='user')
+
+
+ 
+
 
     def __repr__(self):
         return f'<User {self.email}>'
@@ -44,8 +55,8 @@ class User(db.Model):
             "state": self.state,
             "zip": self.zip,
             "phone_number": self.phone_number,
-            
-            "pets": list(map(lambda x: x.serialize(), self.pets))
+            "pets": list(map(lambda x: x.serialize(), self.pets)),
+            "number_of_services_used": self.number_of_services_used
             # do not serialize the password, its a security breach
         }
 
@@ -102,9 +113,8 @@ class Number_Of_Services_Used(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    user = db.relationship('User')
     walks = db.Column(db.Integer, nullable=False)
-    checkins = db.Column(db.Integer, nullable=False)
+    check_ins = db.Column(db.Integer, nullable=False)
     pet_sittings = db.Column(db.Integer, nullable=False)
 
     def __repr__(self):
@@ -114,13 +124,7 @@ class Number_Of_Services_Used(db.Model):
         return {
             "id": self.id,
             "user_id": self.user_id,
-            "walks": self.walks,
-            "checkins": self.checkins,
-            "pet_sittings": self.pet_sittings
+            "dog-walk": self.walks,
+            "pet-check-in": self.check_ins,
+            "pet-sitting": self.pet_sittings
         }
-
- 
- 
-
-        
-

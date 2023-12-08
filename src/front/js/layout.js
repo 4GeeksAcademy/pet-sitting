@@ -14,6 +14,8 @@ import { MobileNav } from "./component/MobileNav.js";
 import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
 import { ForgottenPassword } from "./pages/forgottenPassword";
+import { ResetPassword } from "./pages/resetPassword";
+
 import { SignupUser } from "./pages/SignupUser";
 import { AboutMe } from "./pages/AboutMe";
 import { Account } from "./pages/Account";
@@ -40,9 +42,14 @@ const Layout = () => {
                         <Route element={<Services />} path="/services" />
                         <Route element={<ForgottenPassword />} path="/forgotten-password" />
                         <Route element={<Insurance />} path="/insurance" />
-                        <Route element={<Services />} path="/services" />
                         <Route element={<Account />} path="/account" />
                       
+                        <Route element={<ResetPassword />} path="/reset-password" />
+                 
+
+
+
+
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
                     <Footer />
