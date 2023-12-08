@@ -224,7 +224,7 @@
 //                 onChange={handleUserChange}
 //               />
 //             </div>
-           
+
 //           </div>
 
 
@@ -272,7 +272,6 @@ export const Account = () => {
   const [pets, setPets] = useState([]);
   const [submissionModalMessage, setSubmissionModalMessage] = useState("");
   const [showAddPetModal, setShowAddPetModal] = useState(false);
-
   const handleUserChange = (e) => {
     const { name, value } = e.target;
     setUserData({
@@ -391,10 +390,10 @@ export const Account = () => {
                 name="phone_number"
                 value={userData.phone_number}
                 onChange={handleUserChange}
-                
+
               />
             </div>
-    
+
             <button type="submit" onSubmit={handleSubmit}>Submit</button>
 
           </div>
@@ -423,22 +422,22 @@ export const Account = () => {
                 </tr>
               </thead>
               <tbody>
-                
-                  {pets.map((pet,idx)=>{
-                    return(
-                      <tr key={idx}>
-                  <th scope="row">{idx+1}</th>
-                  <td>{pet.pet_name}</td>
-                  <td>{pet.breed}</td>
-                  <td>{pet.age}</td>
-                  <td>{pet.description}</td>
-                  <td>{pet.detailed_care_info}</td>
-                  <td><span><i className="fa-solid fa-pencil"></i></span> <span><i className="fa-regular fa-trash-can"></i></span></td>
-                </tr>
 
-                    )
-                  })}
-                  
+                {pets.map((pet, idx) => {
+                  return (
+                    <tr key={idx}>
+                      <th scope="row">{idx + 1}</th>
+                      <td>{pet.pet_name}</td>
+                      <td>{pet.breed}</td>
+                      <td>{pet.age}</td>
+                      <td>{pet.description}</td>
+                      <td>{pet.detailed_care_info}</td>
+                      <td><span><i className="fa-solid fa-pencil"></i></span> <span><i className="fa-regular fa-trash-can"></i></span></td>
+                    </tr>
+
+                  )
+                })}
+
               </tbody>
             </table>
 
@@ -449,9 +448,13 @@ export const Account = () => {
             >
               Add Pet
             </button>
- <PetForm pets={pets} setPets={setPets}/>
- {/* Add Pet Modal */}
- {showAddPetModal && (
+            <PetForm
+              pets={pets}
+              setPets={setPets}
+              showAddPetModal={showAddPetModal}
+              setShowAddPetModal={setShowAddPetModal}
+            />
+            {showAddPetModal && (
               <div className="modal fade" id="addPetModal" tabIndex="-1" role="dialog">
                 <div className="modal-dialog" role="document">
                   <div className="modal-content">
@@ -485,9 +488,9 @@ export const Account = () => {
     </div>
   );
 };
- 
- 
-       
+
+
+
 
 
 

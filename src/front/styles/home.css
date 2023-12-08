@@ -30,14 +30,14 @@ height: 200px;
 }
 
 .navItem-Desk{
-  margin-left: 85%;
+  margin-left: 70%;
 
 
 } 
 /* this is my footer */
 
 .footerScrollBar{
-width: 100dvw;
+width: 50dvw;
 height: auto;
 overflow-x: scroll;
 
@@ -61,6 +61,11 @@ padding-top: 5%;
   margin-left: 760px;
 } */ */
 
+/* mobile friendly components */
+.homePageText{
+
+  width: 25dvw;
+}
 
 
 /* this is the Aboutme view */

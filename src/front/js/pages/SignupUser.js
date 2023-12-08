@@ -8,15 +8,11 @@ export const SignupUser = () => {
   const navigate = useNavigate();
   const [confirmPassword, setConfirmPassword] = useState("");
 
-
-
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    confirmPassword: "",
     first_name: "",
     last_name: ""
-  
   });
 
   const handleChange = (e) => {
@@ -26,34 +22,35 @@ export const SignupUser = () => {
       [name]: value,
     });
   };
+
+  const handleConfirmPasswordChange = (e) => {
+    setConfirmPassword(e.target.value);
+  };
+
   const handleSubmit = async () => {
-    
-    const requiredFields = ["email", "password", "first_name", "last_name"];
-  
-    
-  
-   
+    const requiredFields = ["email", "password", "confirmPassword", "first_name", "last_name"];
+
     if (formData.password !== confirmPassword) {
       console.error("Passwords do not match");
       return;
     }
-  
-    
+
     let result = await actions.signup(formData);
-  
+
     if (result) {
-      const destination = result ? "/": "/signup";
+      const destination = result ? "/" : "/signup";
       navigate(destination);
       setFormData({
         email: "",
         password: "",
-        confirmPassword: "",
         first_name: "",
         last_name: ""
-       
       });
+      setConfirmPassword(""); // Reset confirmPassword as well
     }
   };
+
+
   
   
 
@@ -106,12 +103,12 @@ export const SignupUser = () => {
             />
             <label>confirm Password</label>
             <input
-              type="password"
-              id="confirmPassword"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              required
+               type="password"
+               id="confirmPassword"
+               name="confirmPassword"
+               value={confirmPassword}  // Use confirmPassword here instead of formData.confirmPassword
+               onChange={handleConfirmPasswordChange}  // Correct event handler
+               required
             />
         
 

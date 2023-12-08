@@ -1,11 +1,6 @@
-// import React, { useContext, useState } from "react";
-// import { Context } from "../store/appContext";
-// import "../../styles/home.css";
-// import { Link, useNavigate } from "react-router-dom";
-// import { AboutMe } from "./AboutMe";
-// import { SignupUser } from "./SignupUser";
-// import { Account } from "./Account";
-// import { services } from "./services";
+import React, { useContext, useState, useEffect } from "react";
+import { Context } from "../store/appContext";
+import { Link, useNavigate } from "react-router-dom";
 
 export const Home = () => {
   const { store, actions } = useContext(Context);
@@ -13,6 +8,20 @@ export const Home = () => {
   const [password, setPassword] = useState("");
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 768) {
+        setShowModal(false); // Close the modal on resize if it's open
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   const handleLogin = async () => {
     try {
@@ -26,8 +35,6 @@ export const Home = () => {
         console.log('Login successful');
         setShowModal(false); // Close the login modal
         navigate("/");
-
-
       } else {
         console.error('Login failed. Please check your credentials.');
       }
@@ -35,27 +42,18 @@ export const Home = () => {
       console.error('An error occurred during login:', error);
     }
   };
+
   let greeting;
 
   if (sessionStorage.getItem("token")) {
-    greeting = (
-      <>
-        <h1>welcome back!</h1>
-
-      </>
-    );
+    greeting = <h1>Welcome back!</h1>;
   } else {
-    greeting = (
-
-      <h1>Hi, already a part of the family? Welcome back!</h1>
-    )
+    greeting = <h1>Hi, already a part of the family? Welcome back!</h1>;
   }
 
 
   return (
     <div className="container-fluid homePage">
-
-
       <div className="row homePageText">
         <h4 className="col-auto">
           Having a dedicated pet caregiver provides priceless peace of mind,
@@ -71,9 +69,9 @@ export const Home = () => {
 
 
 
-      <div className="row homePageMiddleRow ">
+      <div className="row homePageMiddleRow  d-md-none ">
         <div className="container d-flex">
-          <div className="aboutMePic" style={{ position: 'relative' }}>
+          <div className="aboutMePic">
             <img
               src="https://cdn.pixabay.com/photo/2015/03/14/05/37/beagle-672798_1280.jpg"
               className="img-fluid rounded"
@@ -83,20 +81,18 @@ export const Home = () => {
           </div>
 
           <div className="center processBox">
-
-            
-            {greeting}
+          {greeting}
             {!sessionStorage.getItem("token") && (
               <button
                 type="button"
                 className="btn btn-secondary loginButton"
                 data-bs-toggle="modal"
                 data-bs-target="#exampleModal"
+                onClick={() => setShowModal(true)}
               >
                 Log in
               </button>
             )}
-
 
 
             <div

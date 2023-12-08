@@ -99,40 +99,41 @@
 // export default PetForm ;
 
 
-import React, { useState, useEffect } from "react"
+import React, { useState } from "react"
 import { Link } from "react-router-dom";
+import { Account } from "../pages/Account";
 
-const PetForm = ({ pets, setPets, editPetIndex, setEditModalOpen }) => {
-    const [petData, setPetData] = useState({
+const PetForm = ({ pets, setPets, showAddPetModal, setShowAddPetModal }) => {
+  const [petData, setPetData] = useState({
+    pet_name: "",
+    breed: "",
+    age: 0,
+    description: "",
+    detailed_care_info: "",
+  });
+
+  const addPet = () => {
+    setPets([...pets, petData]);
+    setPetData({
       pet_name: "",
       breed: "",
       age: 0,
       description: "",
       detailed_care_info: "",
     });
-  
-    const addPet = () => {
-      setPets([...pets, petData]);
-      setPetData({
-        pet_name: "",
-        breed: "",
-        age: 0,
-        description: "",
-        detailed_care_info: "",
-      });
-    };
-  
-    const handlePetChange = (e) => {
-      const { name, value } = e.target;
-      setPetData({
-        ...petData,
-        [name]: value,
-      });
-    };
-  
+  };
+
+  const handlePetChange = (e) => {
+    const { name, value } = e.target;
+    setPetData({
+      ...petData,
+      [name]: value,
+    });
+  };
+
     return (
-      <div className="modal fade" id="addPetModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div className="modal-dialog">
+      <div className={`modal fade ${showAddPetModal ? 'show' : ''}`} id="addPetModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">
               <h1 className="modal-title fs-5" id="exampleModalLabel">Add/Edit Pet</h1>

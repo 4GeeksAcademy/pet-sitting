@@ -42,13 +42,7 @@ export const Home = () => {
     <div className="container-fluid homePage">
       <div className="row homePageText">
         <h4 className="col-auto">
-          Having a dedicated pet caregiver provides priceless peace of mind,
-          ensuring your furry friend gets the attention and care they need. As a
-          committed caregiver, I address both basic needs and understand their
-          emotional well-being. Daily walks are a vital commitment to your dog's
-          health and happiness, fostering both interaction and exercise. This
-          bond positively impacts their mental and physical well-being, ensuring
-          a fulfilling life in your absence.
+          Having a dedicated pet caregiver provides priceless peace of mind, ensuring your furry friend gets the attention and care they need. As a committed caregiver, I address both basic needs and understand their emotional well-being. Daily walks are a vital commitment to your dog's health and happiness, fostering both interaction and exercise. This bond positively impacts their mental and physical well-being, ensuring a fulfilling life in your absence.
         </h4>
       </div>
 
@@ -76,86 +70,46 @@ export const Home = () => {
               </button>
             )}
 
-            <div
-              className="modal fade"
-              id="loginModal"
-              tabIndex="-1"
-              aria-labelledby="loginModalLabel"
-              aria-hidden="true"
-              style={{ display: showModal ? "block" : "none" }}
-              onClick={() => setShowModal(false)}
-            >
+            <div className="modal fade" id="loginModal" tabIndex="-1" aria-labelledby="loginModalLabel" aria-hidden="true" style={{ display: showModal ? "block" : "none" }}>
               <div className="modal-dialog">
                 <div className="modal-content">
                   <div className="modal-header">
-                    <button
-                      type="button"
-                      className="btn-close"
-                      data-bs-dismiss="modal"
-                      aria-label="Close"
-                    ></button>
+                    <h1 className="modal-title fs-5" id="loginModalLabel">Login</h1>
+                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
                   <div className="modal-body">
-                    <div>
-                      <div className="mb-3">
-                        <label
-                          htmlFor="exampleInputEmail1"
-                          className="form-label"
-                        >
-                          Email address
-                        </label>
-                        <input
-                          type="email"
-                          className="form-control"
-                          id="Email"
-                          aria-describedby="emailHelp"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                        />
-                        <div id="emailHelp" className="form-text"></div>
-                      </div>
-                      <div className="mb-3">
-                        <label
-                          htmlFor="exampleInputPassword1"
-                          className="form-label"
-                        >
-                          Password
-                        </label>
-                        <input
-                          type="password"
-                          className="form-control"
-                          id="exampleInputPassword1"
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                        />
-                      </div>
-
-                      <div
-                        className={`modal fade ${showModal ? 'show' : ''}`}
-                        id="exampleModal"
-                        tabIndex="-1"
-                        aria-labelledby="exampleModalLabel"
-                        aria-hidden="true"
-                        style={{ display: showModal ? 'block' : 'none' }}
-                        onClick={() => setShowModal(false)}
-                      ></div>
+                    <div className="mb-3">
+                      <label htmlFor="Email" className="form-label">
+                        Email address
+                      </label>
+                      <input
+                        type="email"
+                        className="form-control"
+                        id="Email"
+                        aria-describedby="emailHelp"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                      />
+                      <div id="emailHelp" className="form-text"></div>
+                    </div>
+                    <div className="mb-3">
+                      <label htmlFor="exampleInputPassword1" className="form-label">
+                        Password
+                      </label>
+                      <input
+                        type="password"
+                        className="form-control"
+                        id="exampleInputPassword1"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                      />
                     </div>
                   </div>
                   <div className="modal-footer d-flex justify-content-center align-items-center">
-                    <button
-                      type="button"
-                      className="btn btn-secondary loginButton"
-                      data-bs-dismiss="modal" 
-                      data-bs-toggle="modal"
-                      data-bs-target="#exampleModal"
-                      onClick={handleLogin}
-                    >
+                    <button type="button" className="btn btn-secondary loginButton" data-bs-dismiss="modal" onClick={handleLogin}>
                       Submit
                     </button>
-                    <Link
-                      to="/forgotten-password"
-                      className="forgotPasswordLink ms-2"
-                    >
+                    <Link to="/forgotten-password" className="forgotPasswordLink ms-2">
                       Forgot Password?
                     </Link>
                   </div>
@@ -170,7 +124,7 @@ export const Home = () => {
               className="img-fluid rounded"
               alt="Dog Pic"
             />
-            <Link to="/signupUser" className=" btn btn-secondary StartNowText">Click here to join the family</Link>
+            <Link to="/signupUser" className="btn btn-secondary StartNowText">Click here to join the family</Link>
           </div>
         </div>
       </div>

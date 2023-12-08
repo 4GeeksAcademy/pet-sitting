@@ -52,11 +52,9 @@ export const Footer = () => {
           </div>
 
           <div className="scrollable-content" style={{ overflowX: 'auto', Width: '25%' }}>
-            <img src="https://cdn.pixabay.com/photo/2017/08/02/10/01/people-2570587_1280.jpg" className="d-block w-100" alt="..." />
+            <img src="https://cdn.pixabay.com/photo/2022/01/27/23/35/rabbit-6973396_1280.jpg" className="d-block w-100" alt="..." />
             <p>
-              Kelly is a lifesaver! While I was on a business trip,
-              she took exceptional care of my cat, ensuring timely and nourishing meals.
-              Her attention to detail and reliability earn her a well-deserved 5-star rating. ⭐️⭐️⭐️⭐️⭐️
+             Kelly did an amazing job watching my pet rabbit Rocky.I will be using her services again! ⭐️⭐️⭐️⭐️⭐️
             </p>
 
           </div>
