@@ -542,7 +542,6 @@ def handle_schedule_pet_sitting():
     email = get_jwt_identity()
     user = User.query.filter_by(email=email).first()
     user_id = user.serialize()["id"]
-    [print(user_address)]
 
     req = request.get_json()
     print(req)
@@ -565,6 +564,7 @@ def handle_schedule_pet_sitting():
         recurring = req["recurring"]
         recurring_until = req["recurringUntil"]
         user_address = req["address"]
+        
         number_of_services_used = None
         if Number_Of_Services_Used.query.filter_by(user_id=user_id).first() is not None:
             number_of_services_used = Number_Of_Services_Used.query.filter_by(user_id=user_id).first()
