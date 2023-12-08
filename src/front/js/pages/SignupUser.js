@@ -109,6 +109,7 @@ export const SignupUser = () => {
             <label>Confirm Password</label>
             <input
               type="password"
+
               id="password"
               name="password"
               value={formData.password}

@@ -14,6 +14,8 @@ import injectContext from "./store/appContext";
 import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
 import { ForgottenPassword } from "./pages/forgottenPassword";
+import { ResetPassword } from "./pages/resetPassword";
+
 import { SignupUser } from "./pages/SignupUser";
 import {AboutMe} from "./pages/AboutMe";
 //create your first component
@@ -36,8 +38,12 @@ const Layout = () => {
                         <Route element={<SignupUser />} path="/signupUser" />
                         <Route element={<Services />} path="/services" />
                         <Route element={<ForgottenPassword />} path="/forgotten-password" />
-                        <Route element={<Insurance />} path="/insurance" />
-                        <Route element={<Services />} path="/services" />
+                        <Route element={<ResetPassword />} path="/reset-password" />
+                        <Route element={<Insurance/>} path="/insurance" />
+
+
+
+
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
                     <Footer />
