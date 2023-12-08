@@ -18,8 +18,9 @@ export const Timeslots = (props) => {
 	const [pets, setPets] = useState([])
 	const [recurring, setRecurring] = useState(false)
 	const [address, setAddress] = useState('')
-	const numDays = useRef(0)
+	const [discount, setDiscount] = useState(false)
 	const [rerender, setRerender] = useState(false)
+	const numDays = useRef(0)
 	const numPets = useRef(0)
 	const formSubmitEvent = useRef('')
 	const currentRecurring = useRef(false)
@@ -198,7 +199,6 @@ export const Timeslots = (props) => {
 								owned.current = false
 								currentRecurring.current = false
 								existingEvents.map((evnt) => {
-									console.log(evnt.recurring)
 									const dateTimeStart = evnt.start.dateTime
 									const dateTimeEnd = evnt.end.dateTime
 									let timeHr = timeLabel.props['data-time'][1] === ':' ? parseInt(timeLabel.props['data-time'][0]) : parseInt(timeLabel.props['data-time'][0] + timeLabel.props['data-time'][1])
@@ -386,6 +386,31 @@ export const Timeslots = (props) => {
 		}
 	}
 
+	const getDiscount = async () => {
+		if (store.token !== null) {
+			try {
+				const response = await fetch(process.env.BACKEND_URL + 'api/get-discount', {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+						"Authorization": 'Bearer ' + store.token
+					},
+					body: JSON.stringify({
+						'type': typeOfSchedule
+					})
+				}
+				)
+				return await response.json()
+			}
+			catch (error) {
+				console.log("An error occurred:", error)
+			}
+		}
+		else {
+			return false
+		}
+	}
+
 	useEffect(() => {
 		const asyncFuncGetPets = async () => {
 			const petsResp = await getPets()
@@ -430,6 +455,16 @@ export const Timeslots = (props) => {
 			}
 		}
 		asyncFuncGetAddress()
+		const asyncFuncGetDiscount = async () => {
+			const discountResp = await getDiscount()
+			const tempDiscount = discountResp !== undefined ? await discountResp.discount : false
+			if (tempDiscount !== undefined) {
+				setDiscount(tempDiscount)
+			} else {
+				alert('An error occurred while determining if you have a discount. Please try again.')
+			}
+		}
+		asyncFuncGetDiscount()
 	}, [])
 
 	useEffect(() => {
@@ -543,7 +578,6 @@ export const Timeslots = (props) => {
 			if (numDays.current <= 0) {
 				numDays.current = 1
 			}
-			console.log(numDays.current)
 			setRerender(!rerender)
 		}
 	}
@@ -640,7 +674,7 @@ export const Timeslots = (props) => {
 											<div className="form-group row">
 												<label htmlFor="type" className="col-sm-2 col-form-label">Type of Booking:</label>
 												<div className="col-sm-10">
-													<input type="text" readOnly className="form-control-plaintext" id="type" value={typeOfScheduleStr} />
+													<input type="text" readOnly className="form-control-plaintext" id="type" readOnly value={typeOfScheduleStr} />
 												</div>
 											</div>
 											<div className="form-group row">
@@ -686,7 +720,7 @@ export const Timeslots = (props) => {
 												<label htmlFor="location" className="col-sm-3 col-form-label">Location</label>
 												{address !== '' ?
 													<div className="col-sm-9">
-														<textarea id="address" value={address} />
+														<textarea id="address" readOnly value={address} />
 													</div>
 													:
 													<p>
@@ -796,9 +830,9 @@ export const Timeslots = (props) => {
 						<div className="modal-body">
 							{formSubmitEvent.current.target != null ?
 								typeOfSchedule !== 'pet-sitting' ?
-									<PayPal recurring={formSubmitEvent.current.target.elements.recurring.checked} typeOfSchedule={typeOfSchedule} numPets={numPets.current} />
+									<PayPal recurring={formSubmitEvent.current.target.elements.recurring.checked} typeOfSchedule={typeOfSchedule} numPets={numPets.current} discount={discount} />
 									:
-									<PayPal recurring={formSubmitEvent.current.target.elements.recurring.checked} typeOfSchedule={typeOfSchedule} numPets={numPets.current} numDays={numDays.current} />
+									<PayPal recurring={formSubmitEvent.current.target.elements.recurring.checked} typeOfSchedule={typeOfSchedule} numPets={numPets.current} numDays={numDays.current} discount={discount} />
 								:
 								'Form submission event failed. Please try again.'
 							}

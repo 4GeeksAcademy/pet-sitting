@@ -34,7 +34,8 @@ class User(db.Model):
             "last_name": self.last_name,
             "address": self.address,
             "phone_number": self.phone_number,
-            "pets": list(map(lambda x: x.serialize(), self.pets))
+            "pets": list(map(lambda x: x.serialize(), self.pets)),
+            "number_of_services_used": self.number_of_services_used
             # do not serialize the password, its a security breach
         }
 
@@ -92,7 +93,7 @@ class Number_Of_Services_Used(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     walks = db.Column(db.Integer, nullable=False)
-    checkins = db.Column(db.Integer, nullable=False)
+    check_ins = db.Column(db.Integer, nullable=False)
     pet_sittings = db.Column(db.Integer, nullable=False)
 
     def __repr__(self):
@@ -102,7 +103,7 @@ class Number_Of_Services_Used(db.Model):
         return {
             "id": self.id,
             "user_id": self.user_id,
-            "walks": self.walks,
-            "checkins": self.checkins,
-            "pet_sittings": self.pet_sittings
+            "dog-walk": self.walks,
+            "pet-check-in": self.check_ins,
+            "pet-sitting": self.pet_sittings
         }

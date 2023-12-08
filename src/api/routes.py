@@ -3,7 +3,7 @@ from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash, check_password_hash
-from api.models import db, User, Pet
+from api.models import db, User, Pet, Number_Of_Services_Used
 from api.utils import APIException
 
 from email.message import EmailMessage
@@ -351,6 +351,7 @@ def handle_get_pet_sitting_sched():
 def handle_schedule_walk_or_check_in_or_meet_and_greet():
     email = get_jwt_identity()
     user = User.query.filter_by(email=email).first()
+    user_id = user.serialize()["id"]
 
     req = request.get_json()
 
@@ -372,6 +373,33 @@ def handle_schedule_walk_or_check_in_or_meet_and_greet():
         recurring = req["recurring"]
         recurring_until = req["recurringUntil"]
         user_address = req["address"]
+        number_of_services_used = None
+        if Number_Of_Services_Used.query.filter_by(user_id=user_id).first() is not None:
+            number_of_services_used = Number_Of_Services_Used.query.filter_by(user_id=user_id).first()
+        
+        if type_of_booking == 'Dog Walk':
+            if number_of_services_used is None:
+                new_num_services = Number_Of_Services_Used(user_id=user_id, walks=1, check_ins=0, pet_sittings=0)
+                db.session.add(new_num_services)
+                db.session.commit()
+            elif number_of_services_used.walks == 10:
+                number_of_services_used.walks = 0
+                db.session.commit()
+            else:
+                number_of_services_used.walks = number_of_services_used.walks + 1
+                db.session.commit()
+
+        if type_of_booking == 'Pet Check In':
+            if number_of_services_used is None:
+                new_num_services = Number_Of_Services_Used(user_id=user_id, walks=0, check_ins=1, pet_sittings=0)
+                db.session.add(new_num_services)
+                db.session.commit()
+            elif number_of_services_used.check_ins == 10:
+                number_of_services_used.check_ins  = 0
+                db.session.commit()
+            else:
+                number_of_services_used.check_ins  = number_of_services_used.check_ins  + 1
+                db.session.commit()
 
         if recurring and recurring_until:
             event = {
@@ -463,7 +491,7 @@ def handle_schedule_walk_or_check_in_or_meet_and_greet():
 def handle_schedule_pet_sitting():
     email = get_jwt_identity()
     user = User.query.filter_by(email=email).first()
-    user_address = user.serialize()["address"]
+    user_id = user.serialize()["id"]
     [print(user_address)]
 
     req = request.get_json()
@@ -486,6 +514,22 @@ def handle_schedule_pet_sitting():
         end_time = req["endTime"]
         recurring = req["recurring"]
         recurring_until = req["recurringUntil"]
+        user_address = req["address"]
+        number_of_services_used = None
+        if Number_Of_Services_Used.query.filter_by(user_id=user_id).first() is not None:
+            number_of_services_used = Number_Of_Services_Used.query.filter_by(user_id=user_id).first()
+        
+        if type_of_booking == 'Pet Sitting':
+            if number_of_services_used is None:
+                new_num_services = Number_Of_Services_Used(user_id=user_id, walks=0, check_ins=0, pet_sittings=1)
+                db.session.add(new_num_services)
+                db.session.commit()
+            elif number_of_services_used.pet_sittings == 10:
+                number_of_services_used.pet_sittings = 0
+                db.session.commit()
+            else:
+                number_of_services_used.pet_sittings = number_of_services_used.pet_sittings + 1
+                db.session.commit()
 
         if recurring and recurring_until:
             event = {
@@ -730,5 +774,40 @@ def get_address():
 def before_request(): 
     headers = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' } 
     print(headers)
+    if request.method == 'OPTIONS' or request.method == 'options': 
+        return jsonify(headers), 200
+
+@api.route('/get-discount', methods=['POST', 'OPTIONS'])
+@jwt_required()
+def get_discount():
+    email = get_jwt_identity()
+    user = User.query.filter_by(email=email).first()
+    user_id = user.serialize()["id"]
+    number_of_services_used = False
+    if Number_Of_Services_Used.query.filter_by(user_id=user_id).first() is not None:
+        number_of_services_used = Number_Of_Services_Used.query.filter_by(user_id=user_id).first()
+        print(number_of_services_used)
+    req = request.get_json()
+    type_of_schedule = req['type']
+    try: 
+        if number_of_services_used:
+            num_services = number_of_services_used.serialize()
+            if num_services is not None:
+                if num_services[type_of_schedule]== 10:
+                    return jsonify({"discount": True, "status": "ok"}), 200
+                else:
+                    return jsonify({"discount": False, "status": "ok"}), 200
+            else:
+                return jsonify({"discount": False, "status": "ok"}), 200
+        else:
+            return jsonify({"discount": False, "status": "ok"}), 200
+        
+    except HttpError as error:
+        print(error)
+        return jsonify({"msg": "An error occurred."}), 404
+
+@api.before_request 
+def before_request(): 
+    headers = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' } 
     if request.method == 'OPTIONS' or request.method == 'options': 
         return jsonify(headers), 200
