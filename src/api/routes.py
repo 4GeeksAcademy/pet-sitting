@@ -1,17 +1,20 @@
-from flask import Flask, request, jsonify, Blueprint
+from flask import Flask, request, jsonify, Blueprint, url_for, render_template
+
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash, check_password_hash
 from api.models import db, User, Pet, Number_Of_Services_Used
 from api.utils import APIException
-
+from datetime import datetime, timedelta
 from email.message import EmailMessage
 import ssl
 import smtplib
 import logging
 import random
 import os
+import jwt
+import secrets
 
 import datetime
 import os.path
@@ -22,9 +25,16 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from google.oauth2 import service_account
 
-# Create the Blueprint
+
 api = Blueprint('api', __name__)
 CORS(api)
+
+# api = Blueprint('api', __name__, template_folder='templates')
+# api_blueprint = Blueprint('api', __name__, template_folder='templates')
+
+# JWT_SECRET_KEY = secrets.token_hex(32)
+# # secure_token = secrets.token_urlsafe(16)
+
 
 @api.route('/protected', methods=['GET'])
 @jwt_required()
@@ -36,6 +46,7 @@ def protected():
         return jsonify(message="Missing Authorization Header or Invalid Token"), 401
 
 # Create the Blueprint
+
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = ["https://www.googleapis.com/auth/calendar.events"]
@@ -147,58 +158,96 @@ def get_user():
 def logout():
     return jsonify(message="Logged out successfully"), 200
 
-@api.route('/forgotten-password', methods=['POST', 'OPTIONS'])
+
+@api.route('/forgotten-password', methods=["POST"])
 def send_code ():
     body = request.get_json();
     email = body["email"]
+    expiration_time = datetime.utcnow() + timedelta(hours=1)
+    payload = {
+        'email': email,
+        'exp': expiration_time
+    }
+    token = jwt.encode(payload, JWT_SECRET_KEY, algorithm='HS256')
+    FRONTEND_URL = os.getenv('FRONTEND_URL')
+    EMAIL_SENDER = os.getenv('EMAIL_SENDER')
+    EMAIL_PASSWORD = os.getenv('EMAIL_PASSWORD')
+    URL_TOKEN = f"{FRONTEND_URL}/reset-password?token={token}"
+    # URL_TOKEN = url_for('api.reset_password', token=token, _external=True)
+    
 
     if email is None:
         return "No email was provided",400
     user = User.query.filter_by(email=email).first()
     if user is None:
-        return "User doesn't exist", 404
-    else :
-        new_password = generatePassword()
-        new_hashed_password = generate_password_hash(new_password)
-        user.password = new_hashed_password 
-        db.session.commit()
-        email_sender = 'petsitting417@gmail.com'
-        email_password = "ilhjwhdyxlxpmdfw"
-        email_receiver = 'wivodo2070@eachart.com'
+
+        return jsonify({"message":"User doesn't exist"}), 404
+    else:
+        email_receiver = email
         email_subject = "Reset your password"
-        email_body = "We have sent you this temporary password so that you can recover your account. Smile with us Hot Doggity Dog Walkers! New Password: "+new_password
+        email_body = f"<!DOCTYPE html><html><body>"
+        email_body += f"Hello, you requested a password reset. If you did not request this, please ignore this email.<br /><br /> We have sent you this link to reset your password.<br /><br /> Smile with us, Hot Doggity Dog Walkers! "
+        email_body +=f"Click here to reset your password: <a href=\"{URL_TOKEN}\">LINK</a><br/><br/>"
+        email_body += f"This token is valid for 1 hour. After expiration, you will need to request another password reset.<br /><br />"
+        email_body += f"Sincerely,<br /><br />PetSiting"
+        email_body += f"</body></html>"
+        # email_body = render_template('email_template.html', URL_TOKEN=URL_TOKEN)
 
         em = EmailMessage()
-        em['from'] = email_sender
+        em['from'] = EMAIL_SENDER
         em['to'] = email_receiver
         em['subject'] = email_subject
-        em.set_content(email_body)
+        # em.set_type('text/html')
+        # em.add_header('Content-Type','text/html')
+        em.set_content(email_body, subtype='html')
+        # em.set_payload(email_body)
 
-        context = ssl.create_default_context
-        with smtplib.SMTP_SSL('smtp.gmail.com',465) as smtp:
-            smtp.login(email_sender, email_password)
-            smtp.sendmail(email_sender, email_receiver, em.as_string())
-        return "Ok",200
+        context = ssl.create_default_context()
+        with smtplib.SMTP(os.getenv('EMAIL_SERVER'), 587) as smtp:
+            smtp.set_debuglevel(1)
+            smtp.starttls(context=context)
+            smtp.login(EMAIL_SENDER, EMAIL_PASSWORD)
+            smtp.sendmail(EMAIL_SENDER, email_receiver, em.as_string())
+        return "Ok, Password reset link sent to email.",200
 
-def generatePassword():
-    pass_len = 12
-    characters = "abcdefghilklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789!@#$%^&*+=?"
-    password = ""
-    for index in range (pass_len):
-        password = password+random.choice(characters)
-    return password
 
-@api.route('/update-password', methods=['PUT'])
-@jwt_required()
-def update_password():
-    body = request.get_json()
-    old_password = body['old_password']
-    new_password = body['new_password']
-    user_email = get_jwt_identity()
-    user = User.query.filter_by(email=user_email).first()
-    if user and check_password_hash(user.password, old_password):
-        user.password = generate_password_hash(new_password)
-        return jsonify("Password updated successfully")
+
+@api.route('/reset-password', methods=['POST'])
+def reset_password():
+    data = request.get_json()
+    token = data.get('token')
+    new_password = data.get('new_password')
+    try:
+        payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=['HS256'])
+        email = payload.get('email')
+        user = User.query.filter_by(email=email).first()
+        if user:
+            user.password = generate_password_hash(new_password)
+            db.session.commit()
+            return jsonify({'message': 'Password reset successful.'}), 200
+        else:
+            return jsonify({'error': 'User not found.'}), 404
+
+    except jwt.ExpiredSignatureError:
+        return jsonify({'error': 'Expired token.'}), 401
+    except jwt.InvalidTokenError:
+        return jsonify({'error': 'Invalid token.'}), 401
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+
+# @api.route('/update-password', methods=['PUT'])
+# @jwt_required()
+# def update_password():
+#     body = request.get_json()
+#     old_password = body['old_password']
+#     new_password = body['new_password']
+#     user_email = get_jwt_identity()
+#     user = User.query.filter_by(email=user_email).first()
+#     if user and check_password_hash(user.password, old_password):
+#         user.password = generate_password_hash(new_password)
+#         return jsonify("Password updated successfully")
     
 
  
@@ -206,6 +255,7 @@ if __name__ == "__main__":
     api.run()
     
 @api.route('/get-dog-walk', methods=['POST', 'OPTIONS'])
+# @api.route('/get-dog-walk', methods=['POST'])
 @jwt_required()
 def handle_get_dog_walk_sched():
     user_email = get_jwt_identity()
@@ -811,3 +861,4 @@ def before_request():
     headers = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' } 
     if request.method == 'OPTIONS' or request.method == 'options': 
         return jsonify(headers), 200
+

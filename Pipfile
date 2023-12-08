@@ -20,6 +20,10 @@ flask-admin = "*"
 typing-extensions = "*"
 flask-jwt-extended = "*"
 psycopg2 = "*"
+pipfile = "*"
+pyjwt = "*"
+datetime = "*"
+
 google = "*"
 
 [requires]
