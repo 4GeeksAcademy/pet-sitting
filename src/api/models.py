@@ -16,6 +16,8 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(256), unique=False, nullable=False)
 
+
+    password = db.Column(db.String(500), unique=False, nullable=False)
     first_name = db.Column(db.String(80), unique=False, nullable=False)
     last_name = db.Column(db.String(80), unique=False, nullable=False)
     address = db.Column(db.String(80), unique=False, nullable=False)
@@ -45,12 +47,11 @@ class User(db.Model):
             "email": self.email,
             "first_name": self.first_name,
             "last_name": self.last_name,
-            # "address": self.address,
-            # "phone_number": self.phone_number,
+            "address": self.address,
+            "phone_number": self.phone_number,
             "pets": list(map(lambda x: x.serialize(), self.pets))
             # do not serialize the password, its a security breach
         }
-
 
 class Pet(db.Model):
     __tablename__ = 'pet'
@@ -62,7 +63,6 @@ class Pet(db.Model):
     age = db.Column(db.Integer, unique=False, nullable=False)
     description = db.Column(db.Text, unique=False, nullable=True)
     detailed_care_info = db.Column(db.Text, unique=False, nullable=True)
-
 
     def __repr__(self):
         return '<Pet %r>' % self.id
