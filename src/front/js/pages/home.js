@@ -136,13 +136,23 @@ export const Home = () => {
                         >
                           Submit
                         </button>
+
+
+                        <Link to="/signupUser" className="btn btn-secondary ms-2">
+                            Sign Up
+                        </Link>
+
+                        <Link to="/forgotten-password" className="forgotPasswordLink ms-2">
+                            Forgot Password?
+                        </Link>
+
                       </div>
                       <Link to="/forgot-password" className="forgotPasswordLink ms-2">
                         Forgot Password?
                       </Link>
                     </div>
                   </div>
-
+                  </div>
 
                   <div className="modal-footer">
                     <button
@@ -215,7 +225,6 @@ export const Home = () => {
       <br>
       </br>
 
-
       <div id="carouselExampleFade" className="carousel slide carousel-fade" >
         <div className=" carouselView carousel-inner">
           <div className="carousel-item active">
@@ -266,7 +275,6 @@ export const Home = () => {
     </div>
   );
 };
-
 
 
 

@@ -1,6 +1,6 @@
 const getState = ({ getStore, getActions, setStore }) => {
-	return {
-		store: {
+    return {
+        store: {
             token: null,
             timeSlotsStartingDay: {
                 "date": (new Date).getDate(),
@@ -8,15 +8,15 @@ const getState = ({ getStore, getActions, setStore }) => {
                 "year": (new Date).getFullYear()
             },
             activeScheduleTab: "nav-timeslots",
-			token: null,
-			payPalToken: null,
-			paymentSuccessful: false,
-		},
-		actions: {
+            token: null,
+            payPalToken: null,
+            paymentSuccessful: false,
+        },
+        actions: {
             changeActiveScheduleTab: (payload) => {
                 setStore({ activeScheduleTab: payload })
             },
-			login: async (email, password) => {
+            login: async (email, password) => {
                 const store = getStore();
                 try {
                     let options = {
@@ -78,11 +78,11 @@ const getState = ({ getStore, getActions, setStore }) => {
                     const token = sessionStorage.getItem("token");
                     const email = sessionStorage.getItem("email");
                     console.log({ ...userData, email: email });
-                    const response = await fetch(`${process.env.BACKEND_URL}/api/account`, {
+                    const response = await fetch(${ process.env.BACKEND_URL } / api / account, {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
-                            "Authorization": `Bearer ${token}`,
+                            "Authorization": `Bearer ${token}`
                         },
                         body: JSON.stringify({
                             userData: { ...userData, email: email },
@@ -97,27 +97,26 @@ const getState = ({ getStore, getActions, setStore }) => {
                     throw new Error(`Error: ${error.message}`);
                 }
             },
-			setAccessToken: (savedToken) => {
-				setStore({ token: savedToken })
-			},
-			exampleFunction: () => {
-				getActions().changeColor(0, "green");
-			},
-			setTimeslotsStartingDay: (obj) => {
-				setStore({ timeSlotsStartingDay: obj })
-			},
-			changeActiveScheduleTab: (payload) => {
-				setStore({ activeScheduleTab: payload })
-			},
-			setPaymentSuccessful: (payload) => {
-				setStore({ paymentSuccessful: payload })
-			},
-			logout: async () => {
+            setAccessToken: (savedToken) => {
+                setStore({ token: savedToken })
+            },
+            exampleFunction: () => {
+                getActions().changeColor(0, "green");
+            },
+            setTimeslotsStartingDay: (obj) => {
+                setStore({ timeSlotsStartingDay: obj })
+            },
+            changeActiveScheduleTab: (payload) => {
+                setStore({ activeScheduleTab: payload })
+            },
+            setPaymentSuccessful: (payload) => {
+                setStore({ paymentSuccessful: payload })
+            },
+            logout: async () => {
                 sessionStorage.removeItem("token")
                 setStore({ token: null })
-			}
-		}
-	};
+            }
+        }
+    };
 }
-
 export default getState;
