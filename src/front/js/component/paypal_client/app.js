@@ -36,6 +36,12 @@ function PayPal(props) {
       intent: "subscription",
     };
   }
+
+  useEffect(() => {
+    if (props.discount === true) {
+      setTimeout(actions.setPaymentSuccessful(true), 3000)
+    }
+  }, [props.discount])
   const [message, setMessage] = useState("");
   const prodId = typeOfSchedule === 'dog-walk' ? "PROD-6X908310GG7759818" : typeOfSchedule === 'pet-check-in' ? 'PROD-9UR7609145820762V' : 'PROD-5D1599235M7091343'
 
@@ -270,7 +276,6 @@ function PayPal(props) {
           :
           <div>
             You've booked ten of this type of service in a row! Have a free one on us.
-            {actions.setPaymentSuccessful(true)}
           </div>
         }
         <Message content={message} />
