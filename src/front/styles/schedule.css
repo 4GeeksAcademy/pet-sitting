@@ -54,6 +54,15 @@ body.waiting {
     --bs-gutter-x: 1.15rem;
 }
 
+.sidebar {
+    border-radius: 10px;
+}
+
+.sidebar-home {
+    color: black !important
+}
+
+
 .modal-dialog {
     border-radius: 0.3rem;
 }

@@ -674,7 +674,7 @@ export const Timeslots = (props) => {
 											<div className="form-group row">
 												<label htmlFor="type" className="col-sm-2 col-form-label">Type of Booking:</label>
 												<div className="col-sm-10">
-													<input type="text" readOnly className="form-control-plaintext" id="type" readOnly value={typeOfScheduleStr} />
+													<input type="text" readOnly className="form-control-plaintext" id="type" value={typeOfScheduleStr} />
 												</div>
 											</div>
 											<div className="form-group row">
