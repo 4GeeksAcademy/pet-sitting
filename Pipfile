@@ -23,8 +23,9 @@ psycopg2 = "*"
 pipfile = "*"
 pyjwt = "*"
 datetime = "*"
-
 google = "*"
+"google.auth" = "*"
+google-api-python-client = "*"
 
 [requires]
 python_version = "3.10"

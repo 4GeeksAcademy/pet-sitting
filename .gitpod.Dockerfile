@@ -7,6 +7,7 @@ RUN sudo apt-get update \
     && sudo apt-get install -y redis-server \
     && sudo apt-get clean \
     && sudo rm -rf /var/cache/apt/* /var/lib/apt/lists/* /tmp/*
+    && pip install --upgrade google-api-python-client
 
 # That Gitpod install pyenv for me? no, thanks
 WORKDIR /home/gitpod/
