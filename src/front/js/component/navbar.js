@@ -35,7 +35,7 @@ export const Navbar = () => {
           
             
         <a className="justify-content-start">
-          <img className="logoImg-Desk custom-logo" src={dogwalklogo} />
+          <img className="logoImg-Desk"src="https://cdn.pixabay.com/photo/2022/08/10/03/30/cat-7376274_1280.png"/>
         </a>
          
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">

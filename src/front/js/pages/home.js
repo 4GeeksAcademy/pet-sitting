@@ -109,9 +109,9 @@ export const Home = () => {
                     <button type="button" className="btn btn-secondary loginButton" data-bs-dismiss="modal" onClick={handleLogin}>
                       Submit
                     </button>
-                    <Link to="/forgotten-password" className="forgotPasswordLink ms-2">
+                    <button  className="forgotPasswordLink ms-2" onClick={()=> {navigate("/forgotten-password")}} data-bs-dismiss="modal">
                       Forgot Password?
-                    </Link>
+                    </button>
                   </div>
                 </div>
               </div>

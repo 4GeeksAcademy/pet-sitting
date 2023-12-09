@@ -32,7 +32,7 @@ CORS(api)
 # api = Blueprint('api', __name__, template_folder='templates')
 # api_blueprint = Blueprint('api', __name__, template_folder='templates')
 
-# JWT_SECRET_KEY = secrets.token_hex(32)
+JWT_SECRET_KEY = secrets.token_hex(32)
 # # secure_token = secrets.token_urlsafe(16)
 
 
@@ -281,7 +281,7 @@ def logout():
 def send_code ():
     body = request.get_json();
     email = body["email"]
-    expiration_time = datetime.utcnow() + timedelta(hours=1)
+    expiration_time = datetime.datetime.utcnow() + timedelta(hours=1)
     payload = {
         'email': email,
         'exp': expiration_time
