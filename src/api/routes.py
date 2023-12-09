@@ -70,7 +70,7 @@ def signup():
     last_name = body['last_name']
 
     existing_user = User.query.filter_by(email=email).first()
-    if existing_user:
+    if existing_user is not None:
         return jsonify(message="User already exists"), 400
 
     hashed_password = generate_password_hash(password)

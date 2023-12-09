@@ -285,7 +285,7 @@ export const Timeslots = (props) => {
 	const getPets = async () => {
 		if (store.token !== null) {
 			try {
-				const response = await fetch(process.env.BACKEND_URL + 'api/get-pet-names', {
+				const response = await fetch(process.env.BACKEND_URL + '/api/get-pet-names', {
 					method: "GET",
 					headers: {
 						"Authorization": 'Bearer ' + store.token
@@ -341,7 +341,7 @@ export const Timeslots = (props) => {
 		const schedEndReq = formatAPIReqStr("17:00:00-07:00", nextDate, String(parseInt(nextMonth) + 1), nextYear)
 		try {
 			if (store.token !== null) {
-				const response = await fetch(process.env.BACKEND_URL + `api/get-${typeOfSchedule}`, {
+				const response = await fetch(process.env.BACKEND_URL + `/api/get-${typeOfSchedule}`, {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",
@@ -368,7 +368,7 @@ export const Timeslots = (props) => {
 	const getAddress = async () => {
 		if (store.token !== null) {
 			try {
-				const response = await fetch(process.env.BACKEND_URL + 'api/get-address', {
+				const response = await fetch(process.env.BACKEND_URL + '/api/get-address', {
 					method: "GET",
 					headers: {
 						"Authorization": 'Bearer ' + store.token
@@ -389,7 +389,7 @@ export const Timeslots = (props) => {
 	const getDiscount = async () => {
 		if (store.token !== null) {
 			try {
-				const response = await fetch(process.env.BACKEND_URL + 'api/get-discount', {
+				const response = await fetch(process.env.BACKEND_URL + '/api/get-discount', {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",
@@ -512,7 +512,7 @@ export const Timeslots = (props) => {
 				throw new Error("You cannot book a service without pets.")
 			}
 			const apiStr = typeOfSchedule === 'pet-sitting' ? 'schedule-pet-sitting' : 'schedule-walk-or-check-in-or-meet-and-greet'
-			const resp = await fetch(process.env.BACKEND_URL + `api/${apiStr}`, {
+			const resp = await fetch(process.env.BACKEND_URL + `/api/${apiStr}`, {
 				method: 'POST',
 				headers: {
 					"Content-Type": "application/json",
@@ -588,7 +588,7 @@ export const Timeslots = (props) => {
 		const idOfEventToCancel = targetEventId.current
 		const apiStr = typeOfSchedule === 'pet-sitting' ? 'pet-sitting' : 'pet-check-in-or-meeting-or-dog-walk'
 		try {
-			const resp = await fetch(process.env.BACKEND_URL + `api/cancel/${apiStr}`, {
+			const resp = await fetch(process.env.BACKEND_URL + `/api/cancel/${apiStr}`, {
 				method: 'POST',
 				headers: {
 					"Content-Type": "application/json",
