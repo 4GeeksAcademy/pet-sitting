@@ -69,10 +69,10 @@ export const Schedule = () => {
                     </div>
                 </div>
                 <div className="row flex-nowrap schedule-row gx-0">
-                    <div className="col-1 px-0 bg-light-2 d-none d-md-flex">
+                    <div className="col-1 px-0 bg-light-2 d-none d-md-flex sidebar">
                         <div className="d-flex flex-column align-items-sm-center pt-2 text-light h-100">
                             <a href="/" className="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none px-3">
-                                <span className="fs-5 d-none d-sm-inline">Home</span>
+                                <span className="fs-5 d-none d-sm-inline sidebar-home">Home</span>
                             </a>
                             <div className="nav nav-tabs flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="nav-tab" role="tablist">
                                 <button className={`nav-link ${store.activeScheduleTab === 'nav-timeslots' ? 'active' : ''}`} id="nav-timeslots-tab" type="button" role="tab" aria-controls="nav-timeslots" aria-selected="true" onClick={() => actions.changeActiveScheduleTab('nav-timeslots')}>
