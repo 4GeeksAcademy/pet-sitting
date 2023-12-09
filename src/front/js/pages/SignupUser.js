@@ -11,10 +11,8 @@ export const SignupUser = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    confirmPassword: "",
     first_name: "",
     last_name: ""
-  
   });
 
   const handleChange = (e) => {
@@ -24,34 +22,35 @@ export const SignupUser = () => {
       [name]: value,
     });
   };
+
+  const handleConfirmPasswordChange = (e) => {
+    setConfirmPassword(e.target.value);
+  };
+
   const handleSubmit = async () => {
-    
-    const requiredFields = ["email", "password", "first_name", "last_name"];
-  
-    
-  
-   
+    const requiredFields = ["email", "password", "confirmPassword", "first_name", "last_name"];
+
     if (formData.password !== confirmPassword) {
       console.error("Passwords do not match");
       return;
     }
-  
-    
+
     let result = await actions.signup(formData);
-  
+
     if (result) {
-      const destination = result ? "/": "/signup";
+      const destination = result ? "/" : "/signup";
       navigate(destination);
       setFormData({
         email: "",
         password: "",
-        confirmPassword: "",
         first_name: "",
         last_name: ""
-       
       });
+      setConfirmPassword(""); // Reset confirmPassword as well
     }
   };
+
+
   
   
 
@@ -60,11 +59,7 @@ export const SignupUser = () => {
     <div className="signupPage urlBackgroundSignup">
 
    
-      <img
-        src="https://t4.ftcdn.net/jpg/06/10/13/27/240_F_610132710_9M0fM6ggD6Z38yfNdPWQ9w3j6uCOZ54y.jpg"
-        alt="Banner Image"
-        className="bannerImage"
-      />
+      
 
       <div className="signupPage">
         <div className="beigeBox">
@@ -106,35 +101,17 @@ export const SignupUser = () => {
               onChange={handleChange}
               required
             />
-            <label>Confirm Password</label>
+            <label>confirm Password</label>
             <input
-              type="password"
-
-
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
+               type="password"
+               id="confirmPassword"
+               name="confirmPassword"
+               value={confirmPassword}  // Use confirmPassword here instead of formData.confirmPassword
+               onChange={handleConfirmPasswordChange}  // Correct event handler
+               required
             />
-         
-            <label htmlFor="phoneNumber">Phone Number</label>
-            <input
-              type="tel"
-              id="phoneNumber"
-              name="phoneNumber"
-              value={formData.phone_number}
-              onChange={handleChange}
-              required
-            />
-            
-            <input
+        
 
-              className="form-control"
-              id="confirmPassword"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            />
             <div className="signupSubmitButton">
               <button type="submit" onClick={() => handleSubmit()} className=" btn btn-primary signupButton">
                 Submit
@@ -142,6 +119,11 @@ export const SignupUser = () => {
             </div>
           </div>
         </div>
+        <img
+        src="https://cdn.pixabay.com/photo/2018/07/13/10/20/kittens-3535404_1280.jpg"
+        alt="Banner Image"
+        className="bannerImage"
+      />
       </div>
     </div>
   );

@@ -51,6 +51,9 @@ class User(db.Model):
             "first_name": self.first_name,
             "last_name": self.last_name,
             "address": self.address,
+            "city": self.city,
+            "state": self.state,
+            "zip": self.zip,
             "phone_number": self.phone_number,
             "pets": list(map(lambda x: x.serialize(), self.pets)),
             "number_of_services_used": self.number_of_services_used

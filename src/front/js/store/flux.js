@@ -19,40 +19,45 @@ const getState = ({ getStore, getActions, setStore }) => {
             login: async (email, password) => {
                 const store = getStore();
                 try {
-                    let options = {
-                        method: "POST",
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ email, password }),
-                    };
-                    const response = await fetch(process.env.BACKEND_URL + "api/login", options);
-                    console.log('Login response:', response);
-                    if (response.status === 200) {
-                        const data = await response.json();
-                        console.log("access token", data.access_token);
-                        sessionStorage.setItem("token", data.access_token);
-                        sessionStorage.setItem("email", email);
-                        setStore({
-                            token: data.access_token,
-                            email: email,
-                        });
-                        // setIsLoggedIn=true
-                        return true;
+                  let options = {
+                    method: "POST",
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password }),
+                  };
+                  const response = await fetch(process.env.BACKEND_URL + "/api/login", options);
+                  console.log('Login response:', response);
+                  if (response.status === 200) {
+                    const data = await response.json();
+                    console.log("access token", data.access_token);
+        
+                    if (data.access_token) {
+                      sessionStorage.setItem("token", data.access_token);
+                      sessionStorage.setItem("email", email);
+                      setStore({
+                        token: data.access_token,
+                        email: email,
+                      });
+                      return true;
                     } else {
-                        console.error("Login failed. Please check your credentials.");
-                        return false;
+                      console.error("Login failed. Please check your credentials.");
+                      return false;
                     }
-                } catch (error) {
-                    console.error("Login error:", error);
-                    alert("An error occurred during login.");
+                  } else {
+                    console.error("Login failed. Please check your credentials.");
                     return false;
+                  }
+                } catch (error) {
+                  console.error("Login error:", error);
+                  alert("An error occurred during login.");
+                  return false;
                 }
-            },
+              },
             signup: async (formData) => {
                 try {
                     const token = localStorage.getItem("token");
-                    const response = await fetch(process.env.BACKEND_URL + "api/signup", {
+                    const response = await fetch(process.env.BACKEND_URL + "/api/signup", {
                         method: "POST",
                         headers: {
                             'Content-Type': 'application/json',
@@ -75,30 +80,35 @@ const getState = ({ getStore, getActions, setStore }) => {
             },
             updateAccount: async (userData, pets) => {
                 try {
-                    const token = sessionStorage.getItem("token");
-                    const email = sessionStorage.getItem("email");
-                    console.log({ ...userData, email: email });
-                    const response = await fetch(`${process.env.BACKEND_URL}api/account`, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "Authorization": `Bearer ${token}`
-                        },
-                        body: JSON.stringify({
-                            userData: { ...userData, email: email },
-                            pets: pets
-                        }),
-                    });
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! Status: ${response.status}`);
-                    }
-                    return await response.json();
+                  const token = sessionStorage.getItem("token");
+                  const email = sessionStorage.getItem("email");
+                  console.log({ ...userData, email: email });
+                  const response = await fetch(`${process.env.BACKEND_URL}/api/account`, {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                      "Authorization": `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({
+                      userData: { ...userData, email: email },
+                      pets: pets
+                    }),
+                  });
+        
+                  if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                  }
+        
+                  return await response.json();
                 } catch (error) {
-                    throw new Error(`Error: ${error.message}`);
+                  throw new Error(`Error: ${error.message}`);
                 }
-            },
+              },
             setAccessToken: (savedToken) => {
                 setStore({ token: savedToken })
+            },
+            exampleFunction: () => {
+                getActions().changeColor(0, "green");
             },
             setTimeslotsStartingDay: (obj) => {
                 setStore({ timeSlotsStartingDay: obj })

@@ -87,9 +87,53 @@ def signup():
     db.session.commit()
     return jsonify(message="Successfully created user."), 200
 
-@api.route('/accountPage', methods=['GET'])
+@api.route('/account', methods=['POST'])
 @jwt_required()
-def get_account():
+def update_account():
+    current_user_email = get_jwt_identity()
+    user = User.query.filter_by(email=current_user_email).first()
+
+    if not user:
+        raise APIException("User not found", status_code=404)
+
+    body = request.get_json()
+
+    # Update user information
+    user.email = body["userData"].get("email")
+    user.first_name = body["userData"].get("first_name")
+    user.last_name = body["userData"].get("last_name")
+    user.address = body["userData"].get("address")
+    user.city = body["userData"].get("city")
+    user.state = body["userData"].get("state")
+    user.zip = body["userData"].get("zip")
+    user.phone_number = body["userData"].get("phone_number")
+
+    # Commit the changes to the user
+    db.session.commit()
+
+    # Check if there are pets in the request and update them
+    if "pets" in body and body["pets"] is not None:
+         add_pet(user, body["pets"][0]) # This is the hangup
+
+    return jsonify(user.serialize()), 200
+
+def add_pet(user, pet):
+    print(pet)
+    new_pet = Pet(
+        name=pet.get("pet_name"),
+        breed=pet.get("breed"),
+        age=pet.get("age"),
+        description=pet.get("description"),
+        detailed_care_info=pet.get("detailed_care_info"),
+        user=user
+    )
+    db.session.add(new_pet)
+    db.session.commit()
+
+
+@api.route('/pets', methods=['GET'])
+@jwt_required()
+def get_user_pets():
     try:
         current_user_email = get_jwt_identity()
         user = User.query.filter_by(email=current_user_email).first()
@@ -97,48 +141,122 @@ def get_account():
         if not user:
             raise APIException("User not found", status_code=404)
 
-        account_data = {
-            "email": user.email,
-            "first_Name": user.first_name,
-            "last_Name": user.last_name,
-            "address": user.address,
-            "phone_Number": user.phone_number,
-            "pets": [],  
-        }
+        pets = [pet.serialize() for pet in user.pets]
+        return jsonify(pets), 200
 
-        if user.pets:
-            for pet in user.pets:
-                account_data["pets"].append({
-                    "pet_Name": pet.name,
-                    "breed": pet.breed,
-                    "age": pet.age,
-                    "description": pet.description,
-                    "detailed_Care_Info": pet.detailed_care_info,
-                })
+    except Exception as e:
+        print("Exception:", e)
+        return jsonify(message=str(e)), 500
 
-        return jsonify(account_data), 200
+
+@api.route('/pets', methods=['POST'])
+@jwt_required()
+def add_user_pet():
+    try:
+        current_user_email = get_jwt_identity()
+        user = User.query.filter_by(email=current_user_email).first()
+
+        if not user:
+            raise APIException("User not found", status_code=404)
+
+        body = request.get_json()
+        new_pet = Pet(
+            name=body.get("pet_Name"),
+            breed=body.get("breed"),
+            age=body.get("age"),
+            description=body.get("description"),
+            detailed_care_info=body.get("detailed_Care_Info"),
+            user=user
+        )
+
+        db.session.add(new_pet)
+        db.session.commit()
+
+        return jsonify(new_pet.serialize()), 201
+
+    except Exception as e:
+        print("Exception:", e)
+        return jsonify(message=str(e)), 500
+
+
+@api.route('/pets/<int:pet_id>', methods=['PUT'])
+@jwt_required()
+def update_user_pet(pet_id):
+    try:
+        current_user_email = get_jwt_identity()
+        user = User.query.filter_by(email=current_user_email).first()
+
+        if not user:
+            raise APIException("User not found", status_code=404)
+
+        body = request.get_json()
+        pet = Pet.query.get(pet_id)
+
+        if not pet or pet.user != user:
+            raise APIException("Pet not found or does not belong to the user", status_code=404)
+
+        # Update pet information
+        pet.name = body.get("pet_Name", pet.name)
+        pet.breed = body.get("breed", pet.breed)
+        pet.age = body.get("age", pet.age)
+        pet.description = body.get("description", pet.description)
+        pet.detailed_care_info = body.get("detailed_Care_Info", pet.detailed_care_info)
+        db.session.add()
+        db.session.commit()
+
+        return jsonify(pet.serialize()), 200
+
+    except Exception as e:
+        print("Exception:", e)
+        return jsonify(message=str(e)), 500
+
+
+@api.route('/pets/<int:pet_id>', methods=['DELETE'])
+@jwt_required()
+def delete_user_pet(pet_id):
+    try:
+        current_user_email = get_jwt_identity()
+        user = User.query.filter_by(email=current_user_email).first()
+
+        if not user:
+            raise APIException("User not found", status_code=404)
+
+        pet = Pet.query.get(pet_id)
+
+        if not pet or pet.user != user:
+            raise APIException("Pet not found or does not belong to the user", status_code=404)
+
+        db.session.delete(pet)
+        db.session.commit()
+
+        return jsonify(message="Pet deleted successfully"), 200
+
+    except Exception as e:
+        print("Exception:", e)
+        return jsonify(message=str(e)), 500
+
+
+
+@api.route('/login', methods=['POST'])
+def login():
+    try:
+        body = request.get_json()
+        if "email" not in body or "password" not in body:
+            raise APIException("Please provide both email and password", status_code=400)
+
+        email = body['email']
+        password = body['password']
+
+        user = User.query.filter_by(email=email).first()
+
+        if user and check_password_hash(user.password, password):
+            access_token = create_access_token(identity=email)
+            return jsonify(access_token=access_token), 200
+        else:
+            return jsonify(message="Login failed. Please check your credentials."), 401
 
     except Exception as e:
         return jsonify(message=str(e)), 500
-
-@api.route('/login', methods=['POST', 'OPTIONS'])
-def login():
-    body = request.get_json()
-    if "email" not in body or "password" not in body:
-        raise APIException("Please provide both email and password", status_code=400)
-
-    email = body['email']
-    password = body['password']
-    
-
-    user = User.query.filter_by(email=email).first()
-
-    if user and check_password_hash(user.password, password):
-        access_token = create_access_token(identity=user.email)
-        return jsonify(access_token=access_token), 200
-    else:
-        return jsonify(message="Login failed. Please check your credentials."), 401
-
 
 @api.route('/user', methods=['GET'])
 @jwt_required()
