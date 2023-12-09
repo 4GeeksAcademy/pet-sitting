@@ -19,13 +19,13 @@ export const Navbar = () => {
   };
   return (
     <>
-      <div className="number-Desk d-none d-md-flex">
+      <div className="number-Desk d-none d-md-block">
         (123)456-7891
         <br></br>
         Hotdoggitydogwalker@gmail.com
       </div>
 
-      <nav className="navbar-Desk navbar-expand-sm bg-body-tertiary d-none d-md-flex">
+      <nav className="navbar-Desk navbar-expand-sm bg-body-tertiary d-none d-md-block">
 
         <div className="d-flex justify-content-center text-center ">
           <div className="logoTitle-Desk d-flex justify-content-start" >
