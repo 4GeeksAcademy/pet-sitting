@@ -64,7 +64,7 @@ export const Navbar = () => {
                     <Link to="/account" className="nav-link " style={{ color: 'black' }}>Account</Link>
                   </li>
                   <li className="nav-item">
-                    <Link to="/services" className="nav-link " style={{ color: 'black' }}>Service</Link>
+                    <Link to="/services" className="nav-link " style={{ color: 'black' }}>Services</Link>
                   </li>
                   <li className="nav-item">
                     <Link to="/payment" className="nav-link " style={{ color: 'black' }}>Payment</Link>
