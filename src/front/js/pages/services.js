@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import '../../styles/services.css'
-import dogwalkingpic from '/workspaces/pet-sitting/src/front/img/dogwalkingpic.jpg'
-import petcheckinpic from '/workspaces/pet-sitting/src/front/img/petcheckinpic.jpg'
-import meetandgreet from '/workspaces/pet-sitting/src/front/img/meetandgreet.jpg'
-import petsittingpic from '/workspaces/pet-sitting/src/front/img/petsittingpic.jpg'
+import dogwalkingpic from '../../img/dogwalkingpic.jpg'
+import petcheckinpic from '../../img/petcheckinpic.jpg'
+import meetandgreet from '../../img/meetandgreet.jpg'
+import petsittingpic from '../../img/petsittingpic.jpg'
 import { Context } from "../store/appContext";
 
 export const Services = () => {
