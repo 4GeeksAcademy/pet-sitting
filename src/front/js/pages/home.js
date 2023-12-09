@@ -149,3 +149,4 @@ export const Home = () => {
     </div>
   );
 };
+
