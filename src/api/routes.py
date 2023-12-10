@@ -108,7 +108,10 @@ def update_account():
     user.zip = body["userData"].get("zip")
     user.phone_number = body["userData"].get("phone_number")
 
+
     # Commit the changes to the user
+    db.session.add(user)
+
     db.session.commit()
 
     # Check if there are pets in the request and update them
@@ -161,7 +164,7 @@ def add_user_pet():
 
         body = request.get_json()
         new_pet = Pet(
-            name=body.get("pet_Name"),
+            name=body.get("pet_name"),
             breed=body.get("breed"),
             age=body.get("age"),
             description=body.get("description"),
@@ -190,13 +193,13 @@ def update_user_pet(pet_id):
             raise APIException("User not found", status_code=404)
 
         body = request.get_json()
-        pet = Pet.query.get(pet_id)
+        pet = Pet.query.get(pet_id).first()
 
         if not pet or pet.user != user:
             raise APIException("Pet not found or does not belong to the user", status_code=404)
 
         # Update pet information
-        pet.name = body.get("pet_Name", pet.name)
+        pet.name = body.get("pet_name", pet.name)
         pet.breed = body.get("breed", pet.breed)
         pet.age = body.get("age", pet.age)
         pet.description = body.get("description", pet.description)
@@ -221,7 +224,7 @@ def delete_user_pet(pet_id):
         if not user:
             raise APIException("User not found", status_code=404)
 
-        pet = Pet.query.get(pet_id)
+        pet = Pet.query.get(pet_id).first()
 
         if not pet or pet.user != user:
             raise APIException("Pet not found or does not belong to the user", status_code=404)
@@ -257,6 +260,8 @@ def login():
 
     except Exception as e:
         return jsonify(message=str(e)), 500
+    
+
 
 @api.route('/user', methods=['GET'])
 @jwt_required()

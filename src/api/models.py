@@ -22,7 +22,9 @@ class User(db.Model):
     first_name = db.Column(db.String(500), unique=False, nullable=True)
     last_name = db.Column(db.String(80), unique=False, nullable=True)
     address = db.Column(db.String(80), unique=False, nullable=True)
-    phone_number = db.Column(db.Integer, unique=False, nullable=True)
+    state = db.Column(db.String(80), unique=False, nullable=True)
+    phone_number = db.Column(db.String, unique=False, nullable=True)
+    zip = db.Column(db.String, unique=False, nullable=True)
     pets = db.relationship('Pet', backref='user')
     last_services_used = db.relationship('Last_Service_Used', backref='user')
 

@@ -73,7 +73,7 @@ export const ForgottenPassword = () => {
                 <button className="btn btn-outline-primary mt-3 w-100">Continue</button>
             </div>
 
-    //     </div>
-    // )
+         </div>
+ )
 
 }
