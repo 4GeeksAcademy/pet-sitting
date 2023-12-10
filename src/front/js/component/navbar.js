@@ -17,6 +17,7 @@ export const Navbar = () => {
       console.error('An error occurred during logout:', error);
     }
   };
+  
   return (
     <>
       <div className="number-Desk d-none d-md-block">
@@ -60,7 +61,7 @@ export const Navbar = () => {
                 <Link to="/insurance" className="nav-link  " aria-disabled="true" style={{ color: 'black' }}>Insurance</Link>
               </li>
               <li className="nav-item">
-                <Link to="/" className="nav-link " onClick={handleLogout} aria-disabled="true" style={{ color: 'black' }}>Logout</Link>
+                <Link to="/" className="nav-link " onClick={handleLogout} aria-disabled="true" style={{ color: 'black' }}>Log Out</Link>
               </li>
             </ul>
           }
