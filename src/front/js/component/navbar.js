@@ -25,7 +25,7 @@ export const Navbar = () => {
         Hotdoggitydogwalker@gmail.com
       </div>
 
-      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <nav class="navbar navbar-expand-lg navbar-light bg-light d-none d-md-block">
         <img className="logoImg-Desk" src={dogwalklogo} />
         <div className="d-flex justify-content-center text-center ">
           <div className="logoTitle-Desk d-flex justify-content-start" >
