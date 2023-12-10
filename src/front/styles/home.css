@@ -13,32 +13,6 @@
 
 /* nav bar */
 
-
-.logoImg-Desk {
-  height: 100px;
-  width:100px;
-  margin-right: 50px; 
-
- 
-}
-.navbar-Desk{
-height: 200px;
-  width: 100dvw;
-  background-color:#f5f5dc  ;
-} 
-.number-Desk{
-  background-color: #313d49;
-  color: white;
-  text-align-last: center;
-  height: 50%;
-  width: 100%;
-}
-
-.navItem-Desk{
-  margin-left: 70%;
-
-
-} 
 /* this is my footer */
 
 .footerScrollBar{
@@ -49,7 +23,6 @@ overflow-x: scroll;
 
 }
 
-
 .allCardItems{
 
   flex-wrap: nowrap;
@@ -57,19 +30,11 @@ overflow-x: scroll;
   scroll-behavior: smooth;
   padding-bottom: 1rem;
 }
-/* .logoTitle-Desk{
-  text-align: center;
-padding-top: 5%;
-
-
- 
-  margin-left: 760px;
-} */ */
 
 /* mobile friendly components */
 .homePageText{
-
-  width: 25dvw;
+  text-align: center;
+  padding:5%;
 }
 
 
@@ -153,12 +118,6 @@ body{
   padding:0px;
 }
 
-
-.homePageText{
-text-align: center;
-  padding:5%;
-
-}
 .processBox{
   background-color:  #f2e9d8;
   justify-content:center;
