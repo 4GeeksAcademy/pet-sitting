@@ -89,7 +89,7 @@ def signup():
     db.session.commit()
     return jsonify(message="Successfully created user."), 200
 
-@api.route('/account', methods=['POST'])
+@api.route('/account', methods=['PUT'])
 @jwt_required()
 def update_account():
     current_user_email = get_jwt_identity()
@@ -99,16 +99,16 @@ def update_account():
         raise APIException("User not found", status_code=404)
 
     body = request.get_json()
-
+    print(body,"!!!!!!!!!!!")
     # Update user information
-    user.email = body["userData"].get("email")
-    user.first_name = body["userData"].get("first_name")
-    user.last_name = body["userData"].get("last_name")
-    user.address = body["userData"].get("address")
-    user.city = body["userData"].get("city")
-    user.state = body["userData"].get("state")
-    user.zip = body["userData"].get("zip")
-    user.phone_number = body["userData"].get("phone_number")
+    user.email = body.get("email")
+    user.first_name = body.get("first_name")
+    user.last_name = body.get("last_name")
+    user.address = body.get("address")
+    user.city = body.get("city")
+    user.state = body.get("state")
+    user.zip = body.get("zip")
+    user.phone_number = body.get("phone_number")
 
 
     # Commit the changes to the user
@@ -166,7 +166,7 @@ def add_user_pet():
 
         body = request.get_json()
         new_pet = Pet(
-            name=body.get("pet_name"),
+            name=body.get("name"),
             breed=body.get("breed"),
             age=body.get("age"),
             description=body.get("description"),

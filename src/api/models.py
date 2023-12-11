@@ -23,6 +23,7 @@ class User(db.Model):
     last_name = db.Column(db.String(80), unique=False, nullable=True)
     address = db.Column(db.String(80), unique=False, nullable=True)
     state = db.Column(db.String(80), unique=False, nullable=True)
+    city = db.Column(db.String(80), unique=False, nullable=True)
     phone_number = db.Column(db.String, unique=False, nullable=True)
     zip = db.Column(db.String, unique=False, nullable=True)
     pets = db.relationship('Pet', backref='user')

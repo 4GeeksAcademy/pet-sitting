@@ -3,9 +3,9 @@ import React, { useState, useEffect } from "react"
 const PetForm = ({ petFormData, idx, handlePetChange }) => {
     const [petData, setPetData] = useState({});
 
-    useEffect(() => {
-        setPetData(petFormData);
-    }, [])
+    // useEffect(() => {
+    //     setPetData(petFormData);
+    // }, [])
 
     useEffect(() => handlePetChange(petData, idx), [petData]);
 
