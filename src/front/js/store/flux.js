@@ -76,9 +76,9 @@ const getState = ({ getStore, getActions, setStore }) => {
       //     const email = sessionStorage.getItem("email");
       //     console.log({ ...userData, email: email });
       //     console.log(process.env.BACKEND_URL);
-          
+
       //     const response = await fetch(`${process.env.BACKEND_URL}/api/account`, {
-            
+
       //       method: "POST",
       //       headers: {
       //         "Content-Type": "application/json",
@@ -101,19 +101,19 @@ const getState = ({ getStore, getActions, setStore }) => {
         try {
           const token = sessionStorage.getItem("token");
           const email = sessionStorage.getItem("email");
-      
-          const apiUrl = (`${process.env.BACKEND_URL}/api/account`)
+
+          const apiUrl = (`${process.env.BACKEND_URL}`)
           const url = `${apiUrl}/api/account`;
-      
+
           console.log("Request URL:", url);
-      
+
           const requestBody = JSON.stringify({
             userData: { ...userData, email: email },
             pets: pets
           });
-      
+
           console.log("Request Body:", requestBody);
-      
+
           const response = await fetch(url, {
             method: "POST",
             headers: {
@@ -122,22 +122,22 @@ const getState = ({ getStore, getActions, setStore }) => {
             },
             body: requestBody,
           });
-      
+
           if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
           }
-      
+
           const responseData = await response.json();
           console.log("Response Data:", responseData);
-      
+
           return responseData;
         } catch (error) {
           console.error(`Error: ${error.message}`);
           throw new Error(`Fetch error: ${error.message}`);
         }
       },
-      
-      
+
+
       setAccessToken: (savedToken) => {
         setStore({ token: savedToken });
       },

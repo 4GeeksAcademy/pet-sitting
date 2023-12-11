@@ -99,7 +99,8 @@ def update_account():
         raise APIException("User not found", status_code=404)
 
     body = request.get_json()
-
+    print("PRINTING HERE")
+    print(body)
     # Update user information
     user.email = body["userData"].get("email")
     user.first_name = body["userData"].get("first_name")

@@ -1,9 +1,9 @@
 import { useNavigate } from "react-router-dom";
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Context } from "../store/appContext";
 import { PetForm } from "../component/PetForm.js";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPenSquare } from '@fortawesome/free-regular-svg-icons';
+import { faPenToSquare, faTrashCan } from '@fortawesome/free-regular-svg-icons';
 
 
 export const Account = () => {
@@ -44,8 +44,7 @@ export const Account = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-
+    console.log(pets)
     const resp = await actions.updateAccount(userData, pets);
     if (resp.success) {
       setSubmissionModalMessage("Update successful!");
@@ -87,7 +86,7 @@ export const Account = () => {
     setEditPetModalOpen(false);
   };
 
-  const handlePetChange = (e) => {
+  const handlePetChange = (petData, idx) => {
     const { name, value } = e.target;
     setPetFormData({
       ...petFormData,
@@ -111,8 +110,12 @@ export const Account = () => {
   const handleDeletePet = (index) => {
     const updatedPets = [...pets];
     updatedPets.splice(index, 1);
-    setPets(updatedPets);
+    // setPets(updatedPets);
   };
+
+  useEffect(() => {
+    console.log(pets)
+  }, [pets])
 
   return (
     <div>
@@ -184,13 +187,13 @@ export const Account = () => {
               <div key={idx}>
                 <PetForm petFormData={pet} idx={idx} handlePetChange={updatePetByIdx} />
                 <button type="button" onClick={() => openEditPetModal(idx)}>
-                  <FontAwesomeIcon icon={faPenSquare} /> Edit Pet
+                  <FontAwesomeIcon icon={faPenToSquare} /> Edit Pet
                 </button>
 
 
 
                 <button type="button" onClick={() => handleDeletePet(idx)}>
-                  <FontAwesomeIcon icon={['fas', 'trash']} /> Delete Pet
+                  <FontAwesomeIcon icon={faTrashCan} /> Delete Pet
                 </button>
               </div>
             ))}

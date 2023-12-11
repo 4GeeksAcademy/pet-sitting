@@ -7,7 +7,10 @@ const PetForm = ({ petFormData, idx, handlePetChange }) => {
         setPetData(petFormData);
     }, [])
 
-    useEffect(() => handlePetChange(petData, idx), [petData]);
+    useEffect(() => {
+        handlePetChange(petData, idx)
+        console.log(petData)
+    }, [petData]);
 
     return (<>
         <div>
@@ -37,7 +40,7 @@ const PetForm = ({ petFormData, idx, handlePetChange }) => {
                 id="age"
                 name="age"
                 value={petData.age}
-                onChange={(e) => setPetData({ ...petData, age: parseInt(e.target.value) })}
+                onChange={(e) => setPetData({ ...petData, age: e.target.value })}
             />
         </div>
         <div>
