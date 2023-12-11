@@ -25,7 +25,9 @@ from google.oauth2 import service_account
 
 
 api = Blueprint('api', __name__)
+
 CORS(api)
+cors = CORS(api, resources={r"/api/*": {"origins": "*"}})
 
 # api = Blueprint('api', __name__, template_folder='templates')
 # api_blueprint = Blueprint('api', __name__, template_folder='templates')

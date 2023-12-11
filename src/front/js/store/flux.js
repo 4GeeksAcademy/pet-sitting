@@ -70,30 +70,74 @@ const getState = ({ getStore, getActions, setStore }) => {
         }
       },
 
+      // updateAccount: async (userData, pets) => {
+      //   try {
+      //     const token = sessionStorage.getItem("token");
+      //     const email = sessionStorage.getItem("email");
+      //     console.log({ ...userData, email: email });
+      //     console.log(process.env.BACKEND_URL);
+          
+      //     const response = await fetch(`${process.env.BACKEND_URL}/api/account`, {
+            
+      //       method: "POST",
+      //       headers: {
+      //         "Content-Type": "application/json",
+      //         "Authorization": `Bearer ${token}`,
+      //       },
+      //       body: JSON.stringify({
+      //         userData: { ...userData, email: email },
+      //         pets: pets
+      //       }),
+      //     });
+      //     if (!response.ok) {
+      //       throw new Error(`HTTP error! Status: ${response.status}`);
+      //     }
+      //     return await response.json();
+      //   } catch (error) {
+      //     throw new Error(`Error: ${error.message}`);
+      //   }
+      // },
       updateAccount: async (userData, pets) => {
         try {
           const token = sessionStorage.getItem("token");
           const email = sessionStorage.getItem("email");
-          console.log({ ...userData, email: email });
-          const response = await fetch(`${process.env.BACKEND_URL}/api/account`, {
+      
+          const apiUrl = (`${process.env.BACKEND_URL}/api/account`)
+          const url = `${apiUrl}/api/account`;
+      
+          console.log("Request URL:", url);
+      
+          const requestBody = JSON.stringify({
+            userData: { ...userData, email: email },
+            pets: pets
+          });
+      
+          console.log("Request Body:", requestBody);
+      
+          const response = await fetch(url, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
               "Authorization": `Bearer ${token}`,
             },
-            body: JSON.stringify({
-              userData: { ...userData, email: email },
-              pets: pets
-            }),
+            body: requestBody,
           });
+      
           if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
           }
-          return await response.json();
+      
+          const responseData = await response.json();
+          console.log("Response Data:", responseData);
+      
+          return responseData;
         } catch (error) {
-          throw new Error(`Error: ${error.message}`);
+          console.error(`Error: ${error.message}`);
+          throw new Error(`Fetch error: ${error.message}`);
         }
       },
+      
+      
       setAccessToken: (savedToken) => {
         setStore({ token: savedToken });
       },
