@@ -125,7 +125,7 @@ export const Home = () => {
               className="img-fluid rounded"
               alt="Dog Pic"
             />
-            <Link to="/signupUser" className="btn btn-secondary StartNowText">Click here to join the family</Link>
+            <Link to="/signupUser" className="btn btn-secondary StartNowText">Click Here to Join the Family</Link>
           </div>
         </div>
       </div>
