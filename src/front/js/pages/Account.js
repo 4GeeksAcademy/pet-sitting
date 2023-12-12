@@ -107,7 +107,7 @@ export const Account = () => {
   };
 
   return (
-    <div onSubmit={handleSubmit}>
+    <div  className="account_form" onSubmit={handleSubmit}>
       {store.token ?  // Check if the user has a token
       <>
 
