@@ -1,8 +1,3 @@
-
-
-
-
-
 /*
     home.css: This website contains selectors only used in home.css
 
@@ -41,6 +36,9 @@ height: 200px;
 
 /* this is my footer */
 
+
+
+
 .footerScrollBar{
 width: 50dvw;
 height: auto;
@@ -50,12 +48,29 @@ overflow-x: scroll;
 }
 
 .allCardItems{
+  padding: 10px; /* Поля вокруг текста */
+  white-space: nowrap; /* Запрещаем перенос строк */
+  display: grid;
+  grid-gap: 6rem;
+  grid-template-columns: repeat(50, 500px);
+ } 
+
+/* .card{
+  height: -webkit-fill-available;
+  width: -webkit-fill-available;
+} */
+
+.card-text{
+  font-size: 16px;
+}
+
+/* .allCardItems{
 
   flex-wrap: nowrap;
   overflow-x: scroll;
   scroll-behavior: smooth;
   padding-bottom: 1rem;
-}
+} */
 
 .homePageText{
   text-align: center;
@@ -82,9 +97,13 @@ overflow-x: scroll;
 .homePageMiddleRow {
  padding: 10px;
   grid-row: 25rm;
-
-
 }
+
+.list{
+  padding: 5%;
+  padding-left: 10%;
+}
+
 .StartNowText{
   color: #54665a;
   background-color: #f5f5dc;
@@ -93,7 +112,9 @@ overflow-x: scroll;
   color:  #f5f5dc ;
   background-color: #54665a;
 }
-
+ul{
+ padding: 5%;
+}
 
 
 /* .aboutMeButton {
@@ -138,9 +159,7 @@ body{
     background-color:#84a3a6;
 }
 .homePage{
-  width: 100dvh;
-  height: 100dvh;
-  padding:0px;
+  max-width: 880px;
 }
 
 .processBox{
