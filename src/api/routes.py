@@ -139,6 +139,7 @@ def add_pet(user, pet):
 @api.route('/pets', methods=['GET'])
 @jwt_required()
 def get_user_pets():
+  
     try:
         current_user_email = get_jwt_identity()
         user = User.query.filter_by(email=current_user_email).first()
@@ -157,6 +158,7 @@ def get_user_pets():
 @api.route('/pets', methods=['POST'])
 @jwt_required()
 def add_user_pet():
+
     try:
         current_user_email = get_jwt_identity()
         user = User.query.filter_by(email=current_user_email).first()
@@ -165,16 +167,21 @@ def add_user_pet():
             raise APIException("User not found", status_code=404)
 
         body = request.get_json()
+        print(body,"!!!!!!")
+        print(user,"!!!!!!!!!!!!!")
         new_pet = Pet(
             name=body.get("name"),
             breed=body.get("breed"),
-            age=body.get("age"),
+            age=int(body.get("age")),
             description=body.get("description"),
             detailed_care_info=body.get("detailed_Care_Info"),
             user=user
-        )
 
+        )
+        print("printing new pet")
+        print(new_pet.serialize())
         db.session.add(new_pet)
+
         db.session.commit()
 
         return jsonify(new_pet.serialize()), 201

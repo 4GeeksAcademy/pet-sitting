@@ -55,7 +55,7 @@ export const Home = () => {
               className="img-fluid rounded"
               alt="Dog Pic"
             />
-            <Link to="/AboutMe" className="btn btn-secondary aboutMeButton">About Me Please Click Here</Link>
+            <Link to="/AboutMe" className="btn btn-secondary aboutMeButton">About Me </Link>
           </div>
 
           <div className="center processBox">
@@ -125,7 +125,7 @@ export const Home = () => {
               className="img-fluid rounded"
               alt="Dog Pic"
             />
-            <Link to="/signupUser" className="btn btn-secondary StartNowText">Click Here to Join the Family</Link>
+            <Link to="/signupUser" className="btn btn-secondary StartNowText">Sign up</Link>
           </div>
         </div>
       </div>

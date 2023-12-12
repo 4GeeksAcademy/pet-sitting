@@ -1,6 +1,5 @@
 
 
-import dogwalklogo from '../../img/dogwalklogo.png'
 import React, { useState, useContext } from "react";
 import { Context } from "../store/appContext";
 import { Link, useNavigate } from "react-router-dom";
@@ -27,7 +26,7 @@ export const Navbar = () => {
       </div>
 
       <nav className="navbar navbar-expand-lg navbar-light bg-light d-none d-md-flex">
-        <img className="logoImg-Desk" src={dogwalklogo} />
+        <img className="logoImg-Desk" src="https://cdn.pixabay.com/photo/2022/08/10/03/30/cat-7376274_1280.png" />
         <div className="d-flex justify-content-center text-center ">
           <div className="logoTitle-Desk d-flex justify-content-start" >
             <h2 className="title-Desk">Hot Doggity Dog Walkers</h2>
