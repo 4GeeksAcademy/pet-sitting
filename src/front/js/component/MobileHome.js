@@ -66,10 +66,6 @@ export const Home = () => {
           a fulfilling life in your absence.
         </h6>
       </div>
-
-
-
-
       <div className="row homePageMiddleRow  d-md-none ">
         <div className="container d-flex">
           <div className="row row-cols-1 row-cols-md-4">
@@ -95,8 +91,6 @@ export const Home = () => {
                   Log in
                 </button>
               )}
-
-
               <div
                 className="modal fade"
                 id="exampleModal"
@@ -164,8 +158,6 @@ export const Home = () => {
                         ></div>
                       </div>
                     </div>
-
-
                     <div className="modal-footer d-flex justify-content-center align-items-center">
                       <button
                         type="button"
@@ -179,42 +171,31 @@ export const Home = () => {
                       <Link to="/forgotten-password" className="forgotPasswordLink ms-2">
                         Forgot Password?
                       </Link>
-
-
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-
-
             <div className="starNowPic">
               <img
                 src="https://cdn.pixabay.com/photo/2023/10/26/15/33/dog-training-8342962_1280.jpg"
                 className="img-fluid rounded"
                 alt="Dog Pic"
               />
-
               <Link to="/signupUser" className=" btn btn-secondary StartNowText">Click here to join the family</Link>
-
             </div>
           </div>
         </div>
       </div>
       <br>
       </br>
-
       <h4 className="row servicesText">
-
-
         <ul>
-
           My steps to join the family:
           <br>
           </br>
           <br>
           </br>
-
           <li>Visit our website and sign up for Hot Doggity dog walking services.</li>
           <span></span>
           <br>
@@ -223,22 +204,18 @@ export const Home = () => {
           <span></span>
           <br>
           </br>
-
           <li>After signing up, we'll schedule a meet-and-greet to personally connect with your pet, understand their unique personality, and discuss your specific requirements.</li>
           <span></span>
           <br>
           </br>
-
           <li>Once the meet-and-greet is complete, easily schedule services through our user-friendly online system. </li>
           <span></span>
           <br>
           </br>
-
           <li>Choose days and times that suit your pet's routine, and our professional dog walkers will provide the care, attention, and exercise your pet deserves.</li>
           <span></span>
           <br>
           </br>
-
           At Hot Doggity Dog Walkers, we're dedicated to creating a personalized, stress-free experience for both you and your pet. Our goal is to ensure your furry companion stays happy and healthy while you're away.
         </ul>
       </h4>

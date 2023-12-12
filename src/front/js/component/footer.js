@@ -1,13 +1,18 @@
-
-
-
-
-import React from "react";
+import React, { useEffect } from 'react';
 import { useLocation, Link } from "react-router-dom";
 
 export const Footer = () => {
   const location = useLocation();
   const isHomePage = location.pathname === "/"; // Adjust the path accordingly
+  const handleResize = () => {
+      const row = document.querySelector('#dataRow');
+      if (window.innerWidth < 1200 && window.innerWidth > 576) {
+        row.classList.replace('dataRowVertical');
+        row.classList.remove('row');
+        row.classList.replace('dataRow', 'dataRowVertical');
+      }
+    };
+
 
   if (!isHomePage) {
     return null; // Do not render the footer on pages other than the home page
@@ -15,60 +20,64 @@ export const Footer = () => {
 
   return (
     <footer className="footer mt-auto py-3 text-center">
-      <div className=" footerScrollBar container">
-        <div className=" allCardItems row">
+      <div className="container">
+        <div className="dataRow row" onResize={()=> {resizeHandle()}} id ='dataRow'>
           
-
-          <div className="scard">
+          <div className="col-sm-4">
+          <div className="card" style={{width: '25rem', height: '55vh'}}>
             <img src="https://cdn.pixabay.com/photo/2019/12/30/05/30/cockatiel-4728876_1280.jpg" className="card-img-top" alt="" />
             <div className="card-body">
-            <p className="card-text text-center">
+            <p className="card-text">
               Kelly deserves a glowing 5-star review!
-              Their exceptional care <br></br> for my birds during my beach trip exceeded my expectations.<br></br>
-              Regular updates and a relaxing return home make he <br></br> the top choice for pet sitting.<br></br>
+              Their exceptional care for my birds during my beach trip exceeded my expectations.
+              Regular updates and a relaxing return home make he the top choice for pet sitting.
               Highly recommend this reliable and caring service! ⭐️⭐️⭐️⭐️⭐️
             </p>
             </div>
-          </div>
-
-
-          <div className="scard" >
-            <img src="https://cdn.pixabay.com/photo/2018/04/23/14/38/dog-3344414_1280.jpg" className="card-img-top" alt="..." />
-            <div className="card-body">
-              <p className="card-text">
-              Kelly, the dog walker, is a miracle worker!<br></br>
-              She did an incredible job with my usually shy dog,<br></br>
-              making every walk a joyful experience.<br></br>
-              Her patience and expertise deserve a solid 5 stars.<br></br>
-              ⭐️⭐️⭐️⭐️⭐️
-            </p>
             </div>
           </div>
 
+          <div className="col-sm-4">
+          <div className="card" style={{width: '25rem', height: '55vh'}} >
+            <img src="https://cdn.pixabay.com/photo/2018/04/23/14/38/dog-3344414_1280.jpg" className="card-img-top" alt="..." />
+            <div className="card-body">
+              <p className="card-text">
+              Kelly, the dog walker, is a miracle worker!
+              She did an incredible job with my usually shy dog,
+              making every walk a joyful experience.
+              Her patience and expertise deserve a solid 5 stars.
+              ⭐️⭐️⭐️⭐️⭐️
+            </p>
+            </div>
+            </div>
+          </div>
 
-          <div className="scard">
+          <div className="col-sm-4">
+          <div className="card"style={{width: '25rem', height: '55vh'}}>
             <img src="https://cdn.pixabay.com/photo/2017/08/02/10/01/people-2570587_1280.jpg" className="card-img-top" alt="..." />
             <div className="card-body">
-            <p>
-              Kelly is a lifesaver! While I was on a business trip,<br></br>
-              she took exceptional care of my cat,<br></br> ensuring timely and nourishing meals..<br></br>
-              Her attention to detail and reliability earn her a well-deserved <br></br>5-star rating. ⭐️⭐️⭐️⭐️⭐️
+            <p className="card-text">
+              Kelly is a lifesaver! While I was on a business trip,
+              she took exceptional care of my cat, ensuring timely and nourishing meals..
+              Her attention to detail and reliability earn her a well-deserved 5-star rating. ⭐️⭐️⭐️⭐️⭐️
             </p>
           </div>
           </div>
-
-          <div className="scard">
+          </div>
+          <div className="col-sm-4">
+          <div className="card"style={{width: '25rem', height: '55vh'}}>
             <img src="https://cdn.pixabay.com/photo/2022/01/27/23/35/rabbit-6973396_1280.jpg" className="card-img-top" alt="..." />
             <div className="card-body">
-            <p>
-             Kelly did an amazing job watching my pet rabbit Rocky..<br></br>I will be using her services again! ⭐️⭐️⭐️⭐️⭐️
+            <p className="card-text">
+             Kelly did an amazing job watching my pet rabbit Rocky.. I will be using her services again! ⭐️⭐️⭐️⭐️⭐️
             </p>
           </div>
           </div>
         </div>
+        </div>
       </div>
 
-      <p style={{ marginTop: 'auto' }}>
+      <p style={{ marginTop: '50px' }}>
         Made with <i className="fa fa-heart text-danger" /> by{" "}
         <a>John Durtka, Whitney Heacock, and Anastasiia Ivanova</a>
       </p>
@@ -96,62 +105,3 @@ export const Footer = () => {
 
 
 
-// // 
-
-// import React from "react";
-// import { useLocation, Link } from "react-router-dom";
-
-// export const Footer = () => {
-//   const location = useLocation();
-//   const isHomePage = location.pathname === "/"; // Adjust the path accordingly
-
-//   if (!isHomePage) {
-//     return null; // Do not render the footer on pages other than the home page
-//   }
-
-//   return (
-//     <footer className="footer mt-auto py-3 text-center">
-//       <div className="container">
-//         <div className="row">
-//           <div className="col-md-4">
-//             <img src="https://cdn.pixabay.com/photo/2019/12/30/05/30/cockatiel-4728876_1280.jpg" className="d-block w-100" alt="" />
-//             <p>
-//               Kelly deserves a glowing 5-star review!
-//               Their exceptional care for my birds during my beach trip exceeded my expectations.
-//               Regular updates and a relaxing return home makes her the top choice for pet sitting.
-//               Highly recommend this reliable and caring service! ⭐️⭐️⭐️⭐️⭐️
-//             </p>
-//           </div>
-//           <div className="col-md-4">
-//             <img src="https://cdn.pixabay.com/photo/2018/04/23/14/38/dog-3344414_1280.jpg" className="d-block w-100" alt="..." />
-//             <p>
-//               Kelly, the dog walker, is a miracle worker!
-//               She did an incredible job with my usually shy dog,
-//               making every walk a joyful experience.
-//               Her patience and expertise deserve a solid 5 stars.
-//               ⭐️⭐️⭐️⭐️⭐️
-//             </p>
-//           </div>
-//           <div className="col-md-4">
-//             <img src="https://cdn.pixabay.com/photo/2017/08/02/10/01/people-2570587_1280.jpg" className="d-block w-100" alt="..." />
-//             <p>
-//               Kelly is a lifesaver! While I was on a business trip,
-//               she took exceptional care of my cat, ensuring timely and nourishing meals.
-//               Her attention to detail and reliability earn her a well-deserved 5-star rating. ⭐️⭐️⭐️⭐️⭐️
-//             </p>
-//           </div>
-//         </div>
-//       </div>
-//       <div>
-//         {/* Link to a review page */}
-//         <Link to="/leave_review" style={{ color: 'white', textDecoration: 'none' }}>
-//           Leave a Review
-//         </Link>
-//       </div>
-//       <p style={{ marginTop: 'auto' }}>
-//         Made with <i className="fa fa-heart text-danger" /> by{" "}
-//         <a>John Durtka, Whitney Heacock, and Anastasiia Ivanova</a>
-//       </p>
-//     </footer>
-//   );
-// };

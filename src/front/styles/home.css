@@ -1,3 +1,8 @@
+@media (prefers-reduced-motion: no-perference){
+  :root{
+    scroll-behavior: smooth;
+  }
+}
 /*
     home.css: This website contains selectors only used in home.css
 
@@ -37,24 +42,34 @@ height: 200px;
 /* this is my footer */
 
 
+.dataRow{
+  flex-wrap: nowrap;
+  overflow-x: scroll;
+  overflow-y: hidden;
+}
 
-
-.footerScrollBar{
+.dataRowVertical{
+  flex-wrap: nowrap;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+.footer{
+  padding: 10px;
+}
+/* .footerScrollBar{
 width: 50dvw;
 height: auto;
 overflow-x: scroll;
 
 
-}
-
+} */
+/* 
 .allCardItems{
-  padding: 10px; /* Поля вокруг текста */
-  white-space: nowrap; /* Запрещаем перенос строк */
+  padding: 10px;
   display: grid;
-  grid-gap: 6rem;
-  grid-template-columns: repeat(50, 500px);
- } 
-
+  grid-gap: 30rem;
+  grid-template-columns: repeat(50, 100px);
+} */
 /* .card{
   height: -webkit-fill-available;
   width: -webkit-fill-available;
@@ -97,12 +112,12 @@ overflow-x: scroll;
 .homePageMiddleRow {
  padding: 10px;
   grid-row: 25rm;
-}
+} 
 
-.list{
+ .list{
   padding: 5%;
   padding-left: 10%;
-}
+} 
 
 .StartNowText{
   color: #54665a;
@@ -114,7 +129,7 @@ overflow-x: scroll;
 }
 ul{
  padding: 5%;
-}
+} 
 
 
 /* .aboutMeButton {
