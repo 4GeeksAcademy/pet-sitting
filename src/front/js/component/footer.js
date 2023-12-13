@@ -1,19 +1,9 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useLocation, Link } from "react-router-dom";
 
 export const Footer = () => {
   const location = useLocation();
   const isHomePage = location.pathname === "/"; // Adjust the path accordingly
-  const handleResize = () => {
-      const row = document.querySelector('#dataRow');
-      if (window.innerWidth < 1200 && window.innerWidth > 576) {
-        row.classList.replace('dataRowVertical');
-        row.classList.remove('row');
-        row.classList.replace('dataRow', 'dataRowVertical');
-      }
-    };
-
-
   if (!isHomePage) {
     return null; // Do not render the footer on pages other than the home page
   }
@@ -21,7 +11,7 @@ export const Footer = () => {
   return (
     <footer className="footer mt-auto py-3 text-center">
       <div className="container">
-        <div className="dataRow row" onResize={()=> {resizeHandle()}} id ='dataRow'>
+        <div className="dataRow row">
           
           <div className="col-sm-4">
           <div className="card" style={{width: '25rem', height: '55vh'}}>
