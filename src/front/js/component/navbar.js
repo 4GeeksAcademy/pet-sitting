@@ -1,6 +1,6 @@
 
 
-import dogwalklogo from '../../img/dogwalklogo.png'
+// import dogwalklogo from '../../img/dogwalklogo.png'
 import React, { useState, useContext } from "react";
 import { Context } from "../store/appContext";
 import { Link, useNavigate } from "react-router-dom";
@@ -17,7 +17,7 @@ export const Navbar = () => {
       console.error('An error occurred during logout:', error);
     }
   };
-  
+
   return (
     <>
       <div className="number-Desk d-none d-md-block">
@@ -26,8 +26,8 @@ export const Navbar = () => {
         Hotdoggitydogwalker@gmail.com
       </div>
 
-      <nav className="navbar navbar-expand-lg navbar-light bg-light d-none d-md-flex">
-        <img className="logoImg-Desk" src={dogwalklogo} />
+      <nav className="navbar-Desk navbar navbar-expand-lg navbar-light bg-light d-none d-md-flex">
+        <img className="logoImg-Desk" src="https://cdn.pixabay.com/photo/2022/08/10/03/30/cat-7376274_1280.png" />
         <div className="d-flex justify-content-center text-center ">
           <div className="logoTitle-Desk d-flex justify-content-start" >
             <h2 className="title-Desk">Hot Doggity Dog Walkers</h2>
@@ -49,7 +49,7 @@ export const Navbar = () => {
             :
             <ul className="navbar-nav">
               <li className="nav-item active">
-                <Link className="nav-link" to="/">Home <span class="sr-only">(current)</span></Link>
+                <Link className="nav-link" to="/">Home <span className="sr-only">(current)</span></Link>
               </li>
               <li className="nav-item">
                 <Link to="/account" className="nav-link " style={{ color: 'black' }}>Account</Link>

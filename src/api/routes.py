@@ -102,14 +102,22 @@ def update_account():
     print('!!!!!!!!!')
     print(body)
     # Update user information
-    user.email = body.get("email")
-    user.first_name = body.get("first_name")
-    user.last_name = body.get("last_name")
-    user.address = body.get("address")
-    user.city = body.get("city")
-    user.state = body.get("state")
-    user.zip = body.get("zip")
-    user.phone_number = body.get("phone_number")
+    if body.get("email") is not None:
+        user.email = body.get("email")
+    if body.get("first_name") is not None:
+        user.first_name = body.get("first_name")
+    if body.get("last_name") is not None:
+        user.last_name = body.get("last_name")
+    if body.get("address") is not None:
+        user.address = body.get("address")
+    if body.get("city") is not None:
+        user.city = body.get("city")
+    if body.get("state") is not None:
+        user.state = body.get("state")
+    if body.get("zip") is not None:
+        user.zip = body.get("zip")
+    if body.get("phone_number") is not None:
+        user.phone_number = body.get("phone_number")
 
 
     # Commit the changes to the user
@@ -117,29 +125,11 @@ def update_account():
 
     db.session.commit()
 
-    # Check if there are pets in the request and update them
-    if "pets" in body and body["pets"] is not None:
-         add_pet(user, body["pets"][0]) # This is the hangup
-
-    return jsonify(user.serialize()), 200
-
-def add_pet(user, pet):
-    print(pet)
-    new_pet = Pet(
-        name=pet.get("pet_name"),
-        breed=pet.get("breed"),
-        age=pet.get("age"),
-        description=pet.get("description"),
-        detailed_care_info=pet.get("detailed_care_info"),
-        user=user
-    )
-    db.session.add(new_pet)
-    db.session.commit()
-
 
 @api.route('/pets', methods=['GET'])
 @jwt_required()
 def get_user_pets():
+  
     try:
         current_user_email = get_jwt_identity()
         user = User.query.filter_by(email=current_user_email).first()
@@ -158,6 +148,7 @@ def get_user_pets():
 @api.route('/pets', methods=['POST', 'OPTIONS'])
 @jwt_required()
 def add_user_pet():
+
     try:
         current_user_email = get_jwt_identity()
         user = User.query.filter_by(email=current_user_email).first()
@@ -166,16 +157,21 @@ def add_user_pet():
             raise APIException("User not found", status_code=404)
 
         body = request.get_json()
+        print(body,"!!!!!!")
+        print(user,"!!!!!!!!!!!!!")
         new_pet = Pet(
             name=body.get("name"),
             breed=body.get("breed"),
-            age=body.get("age"),
+            age=int(body.get("age")),
             description=body.get("description"),
             detailed_care_info=body.get("detailed_Care_Info"),
             user=user
-        )
 
+        )
+        print("printing new pet")
+        print(new_pet.serialize())
         db.session.add(new_pet)
+
         db.session.commit()
         print(new_pet.serialize())
         return jsonify(new_pet.serialize()), 201
@@ -202,11 +198,16 @@ def update_user_pet(pet_id):
             raise APIException("Pet not found or does not belong to the user", status_code=404)
 
         # Update pet information
-        pet.name = body.get("pet_name", pet.name)
-        pet.breed = body.get("breed", pet.breed)
-        pet.age = body.get("age", pet.age)
-        pet.description = body.get("description", pet.description)
-        pet.detailed_care_info = body.get("detailed_Care_Info", pet.detailed_care_info)
+        if body.get("pet_name") is not None:
+            pet.name = body.get("pet_name")
+        if body.get("breed") is not None:
+            pet.breed = body.get("breed")
+        if body.get("age") is not None:
+            pet.age = body.get("age")
+        if body.get("description") is not None:
+            pet.description = body.get("description")
+        if body.get("detailed_care_info") is not None:
+            pet.detailed_care_info = body.get("detailed_care_info")
         db.session.add()
         db.session.commit()
 
@@ -272,6 +273,7 @@ def login():
 def get_user():
     current_user = get_jwt_identity()
     user = User.query.filter_by(email=current_user).first()
+    print(user.serialize())
 
     if user:
         return jsonify(user.serialize()), 200
@@ -792,12 +794,16 @@ def handle_schedule_pet_sitting():
 @jwt_required()
 def get_pet_names():
     email = get_jwt_identity()
+    print('!!!!!!!!!!!!')
+    print(email)
     user = User.query.filter_by(email=email).first()
+    print('!!!!!!!!!!')
+    print(user)
     try: 
         pets = user.serialize()["pets"]
         pet_names = [pet["name"] for pet in pets]
         if len(pet_names) == 0:
-            pet_names = ["N/A"]
+            pet_names = []
         return jsonify({"pets": pet_names, "status": "ok"}), 200
     except HttpError as error:
         print(error)
@@ -937,6 +943,7 @@ def cancel_pet_sitting():
 def get_address():
     email = get_jwt_identity()
     user = User.query.filter_by(email=email).first()
+    print(user)
     try: 
         address = user.serialize()["address"]
         if address is not None:

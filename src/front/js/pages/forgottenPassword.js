@@ -40,6 +40,7 @@ export const ForgottenPassword = () => {
                     <div className="Card mx-auto" style={{ width: "25rem" }}>
                         <h3 className="text-center">Reset your password</h3>
                         <p className="text-center">Enter the email address registered with your account. We'll email you a temporary password, so that you may access your account and change your password.</p>
+                        <p className="text-center fst-italic fw-normal fs-6 text-decoration-underline">Please, enter your email address in lower case</p>
                         <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Email" />
                         <button className="btn btn-outline-primary mt-3 w-100" onClick={handleResetPassword } type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Continue</button>
                     </div>

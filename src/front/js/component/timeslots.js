@@ -511,6 +511,9 @@ export const Timeslots = (props) => {
 			if (bookPets.length === 0) {
 				throw new Error("You cannot book a service without pets.")
 			}
+			if (e.target.elements.address.value === undefined) {
+				throw new Error("You cannot book a service without an address.")
+			}
 			const apiStr = typeOfSchedule === 'pet-sitting' ? 'schedule-pet-sitting' : 'schedule-walk-or-check-in-or-meet-and-greet'
 			const resp = await fetch(process.env.BACKEND_URL + `/api/${apiStr}`, {
 				method: 'POST',

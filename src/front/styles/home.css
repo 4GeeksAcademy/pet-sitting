@@ -1,8 +1,8 @@
-
-
-
-
-
+@media (prefers-reduced-motion: no-perference){
+  :root{
+    scroll-behavior: smooth;
+  }
+}
 /*
     home.css: This website contains selectors only used in home.css
 
@@ -14,48 +14,67 @@
 /* nav bar */
 
 
-/* .logoImg-Desk {
+/* /* .logoImg-Desk {
   height: 100px;
   width:100px;
   margin-right: 50px; 
-background-color:#f5f5dc  ;
+ ;
  
 }
-.navbar-Desk{
-height: 200px;
-  width: 100dvw;
-  background-color:#f5f5dc  ;
-} 
-.number-Desk{
+/* .number-Desk{
   background-color: #313d49;
   color: white;
   text-align-last: center;
   height: 50%;
-  width: 100%;
-}
+  width: 100%; */
 
-.navItem-Desk{
-  margin-left: 70%;
- */
+
+/* .navItem-Desk{
+  margin-left: 80%; 
+ 
+} */
 
 
 /* this is my footer */
 
-.footerScrollBar{
+.dataRow{
+  /* flex-wrap: nowrap; */
+  overflow-x: scroll;
+  overflow-y: hidden;
+  display: grid;
+  grid-template-columns: repeat(4, 470px);
+}
+.footer{
+  padding: 10px;
+}
+.card-text{
+  font-size: 16px;
+}
+
+
+/* .footerScrollBar{
 width: 50dvw;
 height: auto;
 overflow-x: scroll;
-
-
-}
-
+} */
+/* 
 .allCardItems{
+  padding: 10px;
+  display: grid;
+  grid-gap: 30rem;
+  grid-template-columns: repeat(50, 100px);
+} */
+/* .card{
+  height: -webkit-fill-available;
+  width: -webkit-fill-available;
+} */
+/* .allCardItems{
 
   flex-wrap: nowrap;
   overflow-x: scroll;
   scroll-behavior: smooth;
   padding-bottom: 1rem;
-}
+} */
 
 .homePageText{
   text-align: center;
@@ -82,9 +101,12 @@ overflow-x: scroll;
 .homePageMiddleRow {
  padding: 10px;
   grid-row: 25rm;
+} 
+.list{
+  padding: 5%;
+  padding-left: 10%;
+} 
 
-
-}
 .StartNowText{
   color: #54665a;
   background-color: #f5f5dc;
@@ -93,7 +115,9 @@ overflow-x: scroll;
   color:  #f5f5dc ;
   background-color: #54665a;
 }
-
+ul{
+ padding: 5%;
+} 
 
 
 /* .aboutMeButton {
@@ -117,20 +141,32 @@ overflow-x: scroll;
   font-size: 16px; 
 }
 .homePage{
-  padding: 10px;
+  max-width: 880px;
 }
-.starNowPic{
-
+.startNowPic{
+ 
   position: relative;
   text-align: center;
 }
 
 .StartNowText{
-  position: absolute;
+  /* position: absolute;
   top:20%;
   left: 50%;
   transform: translate(-50%,-50%);
-  background-color: #f2e9d8;
+  background-color: #f2e9d8; */
+  
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #f2e9d8;
+    padding: 10px 20px; 
+    border: none;
+    border-radius: 5px;
+    color:  #54665a;
+    font-size: 16px; 
+  
 
 }
 
@@ -138,9 +174,7 @@ body{
     background-color:#84a3a6;
 }
 .homePage{
-  width: 100dvh;
-  height: 100dvh;
-  padding:0px;
+  max-width: 880px;
 }
 
 .processBox{

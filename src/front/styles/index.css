@@ -3,24 +3,31 @@
 */
 
 .custom-logo {
-    width: 150px;
-    height: 150px;
+  width: 150px;
+  height: 150px;
 }
 
 .logoImg-Desk {
-    height: 100px;
-    width:100px;
-    margin-right: 50px; 
-   
-  }
-  .number-Desk{
-    background-color: #313d49;
-    color: white;
-    text-align-last: center;
-    height: 50%;
-    width: 100%;
-  }
+  height: 80px;
+  width: 80px;
+  margin-right: 50px; 
+  
+}
 
-  .navbar-nav {
-    margin-left: 70%;
-  }
+.number-Desk{
+  background-color: #313d49;
+  color: white;
+  text-align-last: center;
+  height: 50%;
+  width: 100%;
+}
+
+.navbar-nav {
+  margin-left: 70%;
+}
+
+.navbar-Desk{
+height: 10dvh;
+width: 100dvw;
+background-color:#f5f5dc  ;
+} 
