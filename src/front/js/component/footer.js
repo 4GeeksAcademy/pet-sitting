@@ -13,7 +13,7 @@ export const Footer = () => {
   return (
     <footer className="footer mt-auto py-3 text-center">
       <div className="container">
-        <div className="dataRow row">
+        <div className="dataRow row" onResize={()=> {resizeHandle()}} id ='dataRow'>
           
           <div className="col-sm-4">
           <div className="card" style={{width: '25rem', height: '55vh'}}>
