@@ -146,6 +146,33 @@ const getState = ({ getStore, getActions, setStore }) => {
                 throw new Error(`Error: ${error.message}`);
             }
         },
+        resetPassword: (token, newPassword) => {
+            const store = getStore();
+            console.log("Reset Password Request:", process.env.BACKEND_URL + "/api/reset-password");
+            console.log("Token:", token);
+            console.log("New Password:", newPassword);
+
+            return fetch(process.env.BACKEND_URL + "/api/reset-password", {
+                method: 'POST',
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ token: token, new_password: newPassword }),
+            })
+                .then(response => {
+                    console.log("Reset Password Response:", response);
+
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error('Error resetting password.');
+                    }
+                })
+                .catch(error => {
+                    console.error("Reset Password Error:", error);
+                    throw error;
+                });
+        },
+
+
 
 
 

@@ -1,5 +1,6 @@
 
 
+// import dogwalklogo from '../../img/dogwalklogo.png'
 import React, { useState, useContext } from "react";
 import { Context } from "../store/appContext";
 import { Link, useNavigate } from "react-router-dom";
