@@ -630,7 +630,7 @@ export const Timeslots = (props) => {
 				try {
 					document.body.classList.add('waiting')
 					await scheduleService()
-					actions.setPaymentSuccessful(false)
+					await actions.setPaymentSuccessful(false)
 				} catch {
 					alert('An error occurred when attempting to book a service.')
 					document.body.classList.remove('waiting')

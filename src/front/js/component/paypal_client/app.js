@@ -38,6 +38,10 @@ function PayPal(props) {
   }
 
   useEffect(() => {
+
+  })
+
+  useEffect(() => {
     if (props.discount === true && props.numDays <= 1) {
       setTimeout(actions.setPaymentSuccessful(true), 3000)
     }
@@ -168,16 +172,16 @@ function PayPal(props) {
   };
 
   if (!props.recurring) {
-    let key = 123456789
+    let key = 123456789 + Math.floor(Math.random() * 321)
     if (props.numDays) {
-      key = props.numPets + Number(props.recurring) * 1000 + props.numDays * 33
+      key = props.numPets + Number(props.recurring) * 1000 + props.numDays * 33 + Math.floor(Math.random() * 321)
       if (props.discount) {
-        key = props.numPets + Number(props.recurring) * 1000 + props.numDays * 33 + 987654321
+        key = props.numPets + Number(props.recurring) * 1000 + props.numDays * 33 + 987654321 + Math.floor(Math.random() * 321)
       }
     } else {
-      key = props.numPets + Number(props.recurring) * 1000
+      key = props.numPets + Number(props.recurring) * 1000 + Math.floor(Math.random() * 321)
       if (props.discount) {
-        key = props.numPets + Number(props.recurring) * 1000 + 987654321
+        key = props.numPets + Number(props.recurring) * 1000 + 987654321 + Math.floor(Math.random() * 321)
       }
     }
     return (
