@@ -50,11 +50,6 @@ height: 200px;
   display: grid;
   grid-template-columns: repeat(4, 470px);
 }
-<<<<<<< HEAD
-
-
-=======
->>>>>>> 0ad2da27b08f27fda6be6b58d3229f35c0678288
 .footer{
   padding: 10px;
 }
@@ -152,7 +147,7 @@ ul{
   font-size: 16px; 
 }
 .homePage{
-  padding: 10px;
+  max-width: 880px;
 }
 .startNowPic{
  
