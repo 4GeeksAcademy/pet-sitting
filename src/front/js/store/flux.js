@@ -82,118 +82,126 @@ const getState = ({ getStore, getActions, setStore }) => {
                             }
 
                         }
-                     
+
                     )
                     let data = await response.json();
                     if (data) {
                         setStore({
-                            userData:data
-                           
+                            userData: data
+
                         });
-                         
+
                     }
 
                 }
-                    catch (error) {
-                throw new Error(`Error: ${error.message}`);
-            }
-
-
-        },
-        updateAccount: async (userData) => {
-            try {
-                const token = sessionStorage.getItem("token");
-
-                const response = await fetch(`${process.env.BACKEND_URL}/api/account`, {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${token}`,
-                    },
-                    body: JSON.stringify(
-
-                        userData
-
-                    ),
-                });
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
+                catch (error) {
+                    throw new Error(`Error: ${error.message}`);
                 }
-                return await response.json();
-            } catch (error) {
-                throw new Error(`Error: ${error.message}`);
-            }
-        },
-        updatePet: async (petData) => {
-            console.log(petData)
-            try {
-                const token = sessionStorage.getItem("token");
-                console.log(JSON.stringify(petData))
 
-                const response = await fetch(`${process.env.BACKEND_URL}/api/pets`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${token}`,
-                    },
-                    body: JSON.stringify(petData),
-                });
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.message}`);
-                }
-                return await response.json();
-            } catch (error) {
-                throw new Error(`Error: ${error.message}`);
-            }
-        },
-        resetPassword: (token, newPassword) => {
-            const store = getStore();
-            console.log("Reset Password Request:", process.env.BACKEND_URL + "/api/reset-password");
-            console.log("Token:", token);
-            console.log("New Password:", newPassword);
 
-            return fetch(process.env.BACKEND_URL + "/api/reset-password", {
-                method: 'POST',
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ token: token, new_password: newPassword }),
-            })
-                .then(response => {
-                    console.log("Reset Password Response:", response);
+            },
+            updateAccount: async (userData) => {
+                try {
+                    const token = sessionStorage.getItem("token");
 
-                    if (response.ok) {
-                        return response.json();
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/account`, {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${token}`,
+                        },
+                        body: JSON.stringify(
+
+                            userData
+
+                        ),
+                    });
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
                     } else {
-                        throw new Error('Error resetting password.');
+                        let data = await response.json()
+                        console.log(data)
+                        return true
                     }
+                } catch (error) {
+                    throw new Error(`Error: ${error.message}`);
+                }
+            },
+            updatePet: async (petData) => {
+                console.log(petData)
+                try {
+                    const token = sessionStorage.getItem("token");
+                    console.log(JSON.stringify(petData))
+
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/pets`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${token}`,
+                        },
+                        body: JSON.stringify(petData),
+                    });
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.message}`);
+                         } else {
+                        let data = await response.json()
+                        console.log(data)
+                        return true
+                    }
+                    
+                   
+                } catch (error) {
+                    throw new Error(`Error: ${error.message}`);
+                }
+            },
+            resetPassword: (token, newPassword) => {
+                const store = getStore();
+                console.log("Reset Password Request:", process.env.BACKEND_URL + "/api/reset-password");
+                console.log("Token:", token);
+                console.log("New Password:", newPassword);
+
+                return fetch(process.env.BACKEND_URL + "/api/reset-password", {
+                    method: 'POST',
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ token: token, new_password: newPassword }),
                 })
-                .catch(error => {
-                    console.error("Reset Password Error:", error);
-                    throw error;
-                });
-        },
+                    .then(response => {
+                        console.log("Reset Password Response:", response);
+
+                        if (response.ok) {
+                            return response.json();
+                        } else {
+                            throw new Error('Error resetting password.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Reset Password Error:", error);
+                        throw error;
+                    });
+            },
 
 
 
 
 
-        setAccessToken: (savedToken) => {
-            setStore({ token: savedToken });
-        },
-        exampleFunction: () => {
-            getActions().changeColor(0, "green");
-        },
-        setTimeslotsStartingDay: (obj) => {
-            setStore({ timeSlotsStartingDay: obj });
-        },
-        setPaymentSuccessful: (payload) => {
-            setStore({ paymentSuccessful: payload });
-        },
-        logout: async () => {
-            sessionStorage.removeItem("token");
-            setStore({ token: null });
+            setAccessToken: (savedToken) => {
+                setStore({ token: savedToken });
+            },
+            exampleFunction: () => {
+                getActions().changeColor(0, "green");
+            },
+            setTimeslotsStartingDay: (obj) => {
+                setStore({ timeSlotsStartingDay: obj });
+            },
+            setPaymentSuccessful: (payload) => {
+                setStore({ paymentSuccessful: payload });
+            },
+            logout: async () => {
+                sessionStorage.removeItem("token");
+                setStore({ token: null });
+            }
         }
-    }
-};
+    };
 };
 
 export default getState;

@@ -97,13 +97,17 @@ export const Account = () => {
     setPets(updatedPets);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    actions.updateAccount(userData);
-    actions.updatePet(petFormData); 
-    console.log("User Form submitted:", userData);
-    console.log("Pets:", pets);
-    navigate("/services");
+    let result1 = await actions.updateAccount(userData);
+    let result2 = await actions.updatePet(petFormData); 
+    if (result1 && result2){
+      alert("account successfully updated ")
+      navigate("/services");
+
+    }
+
+
   };
 
   return (

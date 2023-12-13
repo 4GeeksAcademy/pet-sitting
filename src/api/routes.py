@@ -112,7 +112,7 @@ def update_account():
 
 
     # Commit the changes to the user
-    db.session.add(user)
+  
 
     db.session.commit()
 
@@ -125,7 +125,7 @@ def update_account():
 def add_pet(user, pet):
     print(pet)
     new_pet = Pet(
-        name=pet.get("pet_name"),
+        name=pet.get("name"),
         breed=pet.get("breed"),
         age=pet.get("age"),
         description=pet.get("description"),
@@ -134,6 +134,7 @@ def add_pet(user, pet):
     )
     db.session.add(new_pet)
     db.session.commit()
+   
 
 
 @api.route('/pets', methods=['GET'])
@@ -213,7 +214,7 @@ def update_user_pet(pet_id):
         pet.age = body.get("age", pet.age)
         pet.description = body.get("description", pet.description)
         pet.detailed_care_info = body.get("detailed_Care_Info", pet.detailed_care_info)
-        db.session.add()
+      
         db.session.commit()
 
         return jsonify(pet.serialize()), 200
