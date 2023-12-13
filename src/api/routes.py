@@ -688,8 +688,6 @@ def handle_schedule_pet_sitting():
         pets = req["pets"]
         start_time = req["startTime"]
         end_time = req["endTime"]
-        recurring = req["recurring"]
-        recurring_until = req["recurringUntil"]
         user_address = req["address"]
         
         number_of_services_used = None
@@ -708,41 +706,6 @@ def handle_schedule_pet_sitting():
                 number_of_services_used.pet_sittings = number_of_services_used.pet_sittings + 1
                 db.session.commit()
 
-        if recurring and recurring_until:
-            event = {
-                    'summary': type_of_booking + ' with ' + ' and '.join(pets) + ' for ' + email,
-                    'location': user_address,
-                    'description': details,
-                    'start': {
-                        'dateTime': start_time,
-                        'timeZone': 'America/Denver',
-                    },
-                    'end': {
-                        'dateTime': end_time,
-                        'timeZone': 'America/Denver',
-                    },
-                    'recurrence': [
-                        'RRULE:FREQ=WEEKLY' + ';UNTIL=' + ''.join(recurring_until.split('-'))
-                    ],
-                }
-        elif recurring:
-            event = {
-                    'summary': type_of_booking + ' with ' + ' and '.join(pets) + ' for ' + email,
-                    'location': user_address,
-                    'description': details,
-                    'start': {
-                        'dateTime': start_time,
-                        'timeZone': 'America/Denver',
-                    },
-                    'end': {
-                        'dateTime': end_time,
-                        'timeZone': 'America/Denver',
-                    },
-                    'recurrence': [
-                        'RRULE:FREQ=WEEKLY'
-                    ],
-                }
-        else:
             event = {
                     'summary': type_of_booking + ' with ' + ' and '.join(pets) + ' for ' + email,
                     'location': user_address,
@@ -767,11 +730,7 @@ def handle_schedule_pet_sitting():
         email_password = "ilhjwhdyxlxpmdfw"
         email_receiver = email
         email_subject = 'Pet Care Service Scheduled.'
-
-        if(recurring):
-            email_body = 'You have successfully scheduled a recurring ' + type_of_booking + ' for ' + ' and '.join(pets) + ' at ' + user_address + ' starting at ' + start_date_time.strftime("%Y %B %d %I:%M %p") + ' and ending at ' + end_date_time.strftime("%Y %B %d %I:%M %p.")
-        else:
-            email_body = 'You have successfully scheduled a ' + type_of_booking + ' for ' + ' and '.join(pets) + ' at ' + user_address + ' starting at ' + start_date_time.strftime("%Y %B %d %I:%M %p") + ' and ending at ' + end_date_time.strftime("%Y %B %d %I:%M %p.")
+        email_body = 'You have successfully scheduled a ' + type_of_booking + ' for ' + ' and '.join(pets) + ' at ' + user_address + ' starting at ' + start_date_time.strftime("%Y %B %d %I:%M %p") + ' and ending at ' + end_date_time.strftime("%Y %B %d %I:%M %p.")
 
         em = EmailMessage()
         em['from'] = email_sender

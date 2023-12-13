@@ -526,8 +526,8 @@ export const Timeslots = (props) => {
 					"endTime": newScheduleEndStr,
 					"type": e.target.elements.type.value,
 					"details": e.target.elements.details.value,
-					"recurring": e.target.elements.recurring.checked,
-					"recurringUntil": e.target.elements.recurringUntil.value,
+					"recurring": typeOfSchedule !== 'pet-sitting' ? e.target.elements.recurring.checked : false,
+					"recurringUntil": typeOfSchedule !== 'pet-sitting' ? e.target.elements.recurringUntil.value : '',
 					"pets": bookPets,
 					"address": e.target.elements.address.value
 				})
@@ -841,7 +841,7 @@ export const Timeslots = (props) => {
 								typeOfSchedule !== 'pet-sitting' ?
 									<PayPal recurring={formSubmitEvent.current.target.elements.recurring.checked} typeOfSchedule={typeOfSchedule} numPets={numPets.current} discount={discount} />
 									:
-									<PayPal recurring={formSubmitEvent.current.target.elements.recurring.checked} typeOfSchedule={typeOfSchedule} numPets={numPets.current} numDays={numDays.current} discount={discount} />
+									<PayPal recurring={false} typeOfSchedule={typeOfSchedule} numPets={numPets.current} numDays={numDays.current} discount={discount} />
 								:
 								'Form submission event failed. Please try again.'
 							}
