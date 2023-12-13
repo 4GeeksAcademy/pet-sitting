@@ -101,7 +101,7 @@ export const SignupUser = () => {
               onChange={handleChange}
               required
             />
-            <label>confirm Password</label>
+            <label>Confirm Password</label>
             <input
                type="password"
                id="confirmPassword"
