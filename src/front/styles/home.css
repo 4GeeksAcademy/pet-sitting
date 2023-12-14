@@ -341,6 +341,7 @@ label {
   padding: 10px; /* Adjust padding as needed */
   border: none;
   border-radius: 10px; /* Added border-radius for rounded corners */
+ margin-top: 20px;
 }
 
 .addPet:hover, .accountSubmit:hover {
