@@ -1,26 +1,88 @@
 const getState = ({ getStore, getActions, setStore }) => {
-	return {
-		store: {
-			message: null,
-			demo: [
-				{
-					title: "FIRST",
-					background: "white",
-					initial: "white"
-				},
-				{
-					title: "SECOND",
-					background: "white",
-					initial: "white"
-				}
-			]
-		},
-		actions: {
-			// Use getActions to call a function within a fuction
-			exampleFunction: () => {
-				getActions().changeColor(0, "green");
-			},
+    return {
+        store: {
+            token: null,
+            timeSlotsStartingDay: {
+                "date": new Date().getDate(),
+                "month": new Date().getMonth(),
+                "year": new Date().getFullYear()
+            },
+            activeScheduleTab: "nav-timeslots",
+            payPalToken: null,
+            paymentSuccessful: false,
+        },
+        actions: {
+            changeActiveScheduleTab: (payload) => {
+                setStore({ activeScheduleTab: payload });
+            },
+            login: async (email, password) => {
+                try {
+                    let options = {
+                        method: "POST",
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ email, password }),
+                    };
+                    const response = await fetch(process.env.BACKEND_URL + "/api/login", options);
+                    console.log('Login response:', response);
+                    if (response.status === 200) {
+                        const data = await response.json();
+                        console.log("access token", data.access_token);
+                        sessionStorage.setItem("token", data.access_token);
+                        sessionStorage.setItem("email", email);
+                        setStore({
+                            token: data.access_token,
+                            email: email,
+                        });
+                        return true;
+                    } else {
+                        console.error("Login failed. Please check your credentials.");
+                        return false;
+                    }
+                } catch (error) {
+                    console.error("Login error:", error);
+                    alert("An error occurred during login.");
+                    return false;
+                }
+            },
+            signup: async (formData) => {
+                try {
+                    const response = await fetch(process.env.BACKEND_URL + "/api/signup", {
+                        method: "POST",
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            "email": formData.email,
+                            "password": formData.password,
+                            "first_name": formData.first_name,
+                            "last_name": formData.last_name
+                        })
+                    });
+                    let data = await response.json();
+                    if (data) {
+                        console.log(data.message);
+                        return true;
+                    }
+                } catch (error) {
+                    console.log(error);
+                }
+            },
+            getUser: async () => {
+                try {
+                    const token = sessionStorage.getItem("token");
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/user`,
+                        {
+                            method: "GET",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Authorization": `Bearer ${token}`,
+                            }
 
+<<<<<<< HEAD
+                        }
+=======
 			getMessage: async () => {
 				try{
 					// fetching data from the backend
@@ -40,36 +102,128 @@ const getState = ({ getStore, getActions, setStore }) => {
 						headers:{"Content-Type":"application/json"},
 						body: JSON.stringify({"email":formData.email,"password":formData.password," first_name":formData.first_name,"last_name":formData.last_name,"address":formData.address,"phone_number":formData.phone_number})
 					})
+>>>>>>> aa6a55c352fe8009c83848ffc7bb1220e955c0c7
 
-					let data = await response.json()
+                    )
+                    let data = await response.json();
+                    return await data
+                }
+                catch (error) {
+                    throw new Error(`Error: ${error.message}`);
+                }
 
-					if (data){
-						console.log(data.message)
-						return true
-					}
-				}catch(error){console.log(error)}
-			},
 
-			signupPet: async (formData)=>{
-				try{
-					let response = await fetch(getStore().backendURL+"/api/signupPet",{
-						method:"POST",
-						headers:{"Content-Type":"application/json"},
-						body: JSON.stringify({"name":formData.name,"bread":formData.bread,"age":formData.age,"description":formData.description,"detailed_care_info":formData.detailed_care_info})
-					})
+            },
+            getPets: async () => {
+                try {
+                    const token = sessionStorage.getItem("token");
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/pets`,
+                        {
+                            method: "GET",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Authorization": `Bearer ${token}`,
+                            }
 
-				//we have to loop the entire demo array to look for the respective index
-				//and change its color
-				const demo = store.demo.map((elm, i) => {
-					if (i === index) elm.background = color;
-					return elm;
-				});
+                        }
 
-				//reset the global store
-				setStore({ demo: demo });
-			}
-		}
-	};
+                    )
+                    let data = await response.json();
+                    return await data
+                }
+                catch (error) {
+                    throw new Error(`Error: ${error.message}`);
+                }
+            },
+            updateAccount: async (userData) => {
+                try {
+                    const token = sessionStorage.getItem("token");
+
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/account`, {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${token}`,
+                        },
+                        body: JSON.stringify(
+
+                            userData
+
+                        ),
+                    });
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return await response.json();
+                } catch (error) {
+                    throw new Error(`Error: ${error.message}`);
+                }
+            },
+            updatePet: async (petData) => {
+                console.log(petData)
+                try {
+                    const token = sessionStorage.getItem("token");
+                    console.log(JSON.stringify(petData))
+
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/pets`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${token}`,
+                        },
+                        body: JSON.stringify(petData),
+                    });
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.message}`);
+                    }
+                    return await response.json();
+                } catch (error) {
+                    throw new Error(`Error: ${error.message}`);
+                }
+            },
+            resetPassword: (token, newPassword) => {
+                const store = getStore();
+                console.log("Reset Password Request:", process.env.BACKEND_URL + "/api/reset-password");
+                console.log("Token:", token);
+                console.log("New Password:", newPassword);
+
+                return fetch(process.env.BACKEND_URL + "/api/reset-password", {
+                    method: 'POST',
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ token: token, new_password: newPassword }),
+                })
+                    .then(response => {
+                        console.log("Reset Password Response:", response);
+
+                        if (response.ok) {
+                            return response.json();
+                        } else {
+                            throw new Error('Error resetting password.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Reset Password Error:", error);
+                        throw error;
+                    });
+            },
+            setAccessToken: (savedToken) => {
+                setStore({ token: savedToken });
+            },
+            exampleFunction: () => {
+                getActions().changeColor(0, "green");
+            },
+            setTimeslotsStartingDay: (obj) => {
+                setStore({ timeSlotsStartingDay: obj });
+            },
+            setPaymentSuccessful: (payload) => {
+                setStore({ paymentSuccessful: payload });
+            },
+            logout: async () => {
+                sessionStorage.removeItem("token");
+                setStore({ token: null });
+            }
+        }
+    };
 };
 
 export default getState;

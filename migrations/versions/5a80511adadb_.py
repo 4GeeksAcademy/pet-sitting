@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 8c8531f31ace
-Revises: 154d89d72f2d
-Create Date: 2023-11-14 03:22:11.725158
+Revision ID: 5a80511adadb
+Revises: 
+Create Date: 2023-12-11 22:08:13.467779
 
 """
 from alembic import op
@@ -10,8 +10,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '8c8531f31ace'
-down_revision = '154d89d72f2d'
+revision = '5a80511adadb'
+down_revision = None
 branch_labels = None
 depends_on = None
 
@@ -21,11 +21,14 @@ def upgrade():
     op.create_table('user',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('email', sa.String(length=120), nullable=False),
-    sa.Column('password', sa.String(length=80), nullable=False),
-    sa.Column('first_name', sa.String(length=80), nullable=False),
-    sa.Column('last_name', sa.String(length=80), nullable=False),
-    sa.Column('address', sa.String(length=80), nullable=False),
-    sa.Column('phone_number', sa.Integer(), nullable=False),
+    sa.Column('password', sa.String(length=256), nullable=False),
+    sa.Column('first_name', sa.String(length=500), nullable=True),
+    sa.Column('last_name', sa.String(length=80), nullable=True),
+    sa.Column('address', sa.String(length=80), nullable=True),
+    sa.Column('state', sa.String(length=80), nullable=True),
+    sa.Column('city', sa.String(length=80), nullable=True),
+    sa.Column('phone_number', sa.String(), nullable=True),
+    sa.Column('zip', sa.String(), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email')
     )
@@ -43,7 +46,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('walks', sa.Integer(), nullable=False),
-    sa.Column('checkins', sa.Integer(), nullable=False),
+    sa.Column('check_ins', sa.Integer(), nullable=False),
     sa.Column('pet_sittings', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
