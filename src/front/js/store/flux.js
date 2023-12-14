@@ -80,29 +80,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                                 "Authorization": `Bearer ${token}`,
                             }
 
-<<<<<<< HEAD
                         }
-=======
-			getMessage: async () => {
-				try{
-					// fetching data from the backend
-					const resp = await fetch(process.env.BACKEND_URL + "/api/hello")
-					const data = await resp.json()
-					setStore({ message: data.message })
-					// don't forget to return something, that is how the async resolves
-					return data;
-				}catch(error){
-					console.log("Error loading message from backend", error)
-				}
-			},
-			signup: async (formData)=>{
-				try{
-					let response = await fetch(getStore().backendURL+"/api/signup",{
-						method:"POST",
-						headers:{"Content-Type":"application/json"},
-						body: JSON.stringify({"email":formData.email,"password":formData.password," first_name":formData.first_name,"last_name":formData.last_name,"address":formData.address,"phone_number":formData.phone_number})
-					})
->>>>>>> aa6a55c352fe8009c83848ffc7bb1220e955c0c7
 
                     )
                     let data = await response.json();
