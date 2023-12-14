@@ -8,7 +8,6 @@ import { Demo } from "./pages/demo";
 import { Single } from "./pages/single";
 import { Schedule } from './pages/schedule.js'
 import { Insurance } from "./pages/insurance";
-import { Services } from "./pages/services"
 import injectContext from "./store/appContext";
 import { MobileNav } from "./component/MobileNav.js";
 import { Navbar } from "./component/navbar";
