@@ -24,16 +24,6 @@ class User(db.Model):
     zip = db.Column(db.String, unique=False, nullable=True)
     pets = db.relationship('Pet', backref='user')
     last_services_used = db.relationship('Last_Service_Used', backref='user')
-
-
-
-    # password = db.Column(db.String(500), unique=False, nullable=False)
-    # first_name = db.Column(db.String(500), unique=False, nullable=True)
-    # last_name = db.Column(db.String(80), unique=False, nullable=True)
-  
-
-    pets = db.relationship('Pet', backref='user')
-    last_services_used = db.relationship('Last_Service_Used', backref='user')
     number_of_services_used = db.relationship('Number_Of_Services_Used', backref='user')
 
 
