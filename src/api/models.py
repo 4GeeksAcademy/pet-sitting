@@ -45,7 +45,6 @@ class User(db.Model):
             "zip": self.zip,
             "phone_number": self.phone_number,
             "pets": list(map(lambda x: x.serialize(), self.pets)),
-            "number_of_services_used": self.number_of_services_used
             # do not serialize the password, its a security breach
         }
 
