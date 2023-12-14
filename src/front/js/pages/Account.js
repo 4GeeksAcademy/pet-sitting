@@ -216,12 +216,14 @@ export const Account = () => {
             {pets.map((pet, index) => (
               <div key={index}>
                 <p>{pet.name}</p>
-                <button type="button" onClick={() => openEditModal(index)}>
+                <div className="editButtons">
+                <button  className="editAccount" type="button" onClick={() => openEditModal(index)}>
                   Edit
                 </button>
-                <button type="button" onClick={() => deletePet(index)}>
+                <button  className="deleteAccountButton" type="button" onClick={() => deletePet(index)}>
                   Delete
                 </button>
+                </div>
               </div>
             ))}
           <div>
@@ -274,11 +276,13 @@ export const Account = () => {
               onChange={handlePetChange}
             />
           </div>
-          <div>
-            <button type="button" onClick={addPet}>
+          <div className="accountButtons">
+            <button  className="addPet" type="button" onClick={addPet}>
               Add Pet
             </button>
-            <button type="button" onClick={handleSubmit}>
+            
+              
+            <button  className="accountSubmit" type="button" onClick={handleSubmit}>
             Submit
             </button>
           </div>

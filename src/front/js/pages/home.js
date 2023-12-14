@@ -108,7 +108,7 @@ export const Home = () => {
                   </div>
                 </div>
                 <div className="modal-footer d-flex justify-content-center align-items-center">
-                  <button type="button" className="btn btn-secondary loginButton" data-bs-dismiss="modal" onClick={handleLogin}>
+                  <button type="button" className="loginButton" data-bs-dismiss="modal" onClick={handleLogin}>
                     Submit
                   </button>
                   <button className="forgotPasswordLink ms-2" onClick={() => { navigate("/forgotten-password") }} data-bs-dismiss="modal">

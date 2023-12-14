@@ -111,9 +111,19 @@ overflow-x: scroll;
   color: #54665a;
   background-color: #f5f5dc;
 }
-.loginButton{
-  color:  #f5f5dc ;
+.loginButton {
+  cursor: pointer;
+  color: #f5f5dc;
   background-color: #54665a;
+  transition: background-color 0.3s; 
+
+
+  padding: 10px;
+  border: none;
+}
+
+.loginButton:hover {
+  background-color: #7e9b97; 
 }
 ul{
  padding: 5%;
@@ -142,6 +152,20 @@ ul{
 }
 .homePage{
   max-width: 880px;
+}
+.forgotPasswordLink {
+  cursor: pointer;
+  color: #f5f5dc;
+  background-color: #54665a;
+  transition: background-color 0.3s; /* Add a smooth transition effect */
+
+  /* Additional styling if needed */
+  padding: 10px;
+  border: none;
+}
+
+.forgotPasswordLink:hover {
+  background-color: #7e9b97; /* Change the background color on hover */
 }
 .startNowPic{
  
@@ -309,11 +333,48 @@ body{
 label {
   color: #54665a
 }
+.addPet, .accountSubmit {
+  cursor: pointer;
+  color: #f5f5dc;
+  background-color: #54665a;
+  transition: background-color 0.3s;
+  padding: 10px; /* Adjust padding as needed */
+  border: none;
+  border-radius: 10px; /* Added border-radius for rounded corners */
+}
+
+.addPet:hover, .accountSubmit:hover {
+  background-color: #7e9b97;
+}
+  .accountButtons {
+    display: flex;
+    padding-left: 150px;
+    padding-right: 150px;
+
+  justify-content: space-between;
+
+  }
+  .editAccount, .deleteAccountButton {
+    cursor: pointer;
+    color: #f5f5dc;
+    background-color: #54665a;
+    transition: background-color 0.3s;
+    padding: 10px; /* Adjust padding as needed */
+    border: none;
+    border-radius: 10px; 
+  }
   
+  .editAccount:hover, .deleteAccountButton:hover {
+    background-color: #7e9b97;
+  }
+.editButtons {
 
+  display: flex;
+  padding-left: 150px;
+  padding-right: 150px;
 
-
-  
+justify-content: space-between;
+}
     
 
 
