@@ -42,7 +42,7 @@ function PayPal(props) {
   })
 
   useEffect(() => {
-    if (props.discount === true || props.discount === true && props.numDays <= 1) {
+    if (props.discount === true && !props.numDays || props.discount === true && props.numDays <= 1) {
       setTimeout(actions.setPaymentSuccessful(true), 3000)
     }
   }, [props.discount])
