@@ -404,7 +404,7 @@ def handle_get_dog_walk_sched():
                     calendarId=calendar_id,
                     timeMin=minTime,
                     timeMax=maxTime,
-                    maxResults=10,
+                    maxResults=100,
                     singleEvents=True,
                     orderBy="startTime",
                 )
@@ -439,7 +439,7 @@ def handle_meeting_sched():
                     calendarId=calendar_id,
                     timeMin=minTime,
                     timeMax=maxTime,
-                    maxResults=10,
+                    maxResults=100,
                     singleEvents=True,
                     orderBy="startTime",
                 )
@@ -475,7 +475,7 @@ def handle_get_pet_check_in_sched():
                     calendarId=calendar_id,
                     timeMin=minTime,
                     timeMax=maxTime,
-                    maxResults=10,
+                    maxResults=100,
                     singleEvents=True,
                     orderBy="startTime",
                 )
@@ -510,7 +510,7 @@ def handle_get_pet_sitting_sched():
                     calendarId=calendar_id,
                     timeMin=minTime,
                     timeMax=maxTime,
-                    maxResults=10,
+                    maxResults=100,
                     singleEvents=True,
                     orderBy="startTime",
                 )
