@@ -785,7 +785,7 @@ export const Timeslots = (props) => {
 									{recurring ?
 										<div className="form-check">
 											<label className="form-check-label col-sm-2" htmlFor='recurring'>Cancel recurring events at this time.</label>
-											<input className="form-check-input col-sm-10" type="checkbox" value="" id='recurringCancel' checked readonly />
+											<input className="form-check-input col-sm-10" type="checkbox" value="" id='recurringCancel' checked readOnly />
 										</div>
 										:
 										''
