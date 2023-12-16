@@ -227,7 +227,7 @@ export const Account = () => {
               </div>
             ))}
           <div>
-            <label htmlFor="name">Pet Name</label>
+            <label htmlFor="name">Pet Name *</label>
             <input
               type="text"
               id="name"
@@ -237,7 +237,7 @@ export const Account = () => {
             />
           </div>
           <div>
-            <label htmlFor="breed">Breed</label>
+            <label htmlFor="breed">Breed *</label>
             <input
               type="text"
               id="breed"
@@ -247,7 +247,7 @@ export const Account = () => {
             />
           </div>
           <div>
-            <label htmlFor="age">Age</label>
+            <label htmlFor="age">Age *</label>
             <input
               type="text"
               id="age"

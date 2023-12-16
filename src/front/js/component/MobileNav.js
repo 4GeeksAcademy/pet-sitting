@@ -39,7 +39,7 @@ export const MobileNav = () => {
                 <Nav.Link as={Link} to="/account" className="nav-link" style={{ color: 'black' }}>Account</Nav.Link>
                 <Nav.Link as={Link} to="/insurance" className="nav-link" style={{ color: 'black' }}>Insurance</Nav.Link>
                 <Nav.Link as={Link} to="/services" className="nav-link" style={{ color: 'black' }}>Services</Nav.Link>
-                <Nav.Link as={Link} className="nav-link" style={{ color: 'black' }} onClick={handleLogout}>Log Out</Nav.Link>
+                <Nav.Link as={Link} to='/' className="nav-link" style={{ color: 'black' }} onClick={handleLogout}>Log Out</Nav.Link>
               </>
             }
           </Nav>
