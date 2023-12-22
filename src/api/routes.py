@@ -720,7 +720,7 @@ def handle_schedule_pet_sitting():
                     },
                 }
 
-
+        print(event)
         event = service.events().insert(calendarId=calendar_id, body=event).execute()
 
         start_date_time = datetime.datetime.fromisoformat(start_time)
